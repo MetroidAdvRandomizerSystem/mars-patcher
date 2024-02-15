@@ -1,0 +1,67 @@
+import math
+from typing import List
+
+from color_spaces import RgbColor, RgbBitSize
+from rom import Rom
+
+
+class Palette(object):
+    
+    def __init__(self, rows: int, rom: Rom, addr: int):
+        assert rows >= 1
+        self.colors: List[RgbColor] = []
+        for i in range(rows * 16):
+            rgb = rom.read_16(addr + i * 2)
+            color = RgbColor.from_rgb(rgb, RgbBitSize.Rgb5)
+            self.colors.append(color)
+
+    def __getitem__(self, key) -> RgbColor:
+        return self.colors[key]
+
+    def byte_data(self) -> bytes:
+        arr = bytearray()
+        for color in self.colors:
+            val = color.rgb_15()
+            arr.append(val & 0xFF)
+            arr.append(val >> 8)
+        return bytes(arr)
+    
+    def write(self, rom: Rom, addr: int) -> None:
+        data = self.byte_data()
+        rom.write_bytes(addr, data, 0, len(data))
+
+    def shift_hue_hsv(self, shift: int) -> None:
+        """
+        Shifts hue by the provided amount, measured in degrees.
+        Uses HSV color space.
+        """
+        black = RgbColor.black()
+        white = RgbColor.white_5()
+        for i in range(len(self.colors)):
+            # skip black and white
+            rgb = self.colors[i]
+            if rgb == black or rgb == white:
+                continue
+            # get HSV and shift hue
+            orig_luma = rgb.luma()
+            hsv = rgb.hsv()
+            hsv.hue = (hsv.hue + shift) % 360
+            # get new RGB and rescale luma
+            rgb = hsv.rgb()
+            luma_ratio = orig_luma / rgb.luma()
+            rgb.red = min(int(rgb.red * luma_ratio), 255)
+            rgb.green = min(int(rgb.green * luma_ratio), 255)
+            rgb.blue = min(int(rgb.blue * luma_ratio), 255)
+            self.colors[i] = rgb
+
+    def shift_hue_lab(self, shift: int) -> None:
+        """
+        Shifts hue by the provided amount, measured in degrees.
+        Uses LAB color space.
+        """
+        # convert shift to radians
+        shift_rads = shift * (math.pi / 180)
+        for i in range(len(self.colors)):
+            rgb = self.colors[i]
+            lab = rgb.lab().shift_hue(shift_rads)
+            self.colors[i] = lab.rgb()
