@@ -571,6 +571,14 @@
         {
             "Area": 3,
             "Room": 35,
+            "BlockX": 4,
+            "BlockY": 27,
+            "Hidden": false,
+            "Original": "PowerBombTank"
+        },
+        {
+            "Area": 3,
+            "Room": 35,
             "BlockX": 15,
             "BlockY": 86,
             "Hidden": false,

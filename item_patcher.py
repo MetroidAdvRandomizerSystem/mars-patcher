@@ -9,8 +9,8 @@ from tileset import Tileset
 
 
 # keep these in sync with base patch
-MAJOR_LOCS_ADDR = 0x0
-MINOR_LOCS_ADDR = 0x0
+MAJOR_LOCS_ADDR = 0x70774
+MINOR_LOCS_ADDR = 0x7052C
 
 TANK_CLIP = (0x62, 0x63, 0x68)
 HIDDEN_TANK_CLIP = (0x64, 0x65, 0x69)
@@ -67,6 +67,7 @@ class ItemPatcher(object):
             addr = MINOR_LOCS_ADDR + i * 4
             assert rom.read_8(addr) == loc.block_x
             assert rom.read_8(addr + 1) == loc.block_y
+            assert rom.read_8(addr + 2) == loc.orig_item.value
             if loc.new_item != ItemType.UNDEFINED:
                 rom.write_8(addr + 2, loc.new_item.value)
                 rom.write_8(addr + 3, loc.new_item.value)
