@@ -31,7 +31,6 @@
             "Room": 7,
             "BlockX": 13,
             "BlockY": 14,
-            "Hidden": true,
             "Item": "HiJump"
         },
         {
@@ -39,7 +38,6 @@
             "Room": 35,
             "BlockX": 14,
             "BlockY": 65,
-            "Hidden": false,
             "Item": "MorphBall"
         },
         {
@@ -47,7 +45,6 @@
             "Room": 38,
             "BlockX": 53,
             "BlockY": 10,
-            "Hidden": false,
             "Item": "EnergyTank"
         },
         {
@@ -55,7 +52,6 @@
             "Room": 45,
             "BlockX": 4,
             "BlockY": 6,
-            "Hidden": true,
             "Item": "Level4"
         }
     ]
