@@ -1,3 +1,3 @@
-- [ ] Get seed from input json
-- [ ] Get random palette settings from input json
+- [x] Get random palette settings from patch data json
+  - [ ] Consider separating hue rotation and seed for each type
 - [ ] BPS file patcher (to apply base patch)

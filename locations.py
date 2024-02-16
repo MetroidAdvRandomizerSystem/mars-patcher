@@ -1,7 +1,7 @@
 from enum import Enum
 import json
 import os
-from typing import Any, Dict, List, Tuple
+from typing import Any, List
 
 
 class MajorSource(Enum):
@@ -53,7 +53,6 @@ class ItemType(Enum):
     WAVE_BEAM = 20
     SCREW_ATTACK = 21
     ICE_BEAM = 22
-    #SAX_SUIT = TODO?
     MISSILE_TANK = 23
     ENERGY_TANK = 24
     POWER_BOMB_TANK = 25
@@ -122,125 +121,110 @@ KEY_HIDDEN = "Hidden"
 KEY_ORIGINAL = "Original"
 KEY_ITEM = "Item"
 
-SOURCE_ENUMS = {
-    "MainDeckData": MajorSource.MAIN_DECK_DATA,
-    "Arachnus": MajorSource.ARACHNUS,
-    "ChargeCoreX": MajorSource.CHARGE_CORE_X,
-    "Level1": MajorSource.LEVEL_1,
-    "TroData": MajorSource.TRO_DATA,
-    "Zazabi": MajorSource.ZAZABI,
-    "Serris": MajorSource.SERRIS,
-    "Level2": MajorSource.LEVEL_2,
-    "PyrData": MajorSource.PYR_DATA,
-    "MegaX": MajorSource.MEGA_X,
-    "Level3": MajorSource.LEVEL_3,
-    "ArcData1": MajorSource.ARC_DATA_1,
-    "WideCoreX": MajorSource.WIDE_CORE_X,
-    "ArcData2": MajorSource.ARC_DATA_2,
-    "Yakuza": MajorSource.YAKUZA,
-    "Nettori": MajorSource.NETTORI,
-    "Nightmare": MajorSource.NIGHTMARE,
-    "Level4": MajorSource.LEVEL_4,
-    "AqaData": MajorSource.AQA_DATA,
-    "WaveCoreX": MajorSource.WAVE_CORE_X,
-    "Ridley": MajorSource.RIDLEY
-}
 
-ITEM_ENUMS = {
-    "Undefined": ItemType.UNDEFINED,
-    "None": ItemType.NONE,
-    "Missiles": ItemType.MISSILES,
-    "MorphBall": ItemType.MORPH_BALL,
-    "ChargeBeam": ItemType.CHARGE_BEAM,
-    "Level1": ItemType.LEVEL_1,
-    "Bombs": ItemType.BOMBS,
-    "HiJump": ItemType.HI_JUMP,
-    "SpeedBooster": ItemType.SPEED_BOOSTER,
-    "Level2": ItemType.LEVEL_2,
-    "SuperMissiles": ItemType.SUPER_MISSILES,
-    "VariaSuit": ItemType.VARIA_SUIT,
-    "Level3": ItemType.LEVEL_3,
-    "IceMissiles": ItemType.ICE_MISSILES,
-    "WideBeam": ItemType.WIDE_BEAM,
-    "PowerBombs": ItemType.POWER_BOMBS,
-    "SpaceJump": ItemType.SPACE_JUMP,
-    "PlasmaBeam": ItemType.PLASMA_BEAM,
-    "GravitySuit": ItemType.GRAVITY_SUIT,
-    "Level4": ItemType.LEVEL_4,
-    "DiffusionMissiles": ItemType.DIFFUSION_MISSILES,
-    "WaveBeam": ItemType.WAVE_BEAM,
-    "ScrewAttack": ItemType.SCREW_ATTACK,
-    "IceBeam": ItemType.ICE_BEAM,
-    "MissileTank": ItemType.MISSILE_TANK,
-    "EnergyTank": ItemType.ENERGY_TANK,
-    "PowerBombTank": ItemType.POWER_BOMB_TANK
-}
+class LocationSettings(object):
+    SOURCE_ENUMS = {
+        "MainDeckData": MajorSource.MAIN_DECK_DATA,
+        "Arachnus": MajorSource.ARACHNUS,
+        "ChargeCoreX": MajorSource.CHARGE_CORE_X,
+        "Level1": MajorSource.LEVEL_1,
+        "TroData": MajorSource.TRO_DATA,
+        "Zazabi": MajorSource.ZAZABI,
+        "Serris": MajorSource.SERRIS,
+        "Level2": MajorSource.LEVEL_2,
+        "PyrData": MajorSource.PYR_DATA,
+        "MegaX": MajorSource.MEGA_X,
+        "Level3": MajorSource.LEVEL_3,
+        "ArcData1": MajorSource.ARC_DATA_1,
+        "WideCoreX": MajorSource.WIDE_CORE_X,
+        "ArcData2": MajorSource.ARC_DATA_2,
+        "Yakuza": MajorSource.YAKUZA,
+        "Nettori": MajorSource.NETTORI,
+        "Nightmare": MajorSource.NIGHTMARE,
+        "Level4": MajorSource.LEVEL_4,
+        "AqaData": MajorSource.AQA_DATA,
+        "WaveCoreX": MajorSource.WAVE_CORE_X,
+        "Ridley": MajorSource.RIDLEY
+    }
 
+    ITEM_ENUMS = {
+        "Undefined": ItemType.UNDEFINED,
+        "None": ItemType.NONE,
+        "Missiles": ItemType.MISSILES,
+        "MorphBall": ItemType.MORPH_BALL,
+        "ChargeBeam": ItemType.CHARGE_BEAM,
+        "Level1": ItemType.LEVEL_1,
+        "Bombs": ItemType.BOMBS,
+        "HiJump": ItemType.HI_JUMP,
+        "SpeedBooster": ItemType.SPEED_BOOSTER,
+        "Level2": ItemType.LEVEL_2,
+        "SuperMissiles": ItemType.SUPER_MISSILES,
+        "VariaSuit": ItemType.VARIA_SUIT,
+        "Level3": ItemType.LEVEL_3,
+        "IceMissiles": ItemType.ICE_MISSILES,
+        "WideBeam": ItemType.WIDE_BEAM,
+        "PowerBombs": ItemType.POWER_BOMBS,
+        "SpaceJump": ItemType.SPACE_JUMP,
+        "PlasmaBeam": ItemType.PLASMA_BEAM,
+        "GravitySuit": ItemType.GRAVITY_SUIT,
+        "Level4": ItemType.LEVEL_4,
+        "DiffusionMissiles": ItemType.DIFFUSION_MISSILES,
+        "WaveBeam": ItemType.WAVE_BEAM,
+        "ScrewAttack": ItemType.SCREW_ATTACK,
+        "IceBeam": ItemType.ICE_BEAM,
+        "MissileTank": ItemType.MISSILE_TANK,
+        "EnergyTank": ItemType.ENERGY_TANK,
+        "PowerBombTank": ItemType.POWER_BOMB_TANK
+    }
 
-def load_locations() -> Tuple[List[MajorLocation], List[MinorLocation]]:
-    with open(os.path.join("data", "locations.json")) as f:
-        data = json.load(f)
+    def __init__(self, major_locs: List[MajorLocation], minor_locs: List[MinorLocation]):
+        self.major_locs = major_locs
+        self.minor_locs = minor_locs
 
-    major_locs = []
-    for entry in data[KEY_MAJOR_LOCS]:
-        loc = MajorLocation(
-            entry[KEY_AREA], entry[KEY_ROOM],
-            SOURCE_ENUMS[entry[KEY_SOURCE]],
-            ITEM_ENUMS[entry[KEY_ORIGINAL]]
-        )
-        major_locs.append(loc)
+    @classmethod
+    def load(cls) -> "LocationSettings":
+        with open(os.path.join("data", "locations.json")) as f:
+            data = json.load(f)
+        
+        major_locs = []
+        for entry in data[KEY_MAJOR_LOCS]:
+            loc = MajorLocation(
+                entry[KEY_AREA], entry[KEY_ROOM],
+                cls.SOURCE_ENUMS[entry[KEY_SOURCE]],
+                cls.ITEM_ENUMS[entry[KEY_ORIGINAL]]
+            )
+            major_locs.append(loc)
 
-    minor_locs = []
-    for entry in data[KEY_MINOR_LOCS]:
-        loc = MinorLocation(
-            entry[KEY_AREA], entry[KEY_ROOM],
-            entry[KEY_BLOCK_X], entry[KEY_BLOCK_Y], entry[KEY_HIDDEN],
-            ITEM_ENUMS[entry[KEY_ORIGINAL]]
-        )
-        minor_locs.append(loc)
+        minor_locs = []
+        for entry in data[KEY_MINOR_LOCS]:
+            loc = MinorLocation(
+                entry[KEY_AREA], entry[KEY_ROOM],
+                entry[KEY_BLOCK_X], entry[KEY_BLOCK_Y], entry[KEY_HIDDEN],
+                cls.ITEM_ENUMS[entry[KEY_ORIGINAL]]
+            )
+            minor_locs.append(loc)
 
-    return major_locs, minor_locs
+        return LocationSettings(major_locs, minor_locs)
 
-
-def set_assignments(
-    major_locs: List[MajorLocation],
-    minor_locs: List[MinorLocation],
-    item_list_path: str,
-) -> None:
-    loc_type = None
-    def read_field(key: str, obj: Dict, mapping: Dict = None) -> Any:
-        if key not in obj:
-            raise ValueError(f"{loc_type} location missing {key}")
-        val = obj[key]
-        if mapping is not None:
-            if val not in mapping:
-                raise ValueError(f"Invalid value {val}")
-            val = mapping[val]
-        return val
-
-    with open(item_list_path) as f:
-        data = json.load(f)
-    if KEY_MAJOR_LOCS in data:
-        loc_type = "Major"
+    def set_assignments(self, data: Any) -> None:
         for maj_loc in data[KEY_MAJOR_LOCS]:
             # get source and item
-            source = read_field(KEY_SOURCE, maj_loc, SOURCE_ENUMS)
-            item = read_field(KEY_ITEM, maj_loc, ITEM_ENUMS)
+            source = self.SOURCE_ENUMS[maj_loc[KEY_SOURCE]]
+            item = self.ITEM_ENUMS[maj_loc[KEY_ITEM]]
             # find location with this source
-            loc = next(l for l in major_locs if l.major_src == source)
+            loc = next(l for l in self.major_locs if l.major_src == source)
             loc.new_item = item
-    if KEY_MINOR_LOCS in data:
-        loc_type = "Minor"
+        
         for min_loc in data[KEY_MINOR_LOCS]:
             # get area, room, block X, block Y, item
-            area = read_field(KEY_AREA, min_loc)
-            room = read_field(KEY_ROOM, min_loc)
-            block_x = read_field(KEY_BLOCK_X, min_loc)
-            block_y = read_field(KEY_BLOCK_Y, min_loc)
-            item = read_field(KEY_ITEM, min_loc, ITEM_ENUMS)
+            area = min_loc[KEY_AREA]
+            room = min_loc[KEY_ROOM]
+            block_x = min_loc[KEY_BLOCK_X]
+            block_y = min_loc[KEY_BLOCK_Y]
+            item = self.ITEM_ENUMS[min_loc[KEY_ITEM]]
             # find location with this source
             loc = next(
-                l for l in minor_locs
+                l for l in self.minor_locs
                 if l.area == area and l.room == room and
                 l.block_x == block_x and l.block_y == block_y
             )

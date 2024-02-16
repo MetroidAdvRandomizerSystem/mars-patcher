@@ -2,52 +2,94 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {
-        "MajorLocations": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "Source": {
-                        "$ref": "#/$defs/ValidSources"
-                    },
-                    "Item": {
-                        "$ref": "#/$defs/ValidItems"
+        "Locations": {
+            "type": "object",
+            "properties": {
+                "MajorLocations": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Source": {
+                                "$ref": "#/$defs/ValidSources"
+                            },
+                            "Item": {
+                                "$ref": "#/$defs/ValidItems"
+                            }
+                        },
+                        "required": ["Source", "Item"]
                     }
                 },
-                "required": ["Source", "Item"]
-            }
+                "MinorLocations": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Area": {
+                                "$ref": "#/$defs/TypeU8"
+                            },
+                            "Room": {
+                                "$ref": "#/$defs/TypeU8"
+                            },
+                            "BlockX": {
+                                "$ref": "#/$defs/TypeU8"
+                            },
+                            "BlockY": {
+                                "$ref": "#/$defs/TypeU8"
+                            },
+                            "Item": {
+                                "$ref": "#/$defs/ValidItems"
+                            }
+                        },
+                        "required": ["Area", "Room", "BlockX", "BlockY", "Item"]
+                    }
+                }
+            },
+            "required": ["MinorLocations", "MajorLocations"]
         },
-        "MinorLocations": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "Area": {
-                        "$ref": "#/$defs/TypeU8"
-                    },
-                    "Room": {
-                        "$ref": "#/$defs/TypeU8"
-                    },
-                    "BlockX": {
-                        "$ref": "#/$defs/TypeU8"
-                    },
-                    "BlockY": {
-                        "$ref": "#/$defs/TypeU8"
-                    },
-                    "Item": {
-                        "$ref": "#/$defs/ValidItems"
+        "Palettes": {
+            "type": "object",
+            "properties": {
+                "Seed": {
+                    "$ref": "#/$defs/Seed"
+                },
+                "Randomize": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": ["Tilesets", "Enemies", "Samus", "Beams"]
                     }
                 },
-                "required": ["Area", "Room", "BlockX", "BlockY", "Item"]
-            }
+                "HueMin": {
+                    "$ref": "#/$defs/HueRotation"
+                },
+                "HueMax": {
+                    "$ref": "#/$defs/HueRotation"
+                },
+                "ColorSpace": {
+                    "type": "string",
+                    "enum": ["HSV", "LAB"]
+                }
+            },
+            "required": ["Randomize"]
         }
     },
-    "required": ["MajorLocations", "MinorLocations"],
+    "required": ["Locations"],
     "$defs": {
         "TypeU8": {
             "type": "integer",
             "minimum": 0,
             "maximum": 255
+        },
+        "Seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647
+        },
+        "HueRotation": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 180
         },
         "ValidSources": {
             "type": "string",

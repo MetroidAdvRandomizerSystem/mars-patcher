@@ -1,22 +1,65 @@
-import os
+from enum import Enum
 import json
+import os
 import random
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from palette import Palette
 from rom import Rom
-from settings import Settings, HueFormat
+
+
+class PaletteType(Enum):
+    TILESETS = 1
+    ENEMIES = 2
+    SAMUS = 3
+    BEAMS = 4
+
+
+class ColorSpace(Enum):
+    HSV = 1
+    LAB = 2
+
+
+class PaletteSettings(object):
+    TYPE_ENUMS = {
+        "Tilesets": PaletteType.TILESETS,
+        "Enemies": PaletteType.ENEMIES,
+        "Samus": PaletteType.SAMUS,
+        "Beams": PaletteType.BEAMS
+    }
+
+    def __init__(self,
+        seed: int,
+        pal_types: List[PaletteType],
+        hue_min: int,
+        hue_max: int,
+        color_space: ColorSpace
+    ):
+        self.seed = seed,
+        self.pal_types = pal_types
+        self.hue_min = hue_min
+        self.hue_max = hue_max
+        self.color_space = color_space
+
+    @classmethod
+    def from_json(cls, data: Any) -> "PaletteSettings":
+        seed = data["Seed"]
+        pal_types = [cls.TYPE_ENUMS[t] for t in data["Randomize"]]
+        hue_min = data["HueMin"]
+        hue_max = data["HueMax"]
+        color_space = ColorSpace[data["ColorSpace"]]
+        return cls(seed, pal_types, hue_min, hue_max, color_space)
 
 
 class PaletteRandomizer(object):
     """Class for randomly shifting the hues of color palettes."""
 
-    def __init__(self, rom: Rom, settings: Settings):
+    def __init__(self, rom: Rom, settings: PaletteSettings):
         self.rom = rom
         self.settings = settings
-        if settings.hue_format == HueFormat.HSV:
+        if settings.color_space == ColorSpace.HSV:
             self.shift_func = self.shift_palette_hsv
-        elif settings.hue_format == HueFormat.LAB:
+        elif settings.color_space == ColorSpace.LAB:
             self.shift_func = self.shift_palette_lab
 
     @staticmethod
@@ -28,13 +71,14 @@ class PaletteRandomizer(object):
         pal.shift_hue_lab(shift)
 
     def randomize(self) -> None:
-        if self.settings.rand_tileset:
+        random.seed(self.settings.seed)
+        if PaletteType.TILESETS in self.settings.pal_types:
             self.randomize_tilesets()
-        if self.settings.rand_enemy:
+        if PaletteType.ENEMIES in self.settings.pal_types:
             self.randomize_enemies()
-        if self.settings.rand_samus:
+        if PaletteType.SAMUS in self.settings.pal_types:
             self.randomize_samus()
-        if self.settings.rand_beam:
+        if PaletteType.BEAMS in self.settings.pal_types:
             self.randomize_beams()
         # fix any sprite/tileset palettes that should be the same
         # TODO: check for palette fixes needed in fusion

@@ -1,10 +1,7 @@
-from typing import List
-
 from compress import decomp_rle, comp_rle
-from locations import MinorLocation, MajorLocation, ItemType
+from locations import LocationSettings, ItemType
 from rom import Rom
 from room_entry import RoomEntry
-from settings import Settings
 from tileset import Tileset
 
 
@@ -21,18 +18,18 @@ TANK_TILE = (0x50, 0x54, 0x58)
 class ItemPatcher(object):
     """Class for writing item assignments to a ROM."""
 
-    def __init__(self, rom: Rom, settings: Settings):
+    def __init__(self, rom: Rom, settings: LocationSettings):
         self.rom = rom
         self.settings = settings
 
     # TODO: use separate classes for handling tilesets and backgrounds
-    def assign_items(self,
-        minor_locs: List[MinorLocation],
-        major_locs: List[MajorLocation]
-    ) -> None:
+    def write_items(self) -> None:
         rom = self.rom
         # handle minor locations
-        minor_locs = sorted(minor_locs, key=lambda l: (l.area, l.room, l.block_x, l.block_y))
+        minor_locs = sorted(
+            self.settings.minor_locs,
+            key=lambda l: (l.area, l.room, l.block_x, l.block_y)
+        )
         prev_area_room = (-1, -1)
         room_tank_count = 0
         for i, loc in enumerate(minor_locs):
@@ -73,7 +70,7 @@ class ItemPatcher(object):
                 rom.write_8(addr + 3, loc.new_item.value)
 
         # handle major locations
-        for loc in major_locs:
+        for loc in self.settings.major_locs:
             # write to majors table
             if loc.new_item != ItemType.UNDEFINED:
                 addr = MAJOR_LOCS_ADDR + loc.major_src.value
