@@ -9,8 +9,8 @@ from tileset import Tileset
 
 
 # keep these in sync with base patch
-MAJOR_LOCS_ADDR = 0x70774
-MINOR_LOCS_ADDR = 0x7052C
+MINOR_LOCS_ADDR = 0x7FF000
+MAJOR_LOCS_ADDR = 0x7FF200
 
 TANK_CLIP = (0x62, 0x63, 0x68)
 HIDDEN_TANK_CLIP = (0x64, 0x65, 0x69)
