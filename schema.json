@@ -1,0 +1,110 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "MajorLocations": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "Source": {
+                        "$ref": "#/$defs/ValidSources"
+                    },
+                    "Item": {
+                        "$ref": "#/$defs/ValidItems"
+                    }
+                },
+                "required": ["Source", "Item"]
+            }
+        },
+        "MinorLocations": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "Area": {
+                        "$ref": "#/$defs/TypeU8"
+                    },
+                    "Room": {
+                        "$ref": "#/$defs/TypeU8"
+                    },
+                    "BlockX": {
+                        "$ref": "#/$defs/TypeU8"
+                    },
+                    "BlockY": {
+                        "$ref": "#/$defs/TypeU8"
+                    },
+                    "Item": {
+                        "$ref": "#/$defs/ValidItems"
+                    }
+                },
+                "required": ["Area", "Room", "BlockX", "BlockY", "Item"]
+            }
+        }
+    },
+    "required": ["MajorLocations", "MinorLocations"],
+    "$defs": {
+        "TypeU8": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+        },
+        "ValidSources": {
+            "type": "string",
+            "enum": [
+                "MainDeckData",
+                "Arachnus",
+                "ChargeCoreX",
+                "Level1",
+                "TroData",
+                "Zazabi",
+                "Serris",
+                "Level2",
+                "PyrData",
+                "MegaX",
+                "Level3",
+                "ArcData1",
+                "WideCoreX",
+                "ArcData2",
+                "Yakuza",
+                "Nettori",
+                "Nightmare",
+                "Level4",
+                "AqaData",
+                "WaveCoreX",
+                "Ridley"
+            ]
+        },
+        "ValidItems": {
+            "type": "string",
+            "enum": [
+                "None",
+                "Missiles",
+                "MorphBall",
+                "ChargeBeam",
+                "Level1",
+                "Bombs",
+                "HiJump",
+                "SpeedBooster",
+                "Level2",
+                "SuperMissiles",
+                "VariaSuit",
+                "Level3",
+                "IceMissiles",
+                "WideBeam",
+                "PowerBombs",
+                "SpaceJump",
+                "PlasmaBeam",
+                "GravitySuit",
+                "Level4",
+                "DiffusionMissiles",
+                "WaveBeam",
+                "ScrewAttack",
+                "IceBeam",
+                "MissileTank",
+                "EnergyTank",
+                "PowerBombTank"
+            ]
+        }
+    }
+}
