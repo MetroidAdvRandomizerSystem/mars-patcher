@@ -1,0 +1,3 @@
+- [ ] Get seed from input json
+- [ ] Get random palette settings from input json
+- [ ] BPS file patcher (to apply base patch)
