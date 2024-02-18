@@ -1,12 +1,14 @@
 import argparse
 import json
+import os
 
-# from jsonschema import validate
+from jsonschema import validate
 
-from item_patcher import ItemPatcher
-from locations import LocationSettings
-from random_palettes import PaletteSettings, PaletteRandomizer
-from rom import Rom
+from mfr_patcher.item_patcher import ItemPatcher
+from mfr_patcher.locations import LocationSettings
+from mfr_patcher.random_palettes import PaletteSettings, PaletteRandomizer
+from mfr_patcher.rom import Rom
+from mfr_patcher.data import get_data_path
 
 
 if __name__ == "__main__":
@@ -32,10 +34,10 @@ if __name__ == "__main__":
     with open(args.patch_data_path) as f:
         patch_data = json.load(f)
 
-    # TODO: install jsonschema
-    # with open("schema.json") as f:
-        # schema = json.load(f)
-    # validate(patch_data, schema)
+
+    with open(os.path.join(get_data_path(), "schema.json")) as f:
+        schema = json.load(f)
+    validate(patch_data, schema)
     
     # load locations and set assignments
     loc_settings = LocationSettings.load()

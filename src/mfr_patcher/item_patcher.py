@@ -1,8 +1,8 @@
-from compress import decomp_rle, comp_rle
-from locations import LocationSettings, ItemType
-from rom import Rom
-from room_entry import RoomEntry
-from tileset import Tileset
+from mfr_patcher.compress import decomp_rle, comp_rle
+from mfr_patcher.locations import LocationSettings, ItemType
+from mfr_patcher.rom import Rom
+from mfr_patcher.room_entry import RoomEntry
+from mfr_patcher.tileset import Tileset
 
 
 # keep these in sync with base patch

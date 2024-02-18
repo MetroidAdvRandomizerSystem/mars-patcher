@@ -4,8 +4,9 @@ import os
 import random
 from typing import Any, Dict, List, Tuple
 
-from palette import Palette
-from rom import Rom
+from mfr_patcher.palette import Palette
+from mfr_patcher.rom import Rom
+from mfr_patcher.data import get_data_path
 
 
 class PaletteType(Enum):
@@ -202,7 +203,7 @@ class PaletteRandomizer(object):
         pal.write(rom, pal_addr)
 
     def get_enemy_groups(self) -> Dict[str, List[int]]:
-        with open(os.path.join("data", "enemy_groups.json")) as f:
+        with open(os.path.join(get_data_path(), "enemy_groups.json")) as f:
             data = json.load(f)
         return data[self.rom.game.name]
 

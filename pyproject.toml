@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=62.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mfr_patcher"
+version = "0.0.1"
+authors = [
+    {name = "Biospark"},
+]
+description = "An open source randomizer for Metroid Fusion."
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3.11"
+
+]
+dependencies = [
+    "jsonschema",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+]
+
+[project.urls]
+Repository = "https://github.com/biosp4rk/mfr_patcher"
+
+# Entry Points for PyInstaller
+[project.entry-points."pyinstaller40"]
+hook-dirs = "mfr_patcher.__pyinstaller:get_hook_dirs"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
+
+[tool.setuptools.package-data]
+"*" = ["data/**"]
+"mfr_patcher.data" = ["**"]
