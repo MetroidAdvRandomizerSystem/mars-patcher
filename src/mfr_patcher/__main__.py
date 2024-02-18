@@ -1,6 +1,5 @@
 import argparse
 import json
-import os
 
 from jsonschema import validate
 
@@ -34,7 +33,7 @@ if __name__ == "__main__":
     with open(args.patch_data_path) as f:
         patch_data = json.load(f)
 
-    with open(os.path.join(get_data_path(), "schema.json")) as f:
+    with open(get_data_path("schema.json")) as f:
         schema = json.load(f)
     validate(patch_data, schema)
     

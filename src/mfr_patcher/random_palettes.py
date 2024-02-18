@@ -1,6 +1,5 @@
 from enum import Enum
 import json
-import os
 import random
 from typing import Any, Dict, List, Tuple
 
@@ -203,7 +202,7 @@ class PaletteRandomizer(object):
         pal.write(rom, pal_addr)
 
     def get_enemy_groups(self) -> Dict[str, List[int]]:
-        with open(os.path.join(get_data_path(), "enemy_groups.json")) as f:
+        with open(get_data_path("enemy_groups.json")) as f:
             data = json.load(f)
         return data[self.rom.game.name]
 
