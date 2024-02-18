@@ -34,7 +34,6 @@ if __name__ == "__main__":
     with open(args.patch_data_path) as f:
         patch_data = json.load(f)
 
-
     with open(os.path.join(get_data_path(), "schema.json")) as f:
         schema = json.load(f)
     validate(patch_data, schema)
@@ -48,18 +47,22 @@ if __name__ == "__main__":
     if "Palettes" in patch_data:
         pal_settings = PaletteSettings.from_json(patch_data["Palettes"])
 
-    # randomize palettes
+    # randomize palettes - palettes are randomized first in case the item
+    # patcher needs to copy tilesets
     if pal_settings is not None:
+        print("Randomizing palettes...")
         pal_randomizer = PaletteRandomizer(rom, pal_settings)
         pal_randomizer.randomize()
 
     # patch items
+    print("Writing items...")    
     item_patcher = ItemPatcher(rom, loc_settings)
     item_patcher.write_items()
 
     if args.skip_door_transitions:
-        # TODO: move to patch
+        # TODO: move to separate patch
         rom.write_32(0x69500, 0x300001F)
         rom.write_16(0x694E4, 0xD000)
 
     rom.save(args.out_path)
+    print(f"Output written to {args.out_path}")
