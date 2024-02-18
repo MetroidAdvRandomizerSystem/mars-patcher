@@ -43,12 +43,25 @@ class PaletteSettings(object):
 
     @classmethod
     def from_json(cls, data: Any) -> "PaletteSettings":
-        seed = data.get("Seed", random.randint(0, 2**31))
+        seed = data.get("Seed", random.randint(0, 2**31 - 1))
         random.seed(seed)
         pal_types = [cls.TYPE_ENUMS[t] for t in data["Randomize"]]
-        hue_min = data.get("HueMin", random.randint(0, 180))
-        hue_max = data.get("HueMax", random.randint(hue_min, 180))
-        color_space = ColorSpace[data["ColorSpace"]]
+        hue_min = data.get("HueMin")
+        hue_max = data.get("HueMax")
+        if hue_min is None or hue_max is None:
+            if hue_max is not None:
+                hue_min = random.randint(0, hue_max)
+            elif hue_min is not None:
+                hue_max = random.randint(hue_min, 180)
+            else:
+                hue_min = random.randint(0, 180)
+                hue_max = random.randint(hue_min, 180)
+        if hue_min > hue_max:
+            raise ValueError("HueMin cannot be greater than HueMax")
+        if "ColorSpace" in data:
+            color_space = ColorSpace[data["ColorSpace"]]
+        else:
+            color_space = ColorSpace.LAB
         return cls(seed, pal_types, hue_min, hue_max, color_space)
 
 
