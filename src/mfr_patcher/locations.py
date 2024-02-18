@@ -79,8 +79,10 @@ class Location():
         self.new_item = new_item
 
     def __str__(self) -> str:
-        new_item_str = "/" + self.new_item.name if self.new_item != ItemType.UNDEFINED else ""
-        return f"{self.area},{self.room:02X}: {self.orig_item.name}{new_item_str}"
+        item_str = self.orig_item.name
+        if self.new_item != ItemType.UNDEFINED:
+            item_str += "/" + self.new_item.name
+        return f"{self.area},{self.room:02X}: {item_str}"
 
 
 class MajorLocation(Location):
@@ -224,9 +226,12 @@ class LocationSettings(object):
             block_y = min_loc[KEY_BLOCK_Y]
             item = self.ITEM_ENUMS[min_loc[KEY_ITEM]]
             # find location with this source
-            loc = next(
-                l for l in self.minor_locs
-                if l.area == area and l.room == room and
-                l.block_x == block_x and l.block_y == block_y
-            )
+            try:
+                loc = next(
+                    l for l in self.minor_locs
+                    if l.area == area and l.room == room and
+                    l.block_x == block_x and l.block_y == block_y
+                )
+            except StopIteration:
+                raise ValueError(f"Invalid minor location: Area {area}, Room {room}, X {block_x}, Y {block_y}")
             loc.new_item = item
