@@ -3,10 +3,10 @@ import json
 
 # from jsonschema import validate
 
-from item_patcher import ItemPatcher
-from locations import LocationSettings
-from random_palettes import PaletteSettings, PaletteRandomizer
-from rom import Rom
+from mfr_patcher.item_patcher import ItemPatcher
+from mfr_patcher.locations import LocationSettings
+from mfr_patcher.random_palettes import PaletteSettings, PaletteRandomizer
+from mfr_patcher.rom import Rom
 
 
 if __name__ == "__main__":

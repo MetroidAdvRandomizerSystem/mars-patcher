@@ -1,8 +1,8 @@
 import math
 from typing import List
 
-from color_spaces import RgbColor, RgbBitSize
-from rom import Rom
+from mfr_patcher.color_spaces import RgbColor, RgbBitSize
+from mfr_patcher.rom import Rom
 
 
 class Palette(object):

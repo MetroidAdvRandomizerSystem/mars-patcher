@@ -4,8 +4,8 @@ import os
 import random
 from typing import Any, Dict, List, Tuple
 
-from palette import Palette
-from rom import Rom
+from mfr_patcher.palette import Palette
+from mfr_patcher.rom import Rom
 
 
 class PaletteType(Enum):
