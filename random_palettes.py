@@ -35,7 +35,7 @@ class PaletteSettings(object):
         hue_max: int,
         color_space: ColorSpace
     ):
-        self.seed = seed,
+        self.seed = seed
         self.pal_types = pal_types
         self.hue_min = hue_min
         self.hue_max = hue_max
@@ -43,10 +43,11 @@ class PaletteSettings(object):
 
     @classmethod
     def from_json(cls, data: Any) -> "PaletteSettings":
-        seed = data["Seed"]
+        seed = data.get("Seed", random.randint(0, 2**31))
+        random.seed(seed)
         pal_types = [cls.TYPE_ENUMS[t] for t in data["Randomize"]]
-        hue_min = data["HueMin"]
-        hue_max = data["HueMax"]
+        hue_min = data.get("HueMin", random.randint(0, 180))
+        hue_max = data.get("HueMax", random.randint(hue_min, 180))
         color_space = ColorSpace[data["ColorSpace"]]
         return cls(seed, pal_types, hue_min, hue_max, color_space)
 
