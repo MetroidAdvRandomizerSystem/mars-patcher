@@ -3,6 +3,8 @@ import json
 import os
 from typing import Any, List
 
+from mfr_patcher.data import get_data_path
+
 
 class MajorSource(Enum):
     MAIN_DECK_DATA = 0
@@ -183,7 +185,7 @@ class LocationSettings(object):
 
     @classmethod
     def load(cls) -> "LocationSettings":
-        with open(os.path.join("data", "locations.json")) as f:
+        with open(os.path.join(get_data_path(), "locations.json")) as f:
             data = json.load(f)
         
         major_locs = []
