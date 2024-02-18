@@ -1,8 +1,9 @@
 # MFR_Patcher
 
-Compilation instructions:
+Running from source:
 - Create a venv: `python -m venv venv`
 - Activate the venv:
-  - Windows: TODO
+  - Windows: `call venv\scripts\activate`
   - Unix-based: `source ./venv/bin/activate`
-- TODO: rest. ideally install as editable, but didnt work for me.
+- Install the project as editable: `pip install -e .`
+- Run: `python -m mfr_patcher`.
