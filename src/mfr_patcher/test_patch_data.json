@@ -74,5 +74,6 @@
         "HueMin": 30,
         "HueMax": 90,
         "ColorSpace": "LAB"
-    }
+    },
+    "SkipDoorTransitions": true
 }

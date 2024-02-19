@@ -12,17 +12,12 @@ from mfr_patcher.data import get_data_path
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    # GBA ROM input/output paths
     parser.add_argument("rom_path", type=str,
         help="Path to a GBA ROM file")
     parser.add_argument("out_path", type=str,
         help="Path to output ROM file")
-    # patch data
     parser.add_argument("patch_data_path", type=str,
         help="Path to patch data json file")
-    # other settings
-    parser.add_argument("-sdt", "--skip_door_transitions", action="store_true",
-        help="Makes all door transitions instant")
 
     args = parser.parse_args()
 
@@ -62,7 +57,7 @@ if __name__ == "__main__":
     if "TankIncrements" in patch_data:
         set_tank_increments(rom, patch_data["TankIncrements"])
 
-    if args.skip_door_transitions:
+    if patch_data["SkipDoorTransitions"]:
         # TODO: move to separate patch
         rom.write_32(0x69500, 0x300001F)
         rom.write_16(0x694E4, 0xD000)

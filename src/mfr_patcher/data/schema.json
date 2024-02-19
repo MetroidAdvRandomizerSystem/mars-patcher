@@ -93,9 +93,12 @@
                 }
             },
             "required": ["Randomize"]
+        },
+        "SkipDoorTransitions": {
+            "type": "boolean"
         }
     },
-    "required": ["Locations"],
+    "required": ["Locations", "SkipDoorTransitions"],
     "$defs": {
         "TypeU8": {
             "type": "integer",
