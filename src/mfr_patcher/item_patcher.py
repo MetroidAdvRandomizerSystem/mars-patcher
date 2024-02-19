@@ -1,11 +1,10 @@
 from typing import Any, Dict
 
-from mfr_patcher.compress import decomp_rle, comp_rle
-from mfr_patcher.locations import LocationSettings, ItemType
+from mfr_patcher.compress import comp_rle, decomp_rle
+from mfr_patcher.locations import ItemType, LocationSettings
 from mfr_patcher.rom import Rom
 from mfr_patcher.room_entry import RoomEntry
 from mfr_patcher.tileset import Tileset
-
 
 # keep these in sync with base patch
 MINOR_LOCS_ADDR = 0x7FF000
@@ -18,7 +17,7 @@ TANK_BG1_START = 0x40
 TANK_TILE = (0x50, 0x54, 0x58)
 
 
-class ItemPatcher(object):
+class ItemPatcher:
     """Class for writing item assignments to a ROM."""
 
     def __init__(self, rom: Rom, settings: LocationSettings):
@@ -30,8 +29,7 @@ class ItemPatcher(object):
         rom = self.rom
         # handle minor locations
         minor_locs = sorted(
-            self.settings.minor_locs,
-            key=lambda l: (l.area, l.room, l.block_x, l.block_y)
+            self.settings.minor_locs, key=lambda m: (m.area, m.room, m.block_x, m.block_y)
         )
         prev_area_room = (-1, -1)
         room_tank_count = 0
@@ -94,20 +92,14 @@ class ItemPatcher(object):
 
 
 # TODO: move this?
-BEAM_FLAGS = {
-    "ChargeBeam": 1,
-    "WideBeam": 2,
-    "PlasmaBeam": 4,
-    "WaveBeam": 8,
-    "IceBeam": 0x10
-}
+BEAM_FLAGS = {"ChargeBeam": 1, "WideBeam": 2, "PlasmaBeam": 4, "WaveBeam": 8, "IceBeam": 0x10}
 MISSILE_BOMB_FLAGS = {
     "Missiles": 1,
     "SuperMissiles": 2,
     "IceMissiles": 4,
     "DiffusionMissiles": 8,
     "Bombs": 0x10,
-    "PowerBombs": 0x20
+    "PowerBombs": 0x20,
 }
 SUIT_MISC_FLAGS = {
     "HiJump": 1,
@@ -117,8 +109,10 @@ SUIT_MISC_FLAGS = {
     "VariaSuit": 0x10,
     "GravitySuit": 0x20,
     "MorphBall": 0x40,
-    "SaxSuit": 0x80
+    "SaxSuit": 0x80,
 }
+
+
 def set_starting_items(rom: Rom, data: Any) -> None:
     def get_ability_flags(ability_flags: Dict[str, int]) -> int:
         status = 0
@@ -140,12 +134,12 @@ def set_starting_items(rom: Rom, data: Any) -> None:
     levels = data.get("SecurityLevels", [])
     level_status = 1
     for level in levels:
-        level_status |= (1 << level)
+        level_status |= 1 << level
     # get downloaded map flags
     maps = data.get("DownloadedMaps", range(7))
     map_status = 0
     for map in maps:
-        map_status |= (1 << map)
+        map_status |= 1 << map
     # write to rom
     addr = rom.starting_equipment_addr()
     rom.write_16(addr, energy)

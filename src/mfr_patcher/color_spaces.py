@@ -1,5 +1,5 @@
-from enum import Enum
 import math
+from enum import Enum
 from typing import Any
 
 
@@ -8,26 +8,26 @@ class RgbBitSize(Enum):
     Rgb8 = 2
 
 
-class RgbColor(object):
+class RgbColor:
     """Color represented as RGB using 5 or 8 bits per channel."""
 
     FACTOR = 255.0
 
-    def __init__(self, r: int, g: int, b: int, bit_size: RgbBitSize):
+    def __init__(self, R: int, G: int, B: int, bit_size: RgbBitSize):
         if bit_size == RgbBitSize.Rgb5:
-            r <<= 3
-            g <<= 3
-            b <<= 3
+            R <<= 3
+            G <<= 3
+            B <<= 3
         elif bit_size == RgbBitSize.Rgb8:
-            self.red = r
-            self.green = g
-            self.blue = b
+            self.red = R
+            self.green = G
+            self.blue = B
         elif bit_size != RgbBitSize.Rgb8:
             raise ValueError(bit_size)
-        self.red = r
-        self.green = g
-        self.blue = b
-    
+        self.red = R
+        self.green = G
+        self.blue = B
+
     @classmethod
     def from_rgb(cls, rgb: int, bit_size: RgbBitSize) -> "RgbColor":
         if bit_size == RgbBitSize.Rgb5:
@@ -41,11 +41,10 @@ class RgbColor(object):
         else:
             raise ValueError(bit_size)
         return RgbColor(r, g, b, RgbBitSize.Rgb8)
-        
 
     def __str__(self) -> str:
         return self.hex_15()
-    
+
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, RgbColor):
             return self.rgb_24() == other.rgb_24()
@@ -80,13 +79,13 @@ class RgbColor(object):
             # check if negative
             if h < 0:
                 h += 360
-        
+
         # get saturation
         if v == 0:
             s = 0
         else:
             s = c_range / v
-        
+
         return HsvColor(h, s, v)
 
     def lab(self) -> "LabColor":
@@ -94,7 +93,7 @@ class RgbColor(object):
         r = self.scale_rgb(self.r_fraction())
         g = self.scale_rgb(self.g_fraction())
         b = self.scale_rgb(self.b_fraction())
-        
+
         # convert to xyz
         x = r * 0.4124 + g * 0.3576 + b * 0.1805
         y = r * 0.2126 + g * 0.7152 + b * 0.0722
@@ -120,7 +119,7 @@ class RgbColor(object):
 
     def g_5(self) -> int:
         return self.green >> 3
-    
+
     def b_5(self) -> int:
         return self.blue >> 3
 
@@ -132,13 +131,13 @@ class RgbColor(object):
 
     def hex_15(self) -> str:
         return f"{self.rgb_15():04X}"
-    
+
     def r_fraction(self) -> float:
         return self.red / self.FACTOR
-    
+
     def g_fraction(self) -> float:
         return self.green / self.FACTOR
-    
+
     def b_fraction(self) -> float:
         return self.blue / self.FACTOR
 
@@ -155,7 +154,7 @@ class RgbColor(object):
         if value > 0.04045:
             return math.pow((value + 0.055) / 1.055, 2.4)
         return value / 12.92
-    
+
     @staticmethod
     def scale_xyz(value: float) -> float:
         if value > 0.008856:
@@ -163,7 +162,7 @@ class RgbColor(object):
         return 7.78704 * value + 0.137931
 
 
-class HsvColor(object):
+class HsvColor:
     """
     Color represented as HSV, where 0 <= hue <= 360,
     0 <= saturation <= 1, and 0 <= value <= 1.
@@ -177,9 +176,9 @@ class HsvColor(object):
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, HsvColor):
             return (
-                self.hue == other.hue and
-                self.saturation == other.saturation and
-                self.value == other.value
+                self.hue == other.hue
+                and self.saturation == other.saturation
+                and self.value == other.value
             )
         return False
 
@@ -212,23 +211,23 @@ class HsvColor(object):
         return RgbColor(r, g, b, RgbBitSize.Rgb8)
 
 
-class LabColor(object):
+class LabColor:
     """
     Color represented as LAB, where 0 <= L <= 100,
     A and B are typically between -100 and 100.
     """
 
-    def __init__(self, l: float, a: float, b: float):
-        self.l_star = l
-        self.a_star = a
-        self.b_star = b
+    def __init__(self, L: float, A: float, B: float):
+        self.l_star = L
+        self.a_star = A
+        self.b_star = B
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, LabColor):
             return (
-                self.l_star == other.l_star and
-                self.a_star == other.a_star and
-                self.b_star == other.b_star
+                self.l_star == other.l_star
+                and self.a_star == other.a_star
+                and self.b_star == other.b_star
             )
         return False
 
@@ -266,10 +265,7 @@ class LabColor(object):
         b = int(round(bf * 255))
 
         return RgbColor(
-            max(0, min(r, 255)),
-            max(0, min(g, 255)),
-            max(0, min(b, 255)),
-            RgbBitSize.Rgb8
+            max(0, min(r, 255)), max(0, min(g, 255)), max(0, min(b, 255)), RgbBitSize.Rgb8
         )
 
     def hue(self) -> float:

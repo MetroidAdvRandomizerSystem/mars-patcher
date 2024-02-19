@@ -1,7 +1,6 @@
 from enum import Enum
 from typing import List, Tuple, Union
 
-
 BytesLike = Union[bytes, bytearray]
 
 SIZE_8MB = 0x800000
@@ -20,7 +19,7 @@ class Region(Enum):
     C = 4
 
 
-class Rom(object):
+class Rom:
     def __init__(self, path: str):
         # read file
         with open(path, "rb") as f:
@@ -76,10 +75,10 @@ class Rom(object):
 
     def read_32(self, addr: int) -> int:
         return (
-            self.data[addr] |
-            (self.data[addr + 1] << 8) |
-            (self.data[addr + 2] << 16) |
-            (self.data[addr + 3] << 24)
+            self.data[addr]
+            | (self.data[addr + 1] << 8)
+            | (self.data[addr + 2] << 16)
+            | (self.data[addr + 3] << 24)
         )
 
     def read_ptr(self, addr: int) -> int:

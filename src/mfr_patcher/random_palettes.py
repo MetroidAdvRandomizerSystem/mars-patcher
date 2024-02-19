@@ -1,11 +1,11 @@
-from enum import Enum
 import json
 import random
+from enum import Enum
 from typing import Any, Dict, List, Tuple
 
+from mfr_patcher.data import get_data_path
 from mfr_patcher.palette import Palette
 from mfr_patcher.rom import Rom
-from mfr_patcher.data import get_data_path
 
 
 class PaletteType(Enum):
@@ -20,20 +20,21 @@ class ColorSpace(Enum):
     LAB = 2
 
 
-class PaletteSettings(object):
+class PaletteSettings:
     TYPE_ENUMS = {
         "Tilesets": PaletteType.TILESETS,
         "Enemies": PaletteType.ENEMIES,
         "Samus": PaletteType.SAMUS,
-        "Beams": PaletteType.BEAMS
+        "Beams": PaletteType.BEAMS,
     }
 
-    def __init__(self,
+    def __init__(
+        self,
         seed: int,
         pal_types: List[PaletteType],
         hue_min: int,
         hue_max: int,
-        color_space: ColorSpace
+        color_space: ColorSpace,
     ):
         self.seed = seed
         self.pal_types = pal_types
@@ -65,7 +66,7 @@ class PaletteSettings(object):
         return cls(seed, pal_types, hue_min, hue_max, color_space)
 
 
-class PaletteRandomizer(object):
+class PaletteRandomizer:
     """Class for randomly shifting the hues of color palettes."""
 
     def __init__(self, rom: Rom, settings: PaletteSettings):
@@ -79,7 +80,7 @@ class PaletteRandomizer(object):
     @staticmethod
     def shift_palette_hsv(pal: Palette, shift: int) -> None:
         pal.shift_hue_hsv(shift)
-    
+
     @staticmethod
     def shift_palette_lab(pal: Palette, shift: int) -> None:
         pal.shift_hue_lab(shift)
@@ -97,7 +98,7 @@ class PaletteRandomizer(object):
         # fix any sprite/tileset palettes that should be the same
         # TODO: check for palette fixes needed in fusion
         if self.rom.is_zm():
-            self.fix_zm_palettes()        
+            self.fix_zm_palettes()
 
     def get_hue_shift(self) -> int:
         """Returns a hue shift in a random direction between hue_min and hue_max."""
@@ -116,7 +117,7 @@ class PaletteRandomizer(object):
         shift = self.get_hue_shift()
         self.shift_palettes(self.rom.samus_palettes(), shift)
         self.shift_palettes(self.rom.file_select_helmet_palettes(), shift)
-    
+
     def randomize_beams(self) -> None:
         shift = self.get_hue_shift()
         self.shift_palettes(self.rom.beam_palettes(), shift)
@@ -138,7 +139,7 @@ class PaletteRandomizer(object):
             shift = self.get_hue_shift()
             self.shift_func(pal, shift)
             pal.write(rom, pal_addr)
-        
+
         # animated palettes
         anim_pal_addr = rom.anim_palette_addr()
         anim_pal_count = rom.anim_palette_count()
@@ -181,12 +182,8 @@ class PaletteRandomizer(object):
         for sprite_id in to_randomize:
             self.randomize_enemy(sprite_id, shift, pal_ptr, vram_size_addr, gfx_ptr)
 
-    def randomize_enemy(self,
-        sprite_id: int,
-        shift: int,
-        pal_ptr: int,
-        vram_size_addr: int,
-        gfx_ptr: int
+    def randomize_enemy(
+        self, sprite_id: int, shift: int, pal_ptr: int, vram_size_addr: int, gfx_ptr: int
     ) -> None:
         rom = self.rom
         sprite_gfx_id = sprite_id - 0x10
@@ -213,7 +210,7 @@ class PaletteRandomizer(object):
     def get_sprite_addr(self, sprite_id: int) -> int:
         addr = self.rom.sprite_palette_addr() + (sprite_id - 0x10) * 4
         return self.rom.read_ptr(addr)
-    
+
     def get_tileset_addr(self, sprite_id: int) -> int:
         addr = self.rom.tileset_addr() + sprite_id * 0x14 + 4
         return self.rom.read_ptr(addr)

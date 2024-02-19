@@ -1,5 +1,5 @@
-from enum import Enum
 import json
+from enum import Enum
 from typing import Any, List
 
 from mfr_patcher.data import get_data_path
@@ -64,12 +64,9 @@ class ItemType(Enum):
         return NotImplemented
 
 
-class Location():
-    def __init__(self,
-        area: int,
-        room: int,
-        orig_item: ItemType,
-        new_item: ItemType = ItemType.UNDEFINED
+class Location:
+    def __init__(
+        self, area: int, room: int, orig_item: ItemType, new_item: ItemType = ItemType.UNDEFINED
     ):
         if type(self) is Location:
             raise TypeError()
@@ -86,26 +83,28 @@ class Location():
 
 
 class MajorLocation(Location):
-    def __init__(self,
+    def __init__(
+        self,
         area: int,
         room: int,
         major_src: MajorSource,
         orig_item: ItemType,
-        new_item: ItemType = ItemType.UNDEFINED
+        new_item: ItemType = ItemType.UNDEFINED,
     ):
         super().__init__(area, room, orig_item, new_item)
         self.major_src = major_src
 
 
 class MinorLocation(Location):
-    def __init__(self,
+    def __init__(
+        self,
         area: int,
         room: int,
         block_x: int,
         block_y: int,
         hidden: bool,
         orig_item: ItemType,
-        new_item: ItemType = ItemType.UNDEFINED
+        new_item: ItemType = ItemType.UNDEFINED,
     ):
         super().__init__(area, room, orig_item, new_item)
         self.block_x = block_x
@@ -125,7 +124,7 @@ KEY_ORIGINAL = "Original"
 KEY_ITEM = "Item"
 
 
-class LocationSettings(object):
+class LocationSettings:
     SOURCE_ENUMS = {
         "MainDeckData": MajorSource.MAIN_DECK_DATA,
         "Arachnus": MajorSource.ARACHNUS,
@@ -147,7 +146,7 @@ class LocationSettings(object):
         "Level4": MajorSource.LEVEL_4,
         "AqaData": MajorSource.AQA_DATA,
         "WaveCoreX": MajorSource.WAVE_CORE_X,
-        "Ridley": MajorSource.RIDLEY
+        "Ridley": MajorSource.RIDLEY,
     }
 
     ITEM_ENUMS = {
@@ -177,7 +176,7 @@ class LocationSettings(object):
         "IceBeam": ItemType.ICE_BEAM,
         "MissileTank": ItemType.MISSILE_TANK,
         "EnergyTank": ItemType.ENERGY_TANK,
-        "PowerBombTank": ItemType.POWER_BOMB_TANK
+        "PowerBombTank": ItemType.POWER_BOMB_TANK,
     }
 
     def __init__(self, major_locs: List[MajorLocation], minor_locs: List[MinorLocation]):
@@ -188,22 +187,26 @@ class LocationSettings(object):
     def load(cls) -> "LocationSettings":
         with open(get_data_path("locations.json")) as f:
             data = json.load(f)
-        
+
         major_locs = []
         for entry in data[KEY_MAJOR_LOCS]:
             loc = MajorLocation(
-                entry[KEY_AREA], entry[KEY_ROOM],
+                entry[KEY_AREA],
+                entry[KEY_ROOM],
                 cls.SOURCE_ENUMS[entry[KEY_SOURCE]],
-                cls.ITEM_ENUMS[entry[KEY_ORIGINAL]]
+                cls.ITEM_ENUMS[entry[KEY_ORIGINAL]],
             )
             major_locs.append(loc)
 
         minor_locs = []
         for entry in data[KEY_MINOR_LOCS]:
             loc = MinorLocation(
-                entry[KEY_AREA], entry[KEY_ROOM],
-                entry[KEY_BLOCK_X], entry[KEY_BLOCK_Y], entry[KEY_HIDDEN],
-                cls.ITEM_ENUMS[entry[KEY_ORIGINAL]]
+                entry[KEY_AREA],
+                entry[KEY_ROOM],
+                entry[KEY_BLOCK_X],
+                entry[KEY_BLOCK_Y],
+                entry[KEY_HIDDEN],
+                cls.ITEM_ENUMS[entry[KEY_ORIGINAL]],
             )
             minor_locs.append(loc)
 
@@ -215,9 +218,9 @@ class LocationSettings(object):
             source = self.SOURCE_ENUMS[maj_loc[KEY_SOURCE]]
             item = self.ITEM_ENUMS[maj_loc[KEY_ITEM]]
             # find location with this source
-            loc = next(l for l in self.major_locs if l.major_src == source)
+            loc = next(m for m in self.major_locs if m.major_src == source)
             loc.new_item = item
-        
+
         for min_loc in data[KEY_MINOR_LOCS]:
             # get area, room, block X, block Y, item
             area = min_loc[KEY_AREA]
@@ -228,10 +231,15 @@ class LocationSettings(object):
             # find location with this source
             try:
                 loc = next(
-                    l for l in self.minor_locs
-                    if l.area == area and l.room == room and
-                    l.block_x == block_x and l.block_y == block_y
+                    m
+                    for m in self.minor_locs
+                    if m.area == area
+                    and m.room == room
+                    and m.block_x == block_x
+                    and m.block_y == block_y
                 )
             except StopIteration:
-                raise ValueError(f"Invalid minor location: Area {area}, Room {room}, X {block_x}, Y {block_y}")
+                raise ValueError(
+                    f"Invalid minor location: Area {area}, Room {room}, X {block_x}, Y {block_y}"
+                )
             loc.new_item = item
