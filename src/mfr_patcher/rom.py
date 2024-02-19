@@ -352,3 +352,13 @@ class Rom:
                 return 0x3ED598
             elif self.region == Region.C:
                 return 0x406D28
+
+    def file_screen_text(self) -> int:
+        """Returns the address of the file screen text pointers."""
+        if self.game == Game.MF:
+            if self.region == Region.U:
+                return 0x79EC68
+            elif self.region == Region.E:
+                return 0x79F4C4
+            elif self.region == Region.J:
+                return 0x7F13FC

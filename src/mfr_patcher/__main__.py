@@ -8,6 +8,7 @@ from mfr_patcher.item_patcher import ItemPatcher, set_starting_items, set_tank_i
 from mfr_patcher.locations import LocationSettings
 from mfr_patcher.random_palettes import PaletteRandomizer, PaletteSettings
 from mfr_patcher.rom import Rom
+from mfr_patcher.text import write_seed_hash
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -63,6 +64,8 @@ if __name__ == "__main__":
         # TODO: move to separate patch
         rom.write_32(0x69500, 0x300001F)
         rom.write_16(0x694E4, 0xD000)
+    
+    write_seed_hash(rom, patch_data["SeedHash"])
 
     rom.save(args.out_path)
     print(f"Output written to {args.out_path}")
