@@ -192,8 +192,12 @@ class PaletteRandomizer(object):
         sprite_gfx_id = sprite_id - 0x10
         pal_addr = rom.read_ptr(pal_ptr + sprite_gfx_id * 4)
         if rom.is_mf():
-            vram_size = rom.read_32(vram_size_addr + sprite_gfx_id * 4)
-            rows = vram_size // 0x800
+            if sprite_id == 0x4D or sprite_id == 0xBE:
+                # ice beam ability and zozoros only have 1 row, not 2
+                rows = 1
+            else:
+                vram_size = rom.read_32(vram_size_addr + sprite_gfx_id * 4)
+                rows = vram_size // 0x800
         elif rom.is_zm():
             gfx_addr = rom.read_ptr(gfx_ptr + sprite_gfx_id * 4)
             rows = (rom.read_32(gfx_addr) >> 8) // 0x800
