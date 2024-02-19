@@ -175,6 +175,18 @@ class Rom(object):
         elif self.game == Game.ZM:
             return 0x4F
 
+    def starting_equipment_addr(self) -> int:
+        """Returns the address of the starting equipment data."""
+        if self.game == Game.MF:
+            if self.region == Region.U:
+                return 0x28D2AC
+            elif self.region == Region.E:
+                return 0x28D908
+            elif self.region == Region.J:
+                return 0x28F5B4
+            elif self.region == Region.C:
+                return 0x28F5F8
+
     def anim_palette_addr(self) -> int:
         """Returns the address of the animated palette entries."""
         if self.game == Game.MF:

@@ -47,6 +47,46 @@
             },
             "required": ["MinorLocations", "MajorLocations"]
         },
+        "StartingItems": {
+            "type": "object",
+            "properties": {
+                "Energy": {
+                    "type": "integer",
+                    "minimum": 99,
+                    "maximum": 2099
+                },
+                "Missiles": {
+                    "type": "integer",
+                    "minimum": 10,
+                    "maximum": 250
+                },
+                "PowerBombs": {
+                    "type": "integer",
+                    "minimum": 10,
+                    "maximum": 74
+                },
+                "Abilities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/ValidAbilities"
+                    }
+                },
+                "SecurityLevels": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "enum": [1, 2, 3, 4]
+                    }
+                },
+                "DownloadedMaps": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "enum": [0, 1, 2, 3, 4, 5, 6]
+                    }
+                }
+            }
+        },
         "TankIncrements": {
             "type": "object",
             "properties": {
@@ -170,6 +210,29 @@
                 "MissileTank",
                 "EnergyTank",
                 "PowerBombTank"
+            ]
+        },
+        "ValidAbilities": {
+            "type": "string",
+            "enum": [
+                "Missiles",
+                "MorphBall",
+                "ChargeBeam",
+                "Bombs",
+                "HiJump",
+                "SpeedBooster",
+                "SuperMissiles",
+                "VariaSuit",
+                "IceMissiles",
+                "WideBeam",
+                "PowerBombs",
+                "SpaceJump",
+                "PlasmaBeam",
+                "GravitySuit",
+                "DiffusionMissiles",
+                "WaveBeam",
+                "ScrewAttack",
+                "IceBeam"
             ]
         }
     }

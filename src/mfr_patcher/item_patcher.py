@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Dict
 
 from mfr_patcher.compress import decomp_rle, comp_rle
 from mfr_patcher.locations import LocationSettings, ItemType
@@ -91,6 +91,74 @@ class ItemPatcher(object):
         comp_data = comp_rle(data)
         assert len(comp_data) <= comp_len, f"{len(comp_data):X} > {comp_len:X}"
         self.rom.write_bytes(block_addr + 2, comp_data, 0, len(comp_data))
+
+
+# TODO: move this?
+BEAM_FLAGS = {
+    "ChargeBeam": 1,
+    "WideBeam": 2,
+    "PlasmaBeam": 4,
+    "WaveBeam": 8,
+    "IceBeam": 0x10
+}
+MISSILE_BOMB_FLAGS = {
+    "Missiles": 1,
+    "SuperMissiles": 2,
+    "IceMissiles": 4,
+    "DiffusionMissiles": 8,
+    "Bombs": 0x10,
+    "PowerBombs": 0x20
+}
+SUIT_MISC_FLAGS = {
+    "HiJump": 1,
+    "SpeedBooster": 2,
+    "SpaceJump": 4,
+    "ScrewAttack": 8,
+    "VariaSuit": 0x10,
+    "GravitySuit": 0x20,
+    "MorphBall": 0x40,
+    "SaxSuit": 0x80
+}
+def set_starting_items(rom: Rom, data: Any) -> None:
+    def get_ability_flags(ability_flags: Dict[str, int]) -> int:
+        status = 0
+        for ability, flag in ability_flags.items():
+            if ability in abilities:
+                status |= flag
+        return status
+
+    # get health/ammo amounts
+    energy = data.get("Energy", 99)
+    missiles = data.get("Missiles", 10)
+    power_bombs = data.get("PowerBombs", 10)
+    # get ability status flags
+    abilities = data.get("Abilities", [])
+    beam_status = get_ability_flags(BEAM_FLAGS)
+    missile_bomb_status = get_ability_flags(MISSILE_BOMB_FLAGS)
+    suit_misc_status = get_ability_flags(SUIT_MISC_FLAGS)
+    # get security level flags
+    levels = data.get("SecurityLevels", [])
+    level_status = 1
+    for level in levels:
+        level_status |= (1 << level)
+    # get downloaded map flags
+    maps = data.get("DownloadedMaps", range(7))
+    map_status = 0
+    for map in maps:
+        map_status |= (1 << map)
+    # write to rom
+    addr = rom.starting_equipment_addr()
+    rom.write_16(addr, energy)
+    rom.write_16(addr + 2, energy)
+    rom.write_16(addr + 4, missiles)
+    rom.write_16(addr + 6, missiles)
+    rom.write_8(addr + 8, power_bombs)
+    rom.write_8(addr + 9, power_bombs)
+    rom.write_8(addr + 0xA, beam_status)
+    rom.write_8(addr + 0xB, missile_bomb_status)
+    rom.write_8(addr + 0xC, suit_misc_status)
+    rom.write_8(addr + 0xD, level_status)
+    rom.write_8(addr + 0xE, map_status)
 
 
 # TODO: move this?

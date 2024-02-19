@@ -58,6 +58,25 @@
             }
         ]
     },
+    "StartingItems": {
+        "Energy": 1234,
+        "Missiles": 123,
+        "PowerBombs": 12,
+        "Abilities": [
+            "Missiles",
+            "MorphBall",
+            "ChargeBeam",
+            "Bombs",
+            "HiJump",
+            "SpeedBooster",
+            "SuperMissiles",
+            "WideBeam",
+            "PowerBombs",
+            "GravitySuit"
+        ],
+        "SecurityLevels": [4],
+        "DownloadedMaps": [0, 2, 4, 6]
+    },
     "TankIncrements": {
         "MissileTank": 2,
         "EnergyTank": 3,

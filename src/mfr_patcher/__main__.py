@@ -3,7 +3,7 @@ import json
 
 from jsonschema import validate
 
-from mfr_patcher.item_patcher import ItemPatcher, set_tank_increments
+from mfr_patcher.item_patcher import ItemPatcher, set_starting_items, set_tank_increments
 from mfr_patcher.locations import LocationSettings
 from mfr_patcher.random_palettes import PaletteSettings, PaletteRandomizer
 from mfr_patcher.rom import Rom
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     with open(get_data_path("schema.json")) as f:
         schema = json.load(f)
     validate(patch_data, schema)
-    
+
     # load locations and set assignments
     loc_settings = LocationSettings.load()
     loc_settings.set_assignments(patch_data["Locations"])
@@ -49,12 +49,18 @@ if __name__ == "__main__":
         pal_randomizer.randomize()
 
     # write item assignments
-    print("Writing items...")    
+    print("Writing item assignments...")
     item_patcher = ItemPatcher(rom, loc_settings)
     item_patcher.write_items()
 
+    # starting items
+    if "StartingItems" in patch_data:
+        print("Writing starting items...")
+        set_starting_items(rom, patch_data["StartingItems"])
+
     # tank increments
     if "TankIncrements" in patch_data:
+        print("Writing tank increments...")
         set_tank_increments(rom, patch_data["TankIncrements"])
 
     if patch_data["SkipDoorTransitions"]:
