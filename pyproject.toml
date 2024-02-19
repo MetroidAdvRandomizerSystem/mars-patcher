@@ -48,3 +48,8 @@ namespaces = false
 [tool.setuptools.package-data]
 "*" = ["data/**"]
 "mfr_patcher.data" = ["**"]
+
+[tool.ruff]
+line-length = 100
+lint.select = ["E", "F", "W", "I", "UP"]
+src = ["src"]

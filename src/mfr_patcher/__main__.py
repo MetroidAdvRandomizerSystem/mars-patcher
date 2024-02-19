@@ -3,21 +3,17 @@ import json
 
 from jsonschema import validate
 
+from mfr_patcher.data import get_data_path
 from mfr_patcher.item_patcher import ItemPatcher, set_starting_items, set_tank_increments
 from mfr_patcher.locations import LocationSettings
-from mfr_patcher.random_palettes import PaletteSettings, PaletteRandomizer
+from mfr_patcher.random_palettes import PaletteRandomizer, PaletteSettings
 from mfr_patcher.rom import Rom
-from mfr_patcher.data import get_data_path
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("rom_path", type=str,
-        help="Path to a GBA ROM file")
-    parser.add_argument("out_path", type=str,
-        help="Path to output ROM file")
-    parser.add_argument("patch_data_path", type=str,
-        help="Path to patch data json file")
+    parser.add_argument("rom_path", type=str, help="Path to a GBA ROM file")
+    parser.add_argument("out_path", type=str, help="Path to output ROM file")
+    parser.add_argument("patch_data_path", type=str, help="Path to patch data json file")
 
     args = parser.parse_args()
 

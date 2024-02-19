@@ -41,19 +41,19 @@ def decomp_rle(input: bytes, idx: int) -> Tuple[bytearray, int]:
                 # uncompressed
                 while amount > 0:
                     passes.append(input[idx])
-                    idx +=1
-                    amount -=1
-    
+                    idx += 1
+                    amount -= 1
+
     # each pass must be equal length
     if len(passes) != half * 2:
         raise ValueError()
-    
+
     # combine passes to get output
     output = bytearray()
     for i in range(half):
         output.append(passes[i])
         output.append(passes[half + i])
-    
+
     # return bytes and compressed size
     comp_size = idx - src_start
     return output, comp_size
@@ -63,6 +63,7 @@ def comp_rle(input: bytes) -> bytearray:
     """
     Compresses data using RLE.
     """
+
     # inner helper functions
     def write_len(arr: bytearray, val: int, size: int) -> None:
         if size == 0:
@@ -70,11 +71,12 @@ def comp_rle(input: bytes) -> bytearray:
         else:
             arr.append(val >> 8)
             arr.append(val & 0xFF)
+
     def add_unique(arr: bytearray, unique: bytearray, size: int) -> None:
         write_len(arr, len(unique), size)
         arr += unique
         unique.clear()
-    
+
     output = bytearray()
     # do two passes for low and high bytes
     for p in range(2):

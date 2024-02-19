@@ -1,12 +1,11 @@
 import math
 from typing import List
 
-from mfr_patcher.color_spaces import RgbColor, RgbBitSize
+from mfr_patcher.color_spaces import RgbBitSize, RgbColor
 from mfr_patcher.rom import Rom
 
 
-class Palette(object):
-    
+class Palette:
     def __init__(self, rows: int, rom: Rom, addr: int):
         assert rows >= 1
         self.colors: List[RgbColor] = []
@@ -25,7 +24,7 @@ class Palette(object):
             arr.append(val & 0xFF)
             arr.append(val >> 8)
         return bytes(arr)
-    
+
     def write(self, rom: Rom, addr: int) -> None:
         data = self.byte_data()
         rom.write_bytes(addr, data, 0, len(data))
