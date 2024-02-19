@@ -1,3 +1,5 @@
+from typing import Any
+
 from mfr_patcher.compress import decomp_rle, comp_rle
 from mfr_patcher.locations import LocationSettings, ItemType
 from mfr_patcher.rom import Rom
@@ -8,6 +10,7 @@ from mfr_patcher.tileset import Tileset
 # keep these in sync with base patch
 MINOR_LOCS_ADDR = 0x7FF000
 MAJOR_LOCS_ADDR = 0x7FF200
+TANK_INC_ADDR = 0x7FF220
 
 TANK_CLIP = (0x62, 0x63, 0x68)
 HIDDEN_TANK_CLIP = (0x64, 0x65, 0x69)
@@ -88,3 +91,10 @@ class ItemPatcher(object):
         comp_data = comp_rle(data)
         assert len(comp_data) <= comp_len, f"{len(comp_data):X} > {comp_len:X}"
         self.rom.write_bytes(block_addr + 2, comp_data, 0, len(comp_data))
+
+
+# TODO: move this?
+def set_tank_increments(rom: Rom, data: Any) -> None:
+    rom.write_16(TANK_INC_ADDR, data["MissileTank"])
+    rom.write_16(TANK_INC_ADDR + 2, data["EnergyTank"])
+    rom.write_16(TANK_INC_ADDR + 4, data["PowerBombTank"])

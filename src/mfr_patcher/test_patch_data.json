@@ -58,6 +58,11 @@
             }
         ]
     },
+    "TankIncrements": {
+        "MissileTank": 2,
+        "EnergyTank": 3,
+        "PowerBombTank": 1
+    },
     "Palettes": {
         "Seed": 1,
         "Randomize": [

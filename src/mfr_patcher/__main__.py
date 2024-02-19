@@ -3,7 +3,7 @@ import json
 
 from jsonschema import validate
 
-from mfr_patcher.item_patcher import ItemPatcher
+from mfr_patcher.item_patcher import ItemPatcher, set_tank_increments
 from mfr_patcher.locations import LocationSettings
 from mfr_patcher.random_palettes import PaletteSettings, PaletteRandomizer
 from mfr_patcher.rom import Rom
@@ -53,10 +53,14 @@ if __name__ == "__main__":
         pal_randomizer = PaletteRandomizer(rom, pal_settings)
         pal_randomizer.randomize()
 
-    # patch items
+    # write item assignments
     print("Writing items...")    
     item_patcher = ItemPatcher(rom, loc_settings)
     item_patcher.write_items()
+
+    # tank increments
+    if "TankIncrements" in patch_data:
+        set_tank_increments(rom, patch_data["TankIncrements"])
 
     if args.skip_door_transitions:
         # TODO: move to separate patch

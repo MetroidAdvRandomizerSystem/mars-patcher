@@ -47,6 +47,27 @@
             },
             "required": ["MinorLocations", "MajorLocations"]
         },
+        "TankIncrements": {
+            "type": "object",
+            "properties": {
+                "MissileTank": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5
+                },
+                "EnergyTank": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 100
+                },
+                "PowerBombTank": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2
+                }
+            },
+            "required": ["MissileTank", "EnergyTank", "PowerBombTank"]
+        },
         "Palettes": {
             "type": "object",
             "properties": {
