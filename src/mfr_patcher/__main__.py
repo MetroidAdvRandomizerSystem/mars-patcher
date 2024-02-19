@@ -63,7 +63,7 @@ if __name__ == "__main__":
         print("Writing tank increments...")
         set_tank_increments(rom, patch_data["TankIncrements"])
 
-    if patch_data["SkipDoorTransitions"]:
+    if patch_data.get("SkipDoorTransitions"):
         # TODO: move to separate patch
         rom.write_32(0x69500, 0x300001F)
         rom.write_16(0x694E4, 0xD000)
