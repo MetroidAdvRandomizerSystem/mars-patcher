@@ -61,13 +61,13 @@
                 },
                 "Missiles": {
                     "type": "integer",
-                    "minimum": 10,
-                    "maximum": 250
+                    "minimum": 0,
+                    "maximum": 999
                 },
                 "PowerBombs": {
                     "type": "integer",
-                    "minimum": 10,
-                    "maximum": 74
+                    "minimum": 0,
+                    "maximum": 99
                 },
                 "Abilities": {
                     "type": "array",
