@@ -95,19 +95,13 @@
             "type": "object",
             "properties": {
                 "MissileTank": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 5
+                    "$ref": "#/$defs/TankIncrementNumber"
                 },
                 "EnergyTank": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 100
+                    "$ref": "#/$defs/TankIncrementNumber"
                 },
                 "PowerBombTank": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 2
+                     "$ref": "#/$defs/TankIncrementNumber"
                 }
             },
             "required": ["MissileTank", "EnergyTank", "PowerBombTank"]
@@ -148,6 +142,11 @@
             "type": "integer",
             "minimum": 0,
             "maximum": 255
+        },
+        "TankIncrementNumber": {
+            "type": "integer",
+            "minimum": -99,
+            "maximum": 99
         },
         "Seed": {
             "type": "integer",
