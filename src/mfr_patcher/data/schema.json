@@ -105,7 +105,7 @@
                     "maximum": 2100
                 },
                 "PowerBombTank": {
-                     "type": "integer",
+                    "type": "integer",
                     "minimum": -100,
                     "maximum": 100
                 }
