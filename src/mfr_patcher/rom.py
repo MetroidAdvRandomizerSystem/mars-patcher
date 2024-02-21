@@ -95,13 +95,15 @@ class Rom:
         return self.read_bytes(addr, size).decode("ascii")
 
     def write_8(self, addr: int, val: int) -> None:
-        self.data[addr] = val
+        self.data[addr] = val & 0xFF
 
     def write_16(self, addr: int, val: int) -> None:
+        val &= 0xFFFF
         self.data[addr] = val & 0xFF
         self.data[addr + 1] = val >> 8
 
     def write_32(self, addr: int, val: int) -> None:
+        val &= 0xFFFFFFFF
         self.data[addr] = val & 0xFF
         self.data[addr + 1] = (val >> 8) & 0xFF
         self.data[addr + 2] = (val >> 16) & 0xFF
