@@ -95,12 +95,12 @@
             "type": "object",
             "properties": {
                 "MissileTank": {
+                    "$ref": "#/$defs/TankIncrementNumber"
+                },
+                "EnergyTank": {
                     "type": "integer",
                     "minimum": 0,
                     "maximum": 999
-                },
-                "EnergyTank": {
-                    "$ref": "#/$defs/TankIncrementNumber"
                 },
                 "PowerBombTank": {
                      "$ref": "#/$defs/TankIncrementNumber"
