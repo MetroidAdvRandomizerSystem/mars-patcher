@@ -96,7 +96,7 @@
             "properties": {
                 "MissileTank": {
                     "type": "integer",
-                    "minimum": -0,
+                    "minimum": -1000,
                     "maximum": 1000
                 },
                 "EnergyTank": {
