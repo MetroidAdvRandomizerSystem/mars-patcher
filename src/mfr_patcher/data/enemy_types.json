@@ -1,0 +1,217 @@
+[
+    {
+        "ID": 18,
+        "Name": "Hornoad",
+        "Type": "Ground"
+    },
+    {
+        "ID": 19,
+        "Name": "Halzyn",
+        "Type": "Flying"
+    },
+    {
+        "ID": 20,
+        "Name": "Zebesian (wall)",
+        "Type": "Wall"
+    },
+    {
+        "ID": 24,
+        "Name": "Moto",
+        "Type": "Ground"
+    },
+    {
+        "ID": 27,
+        "Name": "Yameba",
+        "Type": "Flying"
+    },
+    {
+        "ID": 49,
+        "Name": "Zeela",
+        "Type": "Crawling"
+    },
+    {
+        "ID": 51,
+        "Name": "Skree (unused)",
+        "Type": "Ceiling"
+    },
+    {
+        "ID": 55,
+        "Name": "Zombie",
+        "Type": "Ground"
+    },
+    {
+        "ID": 57,
+        "Name": "Geemer",
+        "Type": "Crawling"
+    },
+    {
+        "ID": 59,
+        "Name": "Waver",
+        "Type": "Flying"
+    },
+    {
+        "ID": 60,
+        "Name": "Sciser",
+        "Type": "Crawling"
+    },
+    {
+        "ID": 61,
+        "Name": "Sidehopper",
+        "Type": "GroundCeiling"
+    },
+    {
+        "ID": 62,
+        "Name": "Dessgeega",
+        "Type": "GroundCeiling"
+    },
+    {
+        "ID": 90,
+        "Name": "Zoro",
+        "Type": "Crawling"
+    },
+    {
+        "ID": 91,
+        "Name": "Kihunter (flying)",
+        "Type": "Flying"
+    },
+    {
+        "ID": 92,
+        "Name": "Kihunter (ground)",
+        "Type": "Ground"
+    },
+    {
+        "ID": 94,
+        "Name": "Reo",
+        "Type": "Flying"
+    },
+    {
+        "ID": 96,
+        "Name": "Namihe",
+        "Type": "Wall"
+    },
+    {
+        "ID": 97,
+        "Name": "Fune",
+        "Type": "Wall"
+    },
+    {
+        "ID": 99,
+        "Name": "Blue zoro",
+        "Type": "Crawling"
+    },
+    {
+        "ID": 100,
+        "Name": "Geruda",
+        "Type": "Flying"
+    },
+    {
+        "ID": 106,
+        "Name": "Skultera (large)",
+        "Type": "Flying"
+    },
+    {
+        "ID": 107,
+        "Name": "Skultera (small, cannot become large)",
+        "Type": "Flying"
+    },
+    {
+        "ID": 108,
+        "Name": "Sova",
+        "Type": "Crawling"
+    },
+    {
+        "ID": 109,
+        "Name": "Yard",
+        "Type": "Crawling"
+    },
+    {
+        "ID": 110,
+        "Name": "Evir",
+        "Type": "Flying"
+    },
+    {
+        "ID": 111,
+        "Name": "Bull",
+        "Type": "Flying"
+    },
+    {
+        "ID": 112,
+        "Name": "Memu",
+        "Type": "Flying"
+    },
+    {
+        "ID": 113,
+        "Name": "Geruboss",
+        "Type": "Ceiling"
+    },
+    {
+        "ID": 114,
+        "Name": "Choot",
+        "Type": "Ground"
+    },
+    {
+        "ID": 115,
+        "Name": "Zebesian (ground)",
+        "Type": "Ground"
+    },
+    {
+        "ID": 136,
+        "Name": "Ripper",
+        "Type": "Flying"
+    },
+    {
+        "ID": 163,
+        "Name": "Red Zeela",
+        "Type": "Crawling"
+    },
+    {
+        "ID": 164,
+        "Name": "Owtch",
+        "Type": "Crawling"
+    },
+    {
+        "ID": 168,
+        "Name": "Genesis",
+        "Type": "Ground"
+    },
+    {
+        "ID": 169,
+        "Name": "Puyo",
+        "Type": "Ground"
+    },
+    {
+        "ID": 173,
+        "Name": "Fake energy tank",
+        "Type": "Ground"
+    },
+    {
+        "ID": 174,
+        "Name": "Fake missile tank",
+        "Type": "Ground"
+    },
+    {
+        "ID": 179,
+        "Name": "Zebesian (aqua)",
+        "Type": "Flying"
+    },
+    {
+        "ID": 180,
+        "Name": "Zebesian (pre-aqua)",
+        "Type": "Ground"
+    },
+    {
+        "ID": 181,
+        "Name": "Skultera (small)",
+        "Type": "Flying"
+    },
+    {
+        "ID": 189,
+        "Name": "Powamp",
+        "Type": "Flying"
+    },
+    {
+        "ID": 190,
+        "Name": "Zozoro",
+        "Type": "Crawling"
+    }
+]
