@@ -56,7 +56,7 @@
             "properties": {
                 "Energy": {
                     "type": "integer",
-                    "minimum": 99,
+                    "minimum": 1,
                     "maximum": 2099
                 },
                 "Missiles": {
