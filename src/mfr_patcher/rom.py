@@ -280,6 +280,34 @@ class Rom:
         elif self.game == Game.ZM:
             return 0xCE
 
+    def spriteset_addr(self) -> int:
+        """Returns the address of the spriteset pointers."""
+        if self.game == Game.MF:
+            if self.region == Region.U:
+                return 0x79ADD8
+            elif self.region == Region.E:
+                return 0x79B60C
+            elif self.region == Region.J:
+                return 0x7ED488
+            elif self.region == Region.C:
+                return 0x77CADC
+        elif self.game == Game.ZM:
+            if self.region == Region.U:
+                return 0x75F31C
+            elif self.region == Region.E:
+                return 0x7731BC
+            elif self.region == Region.J:
+                return 0x75F42C
+            elif self.region == Region.C:
+                return 0x79E514
+
+    def spriteset_count(self) -> int:
+        """Returns the number of spritesets in the game."""
+        if self.game == Game.MF:
+            return 0x82
+        elif self.game == Game.ZM:
+            return 0x72
+
     def samus_palettes(self) -> List[Tuple[int, int]]:
         """Returns a list of (address, row count) pairs."""
         if self.game == Game.MF:
