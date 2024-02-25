@@ -165,11 +165,15 @@ def encode_text(rom: Rom, string: str, max_width: int) -> List[int]:
             extra_char = NEXT
 
         if extra_char is not None:
-            if prev_break is not None and len(text) > prev_break:
-                text[prev_break] = extra_char
+            if prev_break is not None:
+                if len(text) <= prev_break:
+                    text.append(extra_char)
+                    continue
+                else:
+                    text[prev_break] = extra_char
+                prev_break = None
             else:
                 text.append(extra_char)
-            prev_break = None
 
         text.append(char)
 
