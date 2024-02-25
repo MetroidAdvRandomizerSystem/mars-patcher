@@ -4,6 +4,7 @@ import json
 from jsonschema import validate
 
 from mfr_patcher.data import get_data_path
+from mfr_patcher.hints import Hints
 from mfr_patcher.item_patcher import ItemPatcher, set_starting_items, set_tank_increments
 from mfr_patcher.locations import LocationSettings
 from mfr_patcher.random_palettes import PaletteRandomizer, PaletteSettings
@@ -49,6 +50,16 @@ if __name__ == "__main__":
     print("Writing item assignments...")
     item_patcher = ItemPatcher(rom, loc_settings)
     item_patcher.write_items()
+
+    # get hints
+    hints = None
+    if "Hints" in patch_data:
+        hints = Hints.from_json(patch_data["Hints"])
+
+    # write hints
+    if hints is not None:
+        print("Writing hints...")
+        hints.write(rom)
 
     # starting items
     if "StartingItems" in patch_data:

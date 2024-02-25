@@ -140,6 +140,24 @@
         },
         "SkipDoorTransitions": {
             "type": "boolean"
+        },
+        "Hints": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "Language": {
+                        "$ref": "#/$defs/ValidLanguages"
+                    },
+                    "Hints": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": ["Language", "Hints"]
+            }
         }
     },
     "required": ["SeedHash", "Locations"],
@@ -237,6 +255,18 @@
                 "WaveBeam",
                 "ScrewAttack",
                 "IceBeam"
+            ]
+        },
+        "ValidLanguages": {
+            "type": "string",
+            "enum": [
+                "JapaneseKanji",
+                "JapaneseHiragana",
+                "English",
+                "German",
+                "French",
+                "Italian",
+                "Spanish"
             ]
         }
     }

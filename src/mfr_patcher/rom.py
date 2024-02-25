@@ -364,3 +364,19 @@ class Rom:
                 return 0x79F4C4
             elif self.region == Region.J:
                 return 0x7F13FC
+
+    def character_widths_addr(self) -> int:
+        """Returns the address of the character width array."""
+        if self.game == Game.MF:
+            if self.region == Region.U:
+                return 0x79130
+            elif self.region == Region.J:
+                return 0x79904
+            # TODO: find address in PAL
+
+    def navigation_text(self) -> int:
+        """Returns the address of the navigation room text pointers."""
+        if self.game == Game.MF:
+            if self.region == Region.U:
+                return 0x79C0F0
+            # TODO: find addresses in NTSC-J and PAL
