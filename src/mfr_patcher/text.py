@@ -130,8 +130,7 @@ def encode_text(rom: Rom, string: str, max_width: int) -> List[int]:
     width_since_break = 0
     escape_expr = None
 
-    for og_char in string:
-        char = og_char
+    for char in string:
         if escape_expr is None and char == "[":
             escape_expr = []
         elif escape_expr is not None and char == "]":
@@ -171,7 +170,6 @@ def encode_text(rom: Rom, string: str, max_width: int) -> List[int]:
             else:
                 text.append(extra_char)
             prev_break = None
-            print(f"{og_char}, {line_width}")
 
         text.append(char)
 
