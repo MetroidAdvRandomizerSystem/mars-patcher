@@ -149,15 +149,31 @@
                     "Language": {
                         "$ref": "#/$defs/ValidLanguages"
                     },
-                    "Hints": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
+                    "Text": {
+                        "type": "object",
+                        "propertyNames": {
+                            "enum": [
+                                "MainDeckWest",
+                                "MainDeckEast",
+                                "OperationsDeck",
+                                "Sector1Entrance",
+                                "Sector2Entrance",
+                                "Sector3Entrance",
+                                "Sector4Entrance",
+                                "Sector5Entrance",
+                                "Sector6Entrance",
+                                "AuxiliaryPower",
+                                "RestrictedLabs"
+                            ]
                         },
-                        "maxItems": 11
+                        "patternProperties": {
+                            ".*": {
+                                "type": "string"
+                            }
+                        }
                     }
                 },
-                "required": ["Language", "Hints"]
+                "required": ["Language", "Text"]
             }
         }
     },
