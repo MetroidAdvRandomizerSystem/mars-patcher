@@ -151,26 +151,20 @@
                     },
                     "Text": {
                         "type": "object",
-                        "propertyNames": {
-                            "enum": [
-                                "MainDeckWest",
-                                "MainDeckEast",
-                                "OperationsDeck",
-                                "Sector1Entrance",
-                                "Sector2Entrance",
-                                "Sector3Entrance",
-                                "Sector4Entrance",
-                                "Sector5Entrance",
-                                "Sector6Entrance",
-                                "AuxiliaryPower",
-                                "RestrictedLabs"
-                            ]
+                        "properties": {
+                            "MainDeckWest": { "type": "string" },
+                            "MainDeckEast": { "type": "string" },
+                            "OperationsDeck": { "type": "string" },
+                            "Sector1Entrance": { "type": "string" },
+                            "Sector2Entrance": { "type": "string" },
+                            "Sector3Entrance": { "type": "string" },
+                            "Sector4Entrance": { "type": "string" },
+                            "Sector5Entrance": { "type": "string" },
+                            "Sector6Entrance": { "type": "string" },
+                            "AuxiliaryPower": { "type": "string" },
+                            "RestrictedLabs": { "type": "string" }
                         },
-                        "patternProperties": {
-                            ".*": {
-                                "type": "string"
-                            }
-                        }
+                        "additionalProperties": false
                     }
                 },
                 "required": ["Language", "Text"]
