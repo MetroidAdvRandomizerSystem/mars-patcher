@@ -1,8 +1,26 @@
+from enum import Enum
+from typing import List
+
 from mfr_patcher.rom import Rom
 
 
 CHARS = {
     " ": 0x40,
+    "!": 0x41,
+    "\"": 0x42,
+    "#": 0x43,
+    "$": 0x44,
+    "%": 0x45,
+    "&": 0x46,
+    "'": 0x47,
+    "(": 0x48,
+    ")": 0x49,
+    "*": 0x4A,
+    "+": 0x4B,
+    ",": 0x4C,
+    "-": 0x4D,
+    ".": 0x4E,
+    "/": 0x4F,
     "0": 0x50,
     "1": 0x51,
     "2": 0x52,
@@ -13,6 +31,9 @@ CHARS = {
     "7": 0x57,
     "8": 0x58,
     "9": 0x59,
+    ":": 0x5A,
+    ";": 0x5B,
+    "?": 0x5F,
     "A": 0x81,
     "B": 0x82,
     "C": 0x83,
@@ -39,16 +60,131 @@ CHARS = {
     "X": 0x98,
     "Y": 0x99,
     "Z": 0x9A,
+    "a": 0xC1,
+    "b": 0xC2,
+    "c": 0xC3,
+    "d": 0xC4,
+    "e": 0xC5,
+    "f": 0xC6,
+    "g": 0xC7,
+    "h": 0xC8,
+    "i": 0xC9,
+    "j": 0xCA,
+    "k": 0xCB,
+    "l": 0xCC,
+    "m": 0xCD,
+    "n": 0xCE,
+    "o": 0xCF,
+    "p": 0xD0,
+    "q": 0xD1,
+    "r": 0xD2,
+    "s": 0xD3,
+    "t": 0xD4,
+    "u": 0xD5,
+    "v": 0xD6,
+    "w": 0xD7,
+    "x": 0xD8,
+    "y": 0xD9,
+    "z": 0xDA
 }
 
+NEXT = 0xFD00
 NEWLINE = 0xFE00
+END = 0xFF00
 
+class Language(Enum):
+    JAPANESE_KANJI = 0
+    JAPANESE_HIRAGANA = 1
+    ENGLISH = 2
+    GERMAN = 3
+    FRENCH = 4
+    ITALIAN = 5
+    SPANISH = 6
+
+def parse_escape_expr(expr: str) -> int:
+    if "=" in expr:
+        label, value = expr.split("=", 1)
+        if label == "COLOR":
+            return 0x8100 | int(value, 16)
+        else:
+            raise NotImplementedError(f"Unimplemented bracketed expression \"{expr}\"")
+
+    if expr == "NEWLINE":
+        return NEWLINE
+    elif expr == "NEXT":
+        return NEXT
+    elif expr == "/COLOR":
+        return 0x8100
+    elif expr == "TARGET":
+        return 0xE000
+    else:
+        raise NotImplementedError(f"Unimplemented bracketed expression \"{expr}\"")
+
+def encode_text(rom: Rom, string: str, max_width: int) -> List[int]:
+    char_widths = rom.character_widths_addr()
+    text = []
+    line_width = 0
+    line_number = 0
+
+    prev_break = None
+    width_since_break = 0
+    escape_expr = None
+
+    for char in string:
+        if escape_expr is None and char == "[":
+            escape_expr = []
+        elif escape_expr is not None and char == "]":
+            text.append(parse_escape_expr("".join(escape_expr)))
+            escape_expr = None
+            continue
+        elif escape_expr is not None:
+            escape_expr.append(char)
+
+        if escape_expr is not None:
+            continue
+
+        char = CHARS[char]
+        char_width = rom.read_8(char_widths + char) if char < 0x4A0 else 10
+        line_width += char_width
+        width_since_break += char_width
+
+        if char == CHARS[" "]:
+            prev_break = len(text)
+            width_since_break = 0
+
+        extra_char = None
+
+        if line_width > max_width:
+            line_width = width_since_break
+            width_since_break = 0
+            line_number += 1
+            extra_char = NEWLINE
+
+        if line_number > 1:
+            line_number = 0
+            extra_char = NEXT
+
+        if extra_char is not None:
+            if prev_break is not None:
+                if len(text) <= prev_break:
+                    text.append(extra_char)
+                    continue
+                else:
+                    text[prev_break] = extra_char
+                prev_break = None
+            else:
+                text.append(extra_char)
+
+        text.append(char)
+
+    text.append(END)
+    return text
 
 def write_seed_hash(rom: Rom, seed_hash: str) -> None:
     lang_ptrs = rom.file_screen_text()
-    for lang in range(7):
+    for lang in Language:
         # get address of first text entry
-        text_ptrs = rom.read_ptr(lang_ptrs + lang * 4)
+        text_ptrs = rom.read_ptr(lang_ptrs + lang.value * 4)
         addr = rom.read_ptr(text_ptrs)
         # find newline after "SAMUS DATA"
         try:

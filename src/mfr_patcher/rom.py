@@ -392,3 +392,36 @@ class Rom:
                 return 0x79F4C4
             elif self.region == Region.J:
                 return 0x7F13FC
+
+    def character_widths_addr(self) -> int:
+        """Returns the address of the character width array."""
+        if self.game == Game.MF:
+            if self.region == Region.U:
+                return 0x576234
+            elif self.region == Region.E:
+                return 0x576890
+            elif self.region == Region.J:
+                return 0x578934
+            elif self.region == Region.C:
+                return 0x57D21C
+        elif self.game == Game.ZM:
+            if self.region == Region.U:
+                return 0x40D7B0
+            elif self.region == Region.E:
+                return 0x40E5E4
+            elif self.region == Region.J:
+                return 0x40D80C
+            elif self.region == Region.C:
+                return 0x42F34C
+
+    def navigation_text(self) -> int:
+        """Returns the address of the navigation room text pointers."""
+        if self.game == Game.MF:
+            if self.region == Region.U:
+                return 0x79C0F0
+            elif self.region == Region.E:
+                return 0x79C924
+            elif self.region == Region.J:
+                return 0x7EE7A0
+            elif self.region == Region.C:
+                return 0x77DDF4

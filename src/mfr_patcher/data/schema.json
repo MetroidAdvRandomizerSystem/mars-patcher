@@ -140,6 +140,34 @@
         },
         "SkipDoorTransitions": {
             "type": "boolean"
+        },
+        "Hints": {
+            "type": "object",
+            "description": "Specifies hints to be displayed at navigation rooms.",
+            "propertyNames": {
+                "$ref": "#/$defs/ValidLanguages"
+            },
+            "additionalProperties": {
+                "type": "object",
+                "description": "Assigns each navigation room a specific hint.",
+                "minProperties": 11,
+                "maxProperties": 11,
+                "properties": {
+                    "MainDeckWest": { "type": "string" },
+                    "MainDeckEast": { "type": "string" },
+                    "OperationsDeck": { "type": "string" },
+                    "Sector1Entrance": { "type": "string" },
+                    "Sector2Entrance": { "type": "string" },
+                    "Sector3Entrance": { "type": "string" },
+                    "Sector4Entrance": { "type": "string" },
+                    "Sector5Entrance": { "type": "string" },
+                    "Sector6Entrance": { "type": "string" },
+                    "AuxiliaryPower": { "type": "string" },
+                    "RestrictedLabs": { "type": "string" }
+                },
+                "additionalProperties": false
+            },
+            "default": null
         }
     },
     "required": ["SeedHash", "Locations"],
@@ -237,6 +265,19 @@
                 "WaveBeam",
                 "ScrewAttack",
                 "IceBeam"
+            ]
+        },
+        "ValidLanguages": {
+            "type": "string",
+            "description": "Valid languages supported by the game.",
+            "enum": [
+                "JapaneseKanji",
+                "JapaneseHiragana",
+                "English",
+                "German",
+                "French",
+                "Italian",
+                "Spanish"
             ]
         }
     }
