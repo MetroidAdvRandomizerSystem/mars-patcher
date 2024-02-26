@@ -1,21 +1,21 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Fusion patching schema",
-    "description": "A json schema describing the input for patching Fusion via mfr_patcher",
+    "title": "Metroid Fusion patching schema",
+    "description": "A json schema describing the input for patching Metroid Fusion via mfr_patcher.",
     "type": "object",
     "properties": {
         "SeedHash": {
-            "description": "A seed hash that will be displayed on the file select screen",
+            "description": "A seed hash that will be displayed on the file select screen.",
             "type": "string",
             "pattern": "^[0-9A-Z]{8}$"
         },
         "Locations": {
             "type": "object",
-            "description": "Specifies how the item locations in the game should be changed",
+            "description": "Specifies how the item locations in the game should be changed.",
             "properties": {
                 "MajorLocations": {
                     "type": "array",
-                    "description": "Specifies how the major item locations in the game should be changed. A major item location is a location where the player must interact with a device to receive an item.",
+                    "description": "Specifies how the major item locations should be changed. A major item location is a location where an item is obtained by defeating a boss or interacting with a device.",
                     "minItems": 20,
                     "maxItems": 20,
                     "uniqueItems": true,
@@ -34,7 +34,7 @@
                 },
                 "MinorLocations": {
                     "type": "array",
-                    "description": "Specifies how the minor item locations in the game should bechanged. A minor item location is a location where the player rececives an item by colliding with a freestanding object.",
+                    "description": "Specifies how the minor item locations should be changed. A minor item location is a location where an item is obtained by touching a tank block.",
                     "minItems": 100,
                     "maxItems": 100,
                     "uniqueItems": true,
@@ -43,19 +43,19 @@
                         "properties": {
                             "Area": {
                                 "$ref": "#/$defs/TypeU8",
-                                "description": "The value of the internal Area ID of Fusion of the area where this item is located."
+                                "description": "The area ID where this item is located."
                             },
                             "Room": {
                                 "$ref": "#/$defs/TypeU8",
-                                "description": "The value of the internal Room ID of Fusion of the room where this item is located."
+                                "description": "The room ID where this item is located."
                             },
                             "BlockX": {
                                 "$ref": "#/$defs/TypeU8",
-                                "description": "The X-coordinate in the room on where this item is located."
+                                "description": "The X-coordinate in the room where this item is located."
                             },
                             "BlockY": {
                                 "$ref": "#/$defs/TypeU8",
-                                "description": "The X-coordinate in the room on where this item is located."
+                                "description": "The Y-coordinate in the room where this item is located."
                             },
                             "Item": {
                                 "$ref": "#/$defs/ValidItems"
@@ -72,29 +72,29 @@
             "properties": {
                 "Energy": {
                     "type": "integer",
-                    "description": "How much health the player should start with on a new save file.",
+                    "description": "How much energy the player should start with on a new save file.",
                     "minimum": 1,
                     "maximum": 2099,
                     "default": 99
                 },
                 "Missiles": {
                     "type": "integer",
-                    "description": "How much Missiles the player should start with on a new save file / how many Missiles get unlocked by collecting Missile data.",
+                    "description": "How many missiles the player should start with on a new save file (the amount unlocked by collecting missile data).",
                     "minimum": 0,
                     "maximum": 999,
                     "default": 10
                 },
                 "PowerBombs": {
                     "type": "integer",
-                    "description": "How much Power Bombs the player should start with on a new save file / how many Power Bombs get unlocked by collecting Power Bomb data.",
+                    "description": "How many power bombs the player should start with on a new save file (the amount unlocked by collecting power bomb data).",
                     "minimum": 0,
                     "maximum": 99,
                     "default": 10
                 },
                 "Abilities": {
                     "type": "array",
-                    "uniqueItems": true,
                     "description": "Which abilities the player should start with on a new save file.",
+                    "uniqueItems": true,
                     "items": {
                         "$ref": "#/$defs/ValidAbilities"
                     },
@@ -102,8 +102,8 @@
                 },
                 "SecurityLevels": {
                     "type": "array",
+                    "description": "Which security levels will be unlocked from the start.",
                     "uniqueItems": true,
-                    "description": "Which Security Levels will be unlocked from the start.",
                     "items": {
                         "type": "integer",
                         "enum": [0, 1, 2, 3, 4]
@@ -112,8 +112,8 @@
                 },
                 "DownloadedMaps": {
                     "type": "array",
-                    "uniqueItems": true,
                     "description": "Which area maps will be downloaded from the start.",
+                    "uniqueItems": true,
                     "items": {
                         "type": "integer",
                         "enum": [0, 1, 2, 3, 4, 5, 6]
@@ -125,25 +125,25 @@
         },
         "TankIncrements": {
             "type": "object",
-            "description": "How much ammo/health tanks provide upon collection.",
+            "description": "How much ammo/health tanks provide when collected.",
             "properties": {
                 "MissileTank": {
                     "type": "integer",
-                    "description": "How much ammo Missile Tanks provide upon collection.",
+                    "description": "How much ammo missile tanks provide when collected.",
                     "minimum": -1000,
                     "maximum": 1000,
                     "default": 5
                 },
                 "EnergyTank": {
                     "type": "integer",
-                    "description": "How much health Energy Tanks provide upon collection.",
+                    "description": "How much health energy tanks provide when collected.",
                     "minimum": -2100,
                     "maximum": 2100,
                     "default": 100
                 },
                 "PowerBombTank": {
                     "type": "integer",
-                    "description": "How much ammo Power Bomb Tanks provide upon collection.",
+                    "description": "How much ammo power bomb tanks provide when collected.",
                     "minimum": -100,
                     "maximum": 100,
                     "default": 2
@@ -158,7 +158,7 @@
             "properties": {
                 "Seed": {
                     "$ref": "#/$defs/Seed",
-                    "description": "A number with which the random number generator for the palettes will be initialized. Not specifying this will mean that the patcher randomly generates one.",
+                    "description": "A number used to initialize the random number generator for palettes. If not specified, the patcher will randomly generate one.",
                     "default": null
                 },
                 "Randomize": {
@@ -173,17 +173,17 @@
                 },
                 "HueMin": {
                     "$ref": "#/$defs/HueRotation",
-                    "description": "The minimum hue value with which palettes can be shifted with. Not specifying this will mean that the patcher randomly generates one based on the 'Seed'.",
+                    "description": "The minimum value to use for rotating palette hues. If not specified, the patcher will randomly generate one.",
                     "default": null
                 },
                 "HueMax": {
                     "$ref": "#/$defs/HueRotation",
-                    "description": "The maximum hue value with which palettes can be shifted with. Not specifying this will mean that the patcher randomly generates one based on the 'Seed'.",
+                    "description": "The maximum value to use for rotating palette hues. If not specified, the patcher will randomly generate one.",
                     "default": null
                 },
                 "ColorSpace": {
                     "type": "string",
-                    "description": "The color space in which the palettes will be shifted.",
+                    "description": "The color space to use for rotating palette hues.",
                     "enum": ["HSV", "LAB"],
                     "default": "LAB"
                 }
@@ -221,7 +221,7 @@
         },
         "SkipDoorTransitions": {
             "type": "boolean",
-            "description": "Whether door transitions will be skipped.",
+            "description": "Makes all door transitions instant when true.",
             "default": false
         }
     },
