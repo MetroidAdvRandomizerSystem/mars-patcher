@@ -29,6 +29,9 @@ test = [
     "pytest-cov",
     "pytest-mock",
 ]
+typing = [
+    "mypy"
+]
 
 [project.urls]
 Repository = "https://github.com/biosp4rk/mfr_patcher"
@@ -53,3 +56,11 @@ namespaces = false
 line-length = 100
 lint.select = ["E", "F", "W", "I", "UP"]
 src = ["src"]
+
+[tool.mypy]
+files = [
+    "src/mfr_patcher/"
+]
+follow_imports = "silent"
+disallow_untyped_defs = true
+warn_return_any = true
