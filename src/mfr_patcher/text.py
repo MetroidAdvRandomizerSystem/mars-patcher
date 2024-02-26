@@ -121,7 +121,7 @@ def parse_escape_expr(expr: str) -> int:
         raise NotImplementedError(f"Unimplemented bracketed expression \"{expr}\"")
 
 def encode_text(rom: Rom, string: str, max_width: int) -> List[int]:
-    char_widths = rom.read_ptr(rom.character_widths_addr())
+    char_widths = rom.character_widths_addr()
     text = []
     line_width = 0
     line_number = 0
