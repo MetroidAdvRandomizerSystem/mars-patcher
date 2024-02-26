@@ -52,10 +52,9 @@ class Hints:
     @classmethod
     def from_json(cls, data: Any) -> "Hints":
         hints = {}
-        for lang_entry in data:
-            lang = cls.LANG_ENUMS[lang_entry["Language"]]
-            lang_hints = {cls.NAV_ROOM_ENUMS[k]: v for k, v in lang_entry["Text"].items()}
-            hints[lang] = lang_hints
+        for lang, lang_hints in data.items():
+            lang = cls.LANG_ENUMS[lang]
+            hints[lang] = {cls.NAV_ROOM_ENUMS[k]: v for k, v in lang_hints.items()}
         return cls(hints)
 
     def write(self, rom: Rom):
