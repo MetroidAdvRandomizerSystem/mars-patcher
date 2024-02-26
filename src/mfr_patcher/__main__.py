@@ -73,8 +73,8 @@ if __name__ == "__main__":
 
     if patch_data.get("SkipDoorTransitions"):
         # TODO: move to separate patch
-        rom.write_32(0x69500, 0x300001F)
-        rom.write_16(0x694E4, 0xD000)
+        rom.write_32(0x69500, 0x3000BDE)
+        rom.write_8(0x694E2, 0xC)
     
     write_seed_hash(rom, patch_data["SeedHash"])
 
