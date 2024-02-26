@@ -1,5 +1,5 @@
 import json
-import typing
+from typing import Callable
 
 from jsonschema import validate
 
@@ -15,7 +15,7 @@ from mfr_patcher.text import write_seed_hash
 def patch(input_path: str,
           output_path: str,
           patch_data_path: str,
-          status_update: typing.Callable[[float, str], None]
+          status_update: Callable[[float, str], None]
           ):
     # load input rom
     rom = Rom(input_path)
@@ -28,36 +28,20 @@ def patch(input_path: str,
         schema = json.load(f)
     validate(patch_data, schema)
 
-    # load locations and set assignments
-    loc_settings = LocationSettings.load()
-    loc_settings.set_assignments(patch_data["Locations"])
-
-    # get random palette settings
-    pal_settings = None
-    if "Palettes" in patch_data:
-        pal_settings = PaletteSettings.from_json(patch_data["Palettes"])
-
     # randomize palettes - palettes are randomized first in case the item
     # patcher needs to copy tilesets
-    if pal_settings is not None:
+    if "Palettes" in patch_data:
         status_update(-1, "Randomizing palettes...")
+        pal_settings = PaletteSettings.from_json(patch_data["Palettes"])
         pal_randomizer = PaletteRandomizer(rom, pal_settings)
         pal_randomizer.randomize()
 
-    # write item assignments
+    # load locations and set assignments
     status_update(-1, "Writing item assignments...")
+    loc_settings = LocationSettings.load()
+    loc_settings.set_assignments(patch_data["Locations"])
     item_patcher = ItemPatcher(rom, loc_settings)
     item_patcher.write_items()
-
-    # get hints
-    hints = None
-    if "Hints" in patch_data:
-        hints = Hints.from_json(patch_data["Hints"])
-
-    # write hints
-    if hints is not None:
-        status_update(-1, "Writing hints...")
-        hints.write(rom)
 
     # starting items
     if "StartingItems" in patch_data:
@@ -68,6 +52,12 @@ def patch(input_path: str,
     if "TankIncrements" in patch_data:
         status_update(-1, "Writing tank increments...")
         set_tank_increments(rom, patch_data["TankIncrements"])
+
+    # hints
+    if "Hints" in patch_data:
+        status_update(-1, "Writing hints...")
+        hints = Hints.from_json(patch_data["Hints"])
+        hints.write(rom)
 
     if patch_data.get("SkipDoorTransitions"):
         # TODO: move to separate patch
