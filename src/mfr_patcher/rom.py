@@ -187,6 +187,8 @@ class Rom:
                 return 0x28F5B4
             elif self.region == Region.C:
                 return 0x28F5F8
+        elif self.game == Game.ZM:
+            raise NotImplementedError("Currently not implemented for ZM")
 
     def anim_palette_addr(self) -> int:
         """Returns the address of the animated palette entries."""
@@ -230,6 +232,8 @@ class Rom:
                 return 0x2E6D58
             elif self.region == Region.C:
                 return 0x2E6D9C
+        elif self.game == Game.ZM:
+            raise NotImplementedError("Currently not implemented for ZM")
 
     def sprite_graphics_addr(self) -> int:
         """Returns the address of the sprite graphics pointers."""
@@ -329,7 +333,7 @@ class Rom:
             elif self.region == Region.C:
                 return [(0x250E94, 0xA3)]
 
-    def file_select_helmet_palettes(self) -> Tuple[int, int]:
+    def file_select_helmet_palettes(self) -> list[Tuple[int, int]]:
         """Returns a list of (address, row count) pairs."""
         if self.game == Game.MF:
             if self.region == Region.U:
@@ -350,7 +354,7 @@ class Rom:
             elif self.region == Region.C:
                 return [(0x4768FC, 0x1), (0x47697C, 0x1)]
 
-    def beam_palettes(self) -> Tuple[int, int]:
+    def beam_palettes(self) -> list[Tuple[int, int]]:
         """Returns a list of (address, row count) pairs."""
         if self.game == Game.MF:
             if self.region == Region.U:
@@ -382,6 +386,8 @@ class Rom:
                 return 0x3ED598
             elif self.region == Region.C:
                 return 0x406D28
+        elif self.game == Game.MF:
+            raise ValueError("Tourian statues are not supported for Fusion")
 
     def file_screen_text(self) -> int:
         """Returns the address of the file screen text pointers."""
@@ -392,6 +398,7 @@ class Rom:
                 return 0x79F4C4
             elif self.region == Region.J:
                 return 0x7F13FC
+        raise NotImplementedError("Currently not implemented for ZM")
 
     def character_widths_addr(self) -> int:
         """Returns the address of the character width array."""
@@ -425,3 +432,6 @@ class Rom:
                 return 0x7EE7A0
             elif self.region == Region.C:
                 return 0x77DDF4
+        if self.game == Game.ZM:
+            raise ValueError("Navigation Station text is not supported for ZM")
+
