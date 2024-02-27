@@ -212,7 +212,7 @@ class LocationSettings:
 
         return LocationSettings(major_locs, minor_locs)
 
-    def set_assignments(self, data: Any) -> None:
+    def set_assignments(self, data: dict) -> None:
         for maj_loc_entry in data[KEY_MAJOR_LOCS]:
             # get source and item
             source = self.SOURCE_ENUMS[maj_loc_entry[KEY_SOURCE]]

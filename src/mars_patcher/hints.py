@@ -1,7 +1,6 @@
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Dict
 
-from mars_patcher.locations import Location
 from mars_patcher.rom import Rom
 from mars_patcher.text import Language, encode_text
 
@@ -48,9 +47,9 @@ class Hints:
 
     def __init__(self, hints: Dict[Language, Dict[NavRoom, str]]):
         self.hints = hints
-    
+
     @classmethod
-    def from_json(cls, data: Any) -> "Hints":
+    def from_json(cls, data: dict) -> "Hints":
         hints = {}
         for lang, lang_hints in data.items():
             lang = cls.LANG_ENUMS[lang]
