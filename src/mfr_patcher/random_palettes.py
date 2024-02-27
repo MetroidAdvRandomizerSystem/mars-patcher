@@ -157,15 +157,10 @@ class PaletteRandomizer:
 
     def randomize_enemies(self) -> None:
         rom = self.rom
-        vram_size_addr = None
-        gfx_ptr = None
         if rom.is_mf():
             excluded = set()
-            vram_size_addr = rom.sprite_vram_size_addr()
         elif rom.is_zm():
             excluded = {0x10, 0x11, 0x8A}
-            gfx_ptr = rom.sprite_graphics_addr()
-        pal_ptr = rom.sprite_palette_addr()
         sprite_count = rom.sprite_count()
         to_randomize = set(range(0x10, sprite_count))
         to_randomize -= excluded
@@ -175,27 +170,28 @@ class PaletteRandomizer:
         for _, sprite_ids in groups.items():
             shift = self.get_hue_shift()
             for sprite_id in sprite_ids:
-                self.randomize_enemy(sprite_id, shift, pal_ptr, vram_size_addr, gfx_ptr)
+                self.randomize_enemy(sprite_id, shift)
                 to_randomize.remove(sprite_id)
 
         # go through remaining sprites
         for sprite_id in to_randomize:
-            self.randomize_enemy(sprite_id, shift, pal_ptr, vram_size_addr, gfx_ptr)
+            self.randomize_enemy(sprite_id, shift)
 
-    def randomize_enemy(
-        self, sprite_id: int, shift: int, pal_ptr: int, vram_size_addr: int, gfx_ptr: int
-    ) -> None:
+    def randomize_enemy(self, sprite_id: int, shift: int) -> None:
         rom = self.rom
         sprite_gfx_id = sprite_id - 0x10
+        pal_ptr = rom.sprite_palette_addr()
         pal_addr = rom.read_ptr(pal_ptr + sprite_gfx_id * 4)
         if rom.is_mf():
             if sprite_id == 0x4D or sprite_id == 0xBE:
                 # ice beam ability and zozoros only have 1 row, not 2
                 rows = 1
             else:
+                vram_size_addr = rom.sprite_vram_size_addr()
                 vram_size = rom.read_32(vram_size_addr + sprite_gfx_id * 4)
                 rows = vram_size // 0x800
         elif rom.is_zm():
+            gfx_ptr = rom.sprite_graphics_addr()
             gfx_addr = rom.read_ptr(gfx_ptr + sprite_gfx_id * 4)
             rows = (rom.read_32(gfx_addr) >> 8) // 0x800
         pal = Palette(rows, rom, pal_addr)
@@ -216,13 +212,14 @@ class PaletteRandomizer:
         return self.rom.read_ptr(addr)
 
     def fix_zm_palettes(self) -> None:
-        if self.settings.rand_enemy or self.settings.rand_tileset:
+        if (PaletteType.ENEMIES in self.settings.pal_types
+            or PaletteType.TILESETS in self.settings.pal_types):
             # fix kraid's body
             sp_addr = self.get_sprite_addr(0x6F)
             ts_addr = self.get_tileset_addr(9)
             self.rom.copy_bytes(sp_addr, ts_addr + 0x100, 0x20)
 
-        if self.settings.rand_tileset:
+        if PaletteType.TILESETS in self.settings.pal_types:
             # fix kraid elevator statue
             sp_addr = self.get_sprite_addr(0x95)
             ts_addr = self.get_tileset_addr(0x35)

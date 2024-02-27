@@ -1,6 +1,7 @@
 from enum import Enum
 import json
 import random
+from typing import Dict, List
 
 from mfr_patcher.data import get_data_path
 from mfr_patcher.rom import Rom
@@ -39,7 +40,7 @@ def randomize_enemies(rom: Rom):
         gfx_rows[en_id] = size // 0x800
 
     # get replacement pools
-    replacements = {t: [] for t in EnemyType}
+    replacements: Dict[EnemyType, List[int]] = {t: [] for t in EnemyType}
     for en_id, en_type in enemy_types.items():
         replacements[en_type].append(en_id)
         if en_type == EnemyType.CRAWLING:
@@ -56,7 +57,7 @@ def randomize_enemies(rom: Rom):
     spriteset_ptrs = rom.spriteset_addr()
     for i in range(rom.spriteset_count()):
         spriteset_addr = rom.read_ptr(spriteset_ptrs + i * 4)
-        used_gfx_rows = {}
+        used_gfx_rows: Dict[int, int] = {}
         for j in range(0xF):
             addr = spriteset_addr + j * 2
             en_id = rom.read_8(addr)

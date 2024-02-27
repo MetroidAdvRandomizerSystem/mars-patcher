@@ -92,6 +92,7 @@ NEXT = 0xFD00
 NEWLINE = 0xFE00
 END = 0xFF00
 
+
 class Language(Enum):
     JAPANESE_KANJI = 0
     JAPANESE_HIRAGANA = 1
@@ -100,6 +101,7 @@ class Language(Enum):
     FRENCH = 4
     ITALIAN = 5
     SPANISH = 6
+
 
 def parse_escape_expr(expr: str) -> int:
     if "=" in expr:
@@ -120,6 +122,7 @@ def parse_escape_expr(expr: str) -> int:
     else:
         raise NotImplementedError(f"Unimplemented bracketed expression \"{expr}\"")
 
+
 def encode_text(rom: Rom, string: str, max_width: int) -> List[int]:
     char_widths = rom.character_widths_addr()
     text = []
@@ -128,7 +131,7 @@ def encode_text(rom: Rom, string: str, max_width: int) -> List[int]:
 
     prev_break = None
     width_since_break = 0
-    escape_expr = None
+    escape_expr: List[str] | None = None
 
     for char in string:
         if escape_expr is None and char == "[":
@@ -143,12 +146,12 @@ def encode_text(rom: Rom, string: str, max_width: int) -> List[int]:
         if escape_expr is not None:
             continue
 
-        char = CHARS[char]
-        char_width = rom.read_8(char_widths + char) if char < 0x4A0 else 10
+        char_val = CHARS[char]
+        char_width = rom.read_8(char_widths + char_val) if char_val < 0x4A0 else 10
         line_width += char_width
         width_since_break += char_width
 
-        if char == CHARS[" "]:
+        if char_val == CHARS[" "]:
             prev_break = len(text)
             width_since_break = 0
 
@@ -175,10 +178,11 @@ def encode_text(rom: Rom, string: str, max_width: int) -> List[int]:
             else:
                 text.append(extra_char)
 
-        text.append(char)
+        text.append(char_val)
 
     text.append(END)
     return text
+
 
 def write_seed_hash(rom: Rom, seed_hash: str) -> None:
     lang_ptrs = rom.file_screen_text()

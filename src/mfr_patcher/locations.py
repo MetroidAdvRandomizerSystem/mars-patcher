@@ -190,17 +190,17 @@ class LocationSettings:
 
         major_locs = []
         for entry in data[KEY_MAJOR_LOCS]:
-            loc = MajorLocation(
+            major_loc = MajorLocation(
                 entry[KEY_AREA],
                 entry[KEY_ROOM],
                 cls.SOURCE_ENUMS[entry[KEY_SOURCE]],
                 cls.ITEM_ENUMS[entry[KEY_ORIGINAL]],
             )
-            major_locs.append(loc)
+            major_locs.append(major_loc)
 
         minor_locs = []
         for entry in data[KEY_MINOR_LOCS]:
-            loc = MinorLocation(
+            minor_loc = MinorLocation(
                 entry[KEY_AREA],
                 entry[KEY_ROOM],
                 entry[KEY_BLOCK_X],
@@ -208,29 +208,29 @@ class LocationSettings:
                 entry[KEY_HIDDEN],
                 cls.ITEM_ENUMS[entry[KEY_ORIGINAL]],
             )
-            minor_locs.append(loc)
+            minor_locs.append(minor_loc)
 
         return LocationSettings(major_locs, minor_locs)
 
     def set_assignments(self, data: Any) -> None:
-        for maj_loc in data[KEY_MAJOR_LOCS]:
+        for maj_loc_entry in data[KEY_MAJOR_LOCS]:
             # get source and item
-            source = self.SOURCE_ENUMS[maj_loc[KEY_SOURCE]]
-            item = self.ITEM_ENUMS[maj_loc[KEY_ITEM]]
+            source = self.SOURCE_ENUMS[maj_loc_entry[KEY_SOURCE]]
+            item = self.ITEM_ENUMS[maj_loc_entry[KEY_ITEM]]
             # find location with this source
-            loc = next(m for m in self.major_locs if m.major_src == source)
-            loc.new_item = item
+            maj_loc = next(m for m in self.major_locs if m.major_src == source)
+            maj_loc.new_item = item
 
-        for min_loc in data[KEY_MINOR_LOCS]:
+        for min_loc_entry in data[KEY_MINOR_LOCS]:
             # get area, room, block X, block Y, item
-            area = min_loc[KEY_AREA]
-            room = min_loc[KEY_ROOM]
-            block_x = min_loc[KEY_BLOCK_X]
-            block_y = min_loc[KEY_BLOCK_Y]
-            item = self.ITEM_ENUMS[min_loc[KEY_ITEM]]
+            area = min_loc_entry[KEY_AREA]
+            room = min_loc_entry[KEY_ROOM]
+            block_x = min_loc_entry[KEY_BLOCK_X]
+            block_y = min_loc_entry[KEY_BLOCK_Y]
+            item = self.ITEM_ENUMS[min_loc_entry[KEY_ITEM]]
             # find location with this source
             try:
-                loc = next(
+                min_loc = next(
                     m
                     for m in self.minor_locs
                     if m.area == area
@@ -242,4 +242,4 @@ class LocationSettings:
                 raise ValueError(
                     f"Invalid minor location: Area {area}, Room {room}, X {block_x}, Y {block_y}"
                 )
-            loc.new_item = item
+            min_loc.new_item = item

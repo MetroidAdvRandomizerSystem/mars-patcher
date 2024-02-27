@@ -82,7 +82,7 @@ class RgbColor:
 
         # get saturation
         if v == 0:
-            s = 0
+            s = 0.0
         else:
             s = c_range / v
 
@@ -191,17 +191,17 @@ class HsvColor:
         x = c * (1 - abs(hp % 2 - 1))
 
         if hp < 1:
-            rgb = (c, x, 0)
+            rgb = (c, x, 0.0)
         elif hp < 2:
-            rgb = (x, c, 0)
+            rgb = (x, c, 0.0)
         elif hp < 3:
-            rgb = (0, c, x)
+            rgb = (0.0, c, x)
         elif hp < 4:
-            rgb = (0, x, c)
+            rgb = (0.0, x, c)
         elif hp < 5:
-            rgb = (x, 0, c)
+            rgb = (x, 0.0, c)
         else:
-            rgb = (c, 0, x)
+            rgb = (c, 0.0, x)
 
         m = self.value - c
         factor = RgbColor.FACTOR

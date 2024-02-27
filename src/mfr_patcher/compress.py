@@ -6,8 +6,7 @@ def decomp_rle(input: bytes, idx: int) -> Tuple[bytearray, int]:
     Decompresses RLE data and returns it with the size of the compressed data.
     """
     src_start = idx
-    passes = []
-    half = None
+    passes = bytearray()
     # for each pass
     for p in range(2):
         if p == 1:
@@ -100,7 +99,7 @@ def comp_rle(input: bytes) -> bytearray:
         counts.append(count)
 
         # try each read length (1 or 2)
-        shortest = None
+        shortest: bytearray | None = None
         for r in range(2):
             temp = bytearray()
             min_run_len = 3 + r
@@ -142,5 +141,7 @@ def comp_rle(input: bytes) -> bytearray:
                 temp.append(0)
             if shortest is None or len(temp) < len(shortest):
                 shortest = temp
+        if shortest is None:
+            raise ValueError()
         output += shortest
     return output

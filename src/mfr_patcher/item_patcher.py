@@ -33,9 +33,9 @@ class ItemPatcher:
         )
         prev_area_room = (-1, -1)
         room_tank_count = 0
-        for i, loc in enumerate(minor_locs):
+        for i, min_loc in enumerate(minor_locs):
             # update room tank count
-            area_room = (loc.area, loc.room)
+            area_room = (min_loc.area, min_loc.room)
             if area_room == prev_area_room:
                 room_tank_count += 1
             else:
@@ -44,11 +44,11 @@ class ItemPatcher:
             tank_slot = room_tank_count - 1
 
             # overwrite clipdata
-            room = RoomEntry(rom, loc.area, loc.room)
+            room = RoomEntry(rom, min_loc.area, min_loc.room)
             clip_addr = room.clip_addr()
-            val = HIDDEN_TANK_CLIP[tank_slot] if loc.hidden else TANK_CLIP[tank_slot]
-            self.write_block_val(clip_addr, loc.block_x, loc.block_y, val)
-            if not loc.hidden:
+            val = HIDDEN_TANK_CLIP[tank_slot] if min_loc.hidden else TANK_CLIP[tank_slot]
+            self.write_block_val(clip_addr, min_loc.block_x, min_loc.block_y, val)
+            if not min_loc.hidden:
                 # overwrite BG1
                 bg1_addr = room.bg1_addr()
                 # get tilemap
@@ -59,23 +59,23 @@ class ItemPatcher:
                 tile = TANK_TILE[tank_slot]
                 idx = next(i for i in range(16) if rom.read_8(addr + i * 8) == tile)
                 val = TANK_BG1_START + idx
-                self.write_block_val(bg1_addr, loc.block_x, loc.block_y, val)
+                self.write_block_val(bg1_addr, min_loc.block_x, min_loc.block_y, val)
 
             # write to minors table
             addr = MINOR_LOCS_ADDR + i * 4
-            assert rom.read_8(addr) == loc.block_x
-            assert rom.read_8(addr + 1) == loc.block_y
-            assert rom.read_8(addr + 2) == loc.orig_item.value
-            if loc.new_item != ItemType.UNDEFINED:
-                rom.write_8(addr + 2, loc.new_item.value)
-                rom.write_8(addr + 3, loc.new_item.value)
+            assert rom.read_8(addr) == min_loc.block_x
+            assert rom.read_8(addr + 1) == min_loc.block_y
+            assert rom.read_8(addr + 2) == min_loc.orig_item.value
+            if min_loc.new_item != ItemType.UNDEFINED:
+                rom.write_8(addr + 2, min_loc.new_item.value)
+                rom.write_8(addr + 3, min_loc.new_item.value)
 
         # handle major locations
-        for loc in self.settings.major_locs:
+        for maj_loc in self.settings.major_locs:
             # write to majors table
-            if loc.new_item != ItemType.UNDEFINED:
-                addr = MAJOR_LOCS_ADDR + loc.major_src.value
-                rom.write_8(addr, loc.new_item.value)
+            if maj_loc.new_item != ItemType.UNDEFINED:
+                addr = MAJOR_LOCS_ADDR + maj_loc.major_src.value
+                rom.write_8(addr, maj_loc.new_item.value)
 
     def write_block_val(self, block_addr: int, x: int, y: int, val: int) -> None:
         # get block data

@@ -175,6 +175,7 @@ class Rom:
             return 0x62
         elif self.game == Game.ZM:
             return 0x4F
+        raise ValueError(self.game)
 
     def starting_equipment_addr(self) -> int:
         """Returns the address of the starting equipment data."""
@@ -187,6 +188,7 @@ class Rom:
                 return 0x28F5B4
             elif self.region == Region.C:
                 return 0x28F5F8
+        raise NotImplementedError(self.game)
 
     def anim_palette_addr(self) -> int:
         """Returns the address of the animated palette entries."""
@@ -218,6 +220,7 @@ class Rom:
                 return 0x22
         elif self.game == Game.ZM:
             return 0x12
+        raise ValueError(self.game, self.region)
 
     def sprite_vram_size_addr(self) -> int:
         """Returns the address of the sprite VRAM sizes."""
@@ -230,6 +233,7 @@ class Rom:
                 return 0x2E6D58
             elif self.region == Region.C:
                 return 0x2E6D9C
+        raise NotImplementedError(self.game)
 
     def sprite_graphics_addr(self) -> int:
         """Returns the address of the sprite graphics pointers."""
@@ -251,6 +255,7 @@ class Rom:
                 return 0x75ED08
             elif self.region == Region.C:
                 return 0x79DDF0
+        raise ValueError(self.game, self.region)
 
     def sprite_palette_addr(self) -> int:
         """Returns the address of the sprite palette pointers."""
@@ -272,6 +277,7 @@ class Rom:
                 return 0x75F000
             elif self.region == Region.C:
                 return 0x79E0E8
+        raise ValueError(self.game, self.region)
 
     def sprite_count(self) -> int:
         """Returns the number of sprites in the game."""
@@ -279,6 +285,7 @@ class Rom:
             return 0xCF
         elif self.game == Game.ZM:
             return 0xCE
+        raise ValueError(self.game)
 
     def spriteset_addr(self) -> int:
         """Returns the address of the spriteset pointers."""
@@ -300,6 +307,7 @@ class Rom:
                 return 0x75F42C
             elif self.region == Region.C:
                 return 0x79E514
+        raise ValueError(self.game, self.region)
 
     def spriteset_count(self) -> int:
         """Returns the number of spritesets in the game."""
@@ -307,6 +315,7 @@ class Rom:
             return 0x82
         elif self.game == Game.ZM:
             return 0x72
+        raise ValueError(self.game)
 
     def samus_palettes(self) -> List[Tuple[int, int]]:
         """Returns a list of (address, row count) pairs."""
@@ -328,8 +337,9 @@ class Rom:
                 return [(0x237704, 0xA3)]
             elif self.region == Region.C:
                 return [(0x250E94, 0xA3)]
+        raise ValueError(self.game, self.region)
 
-    def file_select_helmet_palettes(self) -> Tuple[int, int]:
+    def file_select_helmet_palettes(self) -> List[Tuple[int, int]]:
         """Returns a list of (address, row count) pairs."""
         if self.game == Game.MF:
             if self.region == Region.U:
@@ -349,8 +359,9 @@ class Rom:
                 return [(0x454994, 0x1), (0x454A14, 0x1)]
             elif self.region == Region.C:
                 return [(0x4768FC, 0x1), (0x47697C, 0x1)]
+        raise ValueError(self.game, self.region)
 
-    def beam_palettes(self) -> Tuple[int, int]:
+    def beam_palettes(self) -> List[Tuple[int, int]]:
         """Returns a list of (address, row count) pairs."""
         if self.game == Game.MF:
             if self.region == Region.U:
@@ -370,6 +381,7 @@ class Rom:
                 return [(0x327144, 0x6)]
             elif self.region == Region.C:
                 return [(0x3408D4, 0x6)]
+        raise ValueError(self.game, self.region)
 
     def tourian_statues_cutscene_palette(self) -> int:
         """Returns the address of the palette used for the Tourian statue cutscenes."""
@@ -382,6 +394,7 @@ class Rom:
                 return 0x3ED598
             elif self.region == Region.C:
                 return 0x406D28
+        raise ValueError(self.game)
 
     def file_screen_text(self) -> int:
         """Returns the address of the file screen text pointers."""
@@ -392,6 +405,7 @@ class Rom:
                 return 0x79F4C4
             elif self.region == Region.J:
                 return 0x7F13FC
+        raise ValueError(self.game)
 
     def character_widths_addr(self) -> int:
         """Returns the address of the character width array."""
@@ -413,6 +427,7 @@ class Rom:
                 return 0x40D80C
             elif self.region == Region.C:
                 return 0x42F34C
+        raise ValueError(self.game, self.region)
 
     def navigation_text(self) -> int:
         """Returns the address of the navigation room text pointers."""
@@ -425,3 +440,4 @@ class Rom:
                 return 0x7EE7A0
             elif self.region == Region.C:
                 return 0x77DDF4
+        raise ValueError(self.game)
