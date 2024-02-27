@@ -1,4 +1,4 @@
-from mfr_patcher.rom import Rom
+from mars_patcher.rom import Rom
 
 
 class Tileset(object):

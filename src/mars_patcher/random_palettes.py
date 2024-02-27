@@ -3,9 +3,9 @@ import random
 from enum import Enum
 from typing import Any, Dict, List, Tuple
 
-from mfr_patcher.data import get_data_path
-from mfr_patcher.palette import Palette
-from mfr_patcher.rom import Rom
+from mars_patcher.data import get_data_path
+from mars_patcher.palette import Palette
+from mars_patcher.rom import Rom
 
 
 class PaletteType(Enum):

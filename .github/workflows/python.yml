@@ -14,7 +14,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build MFR and Python Wheel
+    name: Build MARS patcher and Python Wheel
 
     steps:
       - name: Checkout

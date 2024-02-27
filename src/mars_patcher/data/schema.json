@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Metroid Fusion patching schema",
-    "description": "A json schema describing the input for patching Metroid Fusion via mfr_patcher.",
+    "description": "A json schema describing the input for patching Metroid Fusion via mars_patcher.",
     "type": "object",
     "properties": {
         "SeedHash": {

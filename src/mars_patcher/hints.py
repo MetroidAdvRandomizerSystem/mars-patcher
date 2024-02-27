@@ -1,9 +1,9 @@
 from enum import Enum
 from typing import Any, Dict, List
 
-from mfr_patcher.locations import Location
-from mfr_patcher.rom import Rom
-from mfr_patcher.text import Language, encode_text
+from mars_patcher.locations import Location
+from mars_patcher.rom import Rom
+from mars_patcher.text import Language, encode_text
 
 HINT_TEXT_ADDR = 0x7FE000
 HINT_TEXT_END = 0x7FF000

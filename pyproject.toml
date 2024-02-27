@@ -3,7 +3,7 @@ requires = ["setuptools>=62.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mfr_patcher"
+name = "mars_patcher"
 version = "0.0.1"
 authors = [
     {name = "biospark"},
@@ -34,11 +34,11 @@ typing = [
 ]
 
 [project.urls]
-Repository = "https://github.com/biosp4rk/mfr_patcher"
+Repository = "https://github.com/biosp4rk/mars-patcher"
 
 # Entry Points for PyInstaller
 [project.entry-points."pyinstaller40"]
-hook-dirs = "mfr_patcher.__pyinstaller:get_hook_dirs"
+hook-dirs = "mars_patcher.__pyinstaller:get_hook_dirs"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -50,7 +50,7 @@ namespaces = false
 
 [tool.setuptools.package-data]
 "*" = ["data/**"]
-"mfr_patcher.data" = ["**"]
+"mars_patcher.data" = ["**"]
 
 [tool.ruff]
 line-length = 100
@@ -59,7 +59,7 @@ src = ["src"]
 
 [tool.mypy]
 files = [
-    "src/mfr_patcher/"
+    "src/mars_patcher/"
 ]
 follow_imports = "silent"
 disallow_untyped_defs = true

@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import List
 
-from mfr_patcher.rom import Rom
+from mars_patcher.rom import Rom
 
 
 CHARS = {

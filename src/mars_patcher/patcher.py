@@ -3,13 +3,13 @@ from typing import Callable
 
 from jsonschema import validate
 
-from mfr_patcher.data import get_data_path
-from mfr_patcher.hints import Hints
-from mfr_patcher.item_patcher import ItemPatcher, set_starting_items, set_tank_increments
-from mfr_patcher.locations import LocationSettings
-from mfr_patcher.random_palettes import PaletteRandomizer, PaletteSettings
-from mfr_patcher.rom import Rom
-from mfr_patcher.text import write_seed_hash
+from mars_patcher.data import get_data_path
+from mars_patcher.hints import Hints
+from mars_patcher.item_patcher import ItemPatcher, set_starting_items, set_tank_increments
+from mars_patcher.locations import LocationSettings
+from mars_patcher.random_palettes import PaletteRandomizer, PaletteSettings
+from mars_patcher.rom import Rom
+from mars_patcher.text import write_seed_hash
 
 
 def patch(input_path: str,

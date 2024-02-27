@@ -2,7 +2,7 @@ import json
 from enum import Enum
 from typing import Any, List
 
-from mfr_patcher.data import get_data_path
+from mars_patcher.data import get_data_path
 
 
 class MajorSource(Enum):

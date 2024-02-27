@@ -3,8 +3,8 @@ import json
 import random
 from typing import Dict, List
 
-from mfr_patcher.data import get_data_path
-from mfr_patcher.rom import Rom
+from mars_patcher.data import get_data_path
+from mars_patcher.rom import Rom
 
 
 class EnemyType(Enum):

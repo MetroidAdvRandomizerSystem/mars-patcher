@@ -1,6 +1,6 @@
 import argparse
 
-from mfr_patcher.patcher import patch
+from mars_patcher.patcher import patch
 
 
 def main():
