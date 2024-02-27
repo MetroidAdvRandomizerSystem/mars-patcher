@@ -57,7 +57,7 @@ class Hints:
             hints[lang] = {cls.NAV_ROOM_ENUMS[k]: v for k, v in lang_hints.items()}
         return cls(hints)
 
-    def write(self, rom: Rom):
+    def write(self, rom: Rom) -> None:
         for lang, lang_hints in self.hints.items():
             navigation_text = rom.read_ptr(rom.navigation_text() + lang.value * 4)
             text_addr = HINT_TEXT_ADDR

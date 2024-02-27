@@ -16,7 +16,7 @@ def patch(input_path: str,
           output_path: str,
           patch_data_path: str,
           status_update: Callable[[float, str], None]
-          ):
+          ) -> None:
     # load input rom
     rom = Rom(input_path)
 

@@ -58,7 +58,7 @@ class ItemType(Enum):
     ENERGY_TANK = 24
     POWER_BOMB_TANK = 25
 
-    def __le__(self, other) -> bool:
+    def __le__(self, other: Any) -> bool:
         if isinstance(other, ItemType):
             return self.value <= other.value
         return NotImplemented

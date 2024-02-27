@@ -14,7 +14,7 @@ class Palette:
             color = RgbColor.from_rgb(rgb, RgbBitSize.Rgb5)
             self.colors.append(color)
 
-    def __getitem__(self, key) -> RgbColor:
+    def __getitem__(self, key: int) -> RgbColor:
         return self.colors[key]
 
     def byte_data(self) -> bytes:

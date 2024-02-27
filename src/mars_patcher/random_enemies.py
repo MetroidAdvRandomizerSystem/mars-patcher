@@ -26,7 +26,7 @@ TYPE_ENUMS = {
 }
 
 
-def randomize_enemies(rom: Rom):
+def randomize_enemies(rom: Rom) -> None:
     # setup enemy types dictionary
     with open(get_data_path("enemy_types.json")) as f:
         data = json.load(f)

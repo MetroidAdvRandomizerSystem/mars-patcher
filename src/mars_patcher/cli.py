@@ -3,7 +3,7 @@ import argparse
 from mars_patcher.patcher import patch
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("rom_path", type=str, help="Path to a GBA ROM file")
     parser.add_argument("out_path", type=str, help="Path to output ROM file")

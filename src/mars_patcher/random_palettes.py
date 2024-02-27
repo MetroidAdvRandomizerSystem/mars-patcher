@@ -198,7 +198,7 @@ class PaletteRandomizer:
         self.shift_func(pal, shift)
         pal.write(rom, pal_addr)
 
-    def get_enemy_groups(self) -> Dict[str, List[int]]:
+    def get_enemy_groups(self) -> Any:
         with open(get_data_path("enemy_groups.json")) as f:
             data = json.load(f)
         return data[self.rom.game.name]
