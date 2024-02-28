@@ -113,7 +113,7 @@ SUIT_MISC_FLAGS = {
 }
 
 
-def set_starting_items(rom: Rom, data: dict) -> None:
+def set_starting_items(rom: Rom, data: Dict) -> None:
     def get_ability_flags(ability_flags: Dict[str, int]) -> int:
         status = 0
         for ability, flag in ability_flags.items():
@@ -156,7 +156,7 @@ def set_starting_items(rom: Rom, data: dict) -> None:
 
 
 # TODO: move this?
-def set_tank_increments(rom: Rom, data: dict) -> None:
+def set_tank_increments(rom: Rom, data: Dict) -> None:
     rom.write_16(TANK_INC_ADDR, data["MissileTank"])
     rom.write_16(TANK_INC_ADDR + 2, data["EnergyTank"])
     rom.write_16(TANK_INC_ADDR + 4, data["PowerBombTank"])

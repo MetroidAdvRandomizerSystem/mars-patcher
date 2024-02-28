@@ -4,8 +4,11 @@ from typing import Dict
 from mars_patcher.rom import Rom
 from mars_patcher.text import Language, encode_text
 
+
+# keep these in sync with base patch
 HINT_TEXT_ADDR = 0x7FE000
 HINT_TEXT_END = 0x7FF000
+
 
 class NavRoom(Enum):
     MAIN_DECK_WEST = 1
@@ -19,6 +22,7 @@ class NavRoom(Enum):
     SECTOR6_ENTRANCE = 9
     AUXILIARY_POWER = 10
     RESTRICTED_LABS = 11
+
 
 class Hints:
     LANG_ENUMS = {
@@ -49,7 +53,7 @@ class Hints:
         self.hints = hints
 
     @classmethod
-    def from_json(cls, data: dict) -> "Hints":
+    def from_json(cls, data: Dict) -> "Hints":
         hints = {}
         for lang, lang_hints in data.items():
             lang = cls.LANG_ENUMS[lang]
