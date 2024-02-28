@@ -1,5 +1,5 @@
 import math
-from typing import List
+from typing import List, Set
 
 from mars_patcher.color_spaces import RgbBitSize, RgbColor
 from mars_patcher.rom import Rom
@@ -17,6 +17,9 @@ class Palette:
     def __getitem__(self, key: int) -> RgbColor:
         return self.colors[key]
 
+    def rows(self) -> int:
+        return len(self.colors) // 16
+
     def byte_data(self) -> bytes:
         arr = bytearray()
         for color in self.colors:
@@ -29,38 +32,46 @@ class Palette:
         data = self.byte_data()
         rom.write_bytes(addr, data, 0, len(data))
 
-    def shift_hue_hsv(self, shift: int) -> None:
+    def shift_hue_hsv(self, shift: int, excluded_rows: Set[int]) -> None:
         """
         Shifts hue by the provided amount, measured in degrees.
         Uses HSV color space.
         """
         black = RgbColor.black()
         white = RgbColor.white_5()
-        for i in range(len(self.colors)):
-            # skip black and white
-            rgb = self.colors[i]
-            if rgb == black or rgb == white:
+        for row in range(self.rows()):
+            if row in excluded_rows:
                 continue
-            # get HSV and shift hue
-            orig_luma = rgb.luma()
-            hsv = rgb.hsv()
-            hsv.hue = (hsv.hue + shift) % 360
-            # get new RGB and rescale luma
-            rgb = hsv.rgb()
-            luma_ratio = orig_luma / rgb.luma()
-            rgb.red = min(int(rgb.red * luma_ratio), 255)
-            rgb.green = min(int(rgb.green * luma_ratio), 255)
-            rgb.blue = min(int(rgb.blue * luma_ratio), 255)
-            self.colors[i] = rgb
+            offset = row * 16
+            for i in range(16):
+                # skip black and white
+                rgb = self.colors[offset + i]
+                if rgb == black or rgb == white:
+                    continue
+                # get HSV and shift hue
+                orig_luma = rgb.luma()
+                hsv = rgb.hsv()
+                hsv.hue = (hsv.hue + shift) % 360
+                # get new RGB and rescale luma
+                rgb = hsv.rgb()
+                luma_ratio = orig_luma / rgb.luma()
+                rgb.red = min(int(rgb.red * luma_ratio), 255)
+                rgb.green = min(int(rgb.green * luma_ratio), 255)
+                rgb.blue = min(int(rgb.blue * luma_ratio), 255)
+                self.colors[offset + i] = rgb
 
-    def shift_hue_oklab(self, shift: int) -> None:
+    def shift_hue_oklab(self, shift: int, excluded_rows: Set[int]) -> None:
         """
         Shifts hue by the provided amount, measured in degrees.
         Uses Oklab color space.
         """
         # convert shift to radians
         shift_rads = shift * (math.pi / 180)
-        for i in range(len(self.colors)):
-            rgb = self.colors[i]
-            lab = rgb.oklab().shift_hue(shift_rads)
-            self.colors[i] = lab.rgb()
+        for row in range(self.rows()):
+            if row in excluded_rows:
+                continue
+            offset = row * 16
+            for i in range(16):
+                rgb = self.colors[offset + i]
+                lab = rgb.oklab().shift_hue(shift_rads)
+                self.colors[offset + i] = lab.rgb()

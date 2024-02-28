@@ -1,11 +1,11 @@
 import json
 import random
 from enum import Enum
-from typing import List, Tuple
+from typing import List, Set, Tuple
 
 from mars_patcher.data import get_data_path
 from mars_patcher.palette import Palette
-from mars_patcher.rom import Rom
+from mars_patcher.rom import Game, Rom
 
 
 class PaletteType(Enum):
@@ -83,12 +83,12 @@ class PaletteRandomizer:
             self.shift_func = self.shift_palette_oklab
 
     @staticmethod
-    def shift_palette_hsv(pal: Palette, shift: int) -> None:
-        pal.shift_hue_hsv(shift)
+    def shift_palette_hsv(pal: Palette, shift: int, excluded_rows: Set[int] = set()) -> None:
+        pal.shift_hue_hsv(shift, excluded_rows)
 
     @staticmethod
-    def shift_palette_oklab(pal: Palette, shift: int) -> None:
-        pal.shift_hue_oklab(shift)
+    def shift_palette_oklab(pal: Palette, shift: int, excluded_rows: Set[int] = set()) -> None:
+        pal.shift_hue_oklab(shift, excluded_rows)
 
     def randomize(self) -> None:
         random.seed(self.settings.seed)
@@ -133,17 +133,25 @@ class PaletteRandomizer:
         ts_count = rom.tileset_count()
         randomized_pals = set()
 
-        for _ in range(ts_count):
+        for ts_id in range(ts_count):
+            # get tileset palette address
             pal_ptr = ts_addr + 4
             pal_addr = rom.read_ptr(pal_ptr)
             ts_addr += 0x14
             if pal_addr in randomized_pals:
                 continue
-            randomized_pals.add(pal_addr)
+            # get excluded palette rows
+            excluded_rows = set()
+            if rom.game == Game.MF:
+                row = MF_TILESET_ALT_PAL_ROWS.get(ts_id)
+                if row is not None:
+                    excluded_rows = {row}
+            # load palette and shift hue
             pal = Palette(13, rom, pal_addr)
             shift = self.get_hue_shift()
-            self.shift_func(pal, shift)
+            self.shift_func(pal, shift, excluded_rows)
             pal.write(rom, pal_addr)
+            randomized_pals.add(pal_addr)
 
         # animated palettes
         anim_pal_addr = rom.anim_palette_addr()
@@ -241,3 +249,41 @@ class PaletteRandomizer:
             # fix cutscene
             sp_addr = self.rom.tourian_statues_cutscene_palette()
             self.rom.copy_bytes(ts_addr, sp_addr, 0xC0)
+
+
+# TODO: move this
+MF_TILESET_ALT_PAL_ROWS = {
+    0x08: 0xD,
+    0x09: 0xD,
+    0x0B: 0xB,
+    0x0E: 0xA,
+    0x12: 0xD,
+    0x13: 0xD,
+    0x19: 0xD,
+    0x1B: 0xD,
+    0x1E: 0xB,
+    0x1F: 0xD,
+    0x20: 0xD,
+    0x21: 0xD,
+    0x22: 0xD,
+    0x28: 0xC,
+    0x29: 0xB,
+    0x2A: 0xC,
+    0x2B: 0xC,
+    0x2F: 0xC,
+    0x30: 0xD,
+    0x31: 0xD,
+    0x34: 0xD,
+    0x38: 0xC,
+    0x3D: 0xD,
+    0x3E: 0xB,
+    0x40: 0xD,
+    0x43: 0xC,
+    0x48: 0xD,
+    0x54: 0xD,
+    0x56: 0xC,
+    0x57: 0xD,
+    0x58: 0xD,
+    0x5B: 0xD,
+    0x5E: 0xD
+}
