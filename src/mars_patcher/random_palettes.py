@@ -1,7 +1,7 @@
 import json
 import random
 from enum import Enum
-from typing import Any, Dict, List, Tuple
+from typing import List, Tuple
 
 from mars_patcher.data import get_data_path
 from mars_patcher.palette import Palette
@@ -48,7 +48,7 @@ class PaletteSettings:
         self.color_space = color_space
 
     @classmethod
-    def from_json(cls, data: Any) -> "PaletteSettings":
+    def from_json(cls, data: dict) -> "PaletteSettings":
         seed = data.get("Seed", random.randint(0, 2**31 - 1))
         random.seed(seed)
         pal_types = [cls.PAL_TYPE_ENUMS[t] for t in data["Randomize"]]
@@ -203,9 +203,9 @@ class PaletteRandomizer:
         self.shift_func(pal, shift)
         pal.write(rom, pal_addr)
 
-    def get_enemy_groups(self) -> Any:
+    def get_enemy_groups(self) -> dict:
         with open(get_data_path("enemy_groups.json")) as f:
-            data = json.load(f)
+            data: dict[str, dict] = json.load(f)
         return data[self.rom.game.name]
 
     def get_sprite_addr(self, sprite_id: int) -> int:
