@@ -17,15 +17,20 @@ class PaletteType(Enum):
 
 class ColorSpace(Enum):
     HSV = 1
-    LAB = 2
+    OKLAB = 2
 
 
 class PaletteSettings:
-    TYPE_ENUMS = {
+    PAL_TYPE_ENUMS = {
         "Tilesets": PaletteType.TILESETS,
         "Enemies": PaletteType.ENEMIES,
         "Samus": PaletteType.SAMUS,
         "Beams": PaletteType.BEAMS,
+    }
+
+    COLOR_SPACE_ENUMS = {
+        "HSV": ColorSpace.HSV,
+        "Oklab": ColorSpace.OKLAB
     }
 
     def __init__(
@@ -46,7 +51,7 @@ class PaletteSettings:
     def from_json(cls, data: Any) -> "PaletteSettings":
         seed = data.get("Seed", random.randint(0, 2**31 - 1))
         random.seed(seed)
-        pal_types = [cls.TYPE_ENUMS[t] for t in data["Randomize"]]
+        pal_types = [cls.PAL_TYPE_ENUMS[t] for t in data["Randomize"]]
         hue_min = data.get("HueMin")
         hue_max = data.get("HueMax")
         if hue_min is None or hue_max is None:
@@ -60,9 +65,9 @@ class PaletteSettings:
         if hue_min > hue_max:
             raise ValueError("HueMin cannot be greater than HueMax")
         if "ColorSpace" in data:
-            color_space = ColorSpace[data["ColorSpace"]]
+            color_space = cls.COLOR_SPACE_ENUMS[data["ColorSpace"]]
         else:
-            color_space = ColorSpace.LAB
+            color_space = ColorSpace.OKLAB
         return cls(seed, pal_types, hue_min, hue_max, color_space)
 
 
@@ -74,16 +79,16 @@ class PaletteRandomizer:
         self.settings = settings
         if settings.color_space == ColorSpace.HSV:
             self.shift_func = self.shift_palette_hsv
-        elif settings.color_space == ColorSpace.LAB:
-            self.shift_func = self.shift_palette_lab
+        elif settings.color_space == ColorSpace.OKLAB:
+            self.shift_func = self.shift_palette_oklab
 
     @staticmethod
     def shift_palette_hsv(pal: Palette, shift: int) -> None:
         pal.shift_hue_hsv(shift)
 
     @staticmethod
-    def shift_palette_lab(pal: Palette, shift: int) -> None:
-        pal.shift_hue_lab(shift)
+    def shift_palette_oklab(pal: Palette, shift: int) -> None:
+        pal.shift_hue_oklab(shift)
 
     def randomize(self) -> None:
         random.seed(self.settings.seed)

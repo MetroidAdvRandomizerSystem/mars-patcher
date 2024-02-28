@@ -184,8 +184,8 @@
                 "ColorSpace": {
                     "type": "string",
                     "description": "The color space to use for rotating palette hues.",
-                    "enum": ["HSV", "LAB"],
-                    "default": "LAB"
+                    "enum": ["HSV", "Oklab"],
+                    "default": "Oklab"
                 }
             },
             "required": ["Randomize"],

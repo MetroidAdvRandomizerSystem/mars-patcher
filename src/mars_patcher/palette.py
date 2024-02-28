@@ -53,14 +53,14 @@ class Palette:
             rgb.blue = min(int(rgb.blue * luma_ratio), 255)
             self.colors[i] = rgb
 
-    def shift_hue_lab(self, shift: int) -> None:
+    def shift_hue_oklab(self, shift: int) -> None:
         """
         Shifts hue by the provided amount, measured in degrees.
-        Uses LAB color space.
+        Uses Oklab color space.
         """
         # convert shift to radians
         shift_rads = shift * (math.pi / 180)
         for i in range(len(self.colors)):
             rgb = self.colors[i]
-            lab = rgb.lab().shift_hue(shift_rads)
+            lab = rgb.oklab().shift_hue(shift_rads)
             self.colors[i] = lab.rgb()

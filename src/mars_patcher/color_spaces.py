@@ -88,28 +88,26 @@ class RgbColor:
 
         return HsvColor(h, s, v)
 
-    def lab(self) -> "LabColor":
-        # convert to linear rgb
-        r = self.scale_rgb(self.r_fraction())
-        g = self.scale_rgb(self.g_fraction())
-        b = self.scale_rgb(self.b_fraction())
+    def oklab(self) -> "OklabColor":
+        # convert to linear RGB
+        rl = self.srgb_to_linear(self.r_fraction())
+        gl = self.srgb_to_linear(self.g_fraction())
+        bl = self.srgb_to_linear(self.b_fraction())
 
-        # convert to xyz
-        x = r * 0.4124 + g * 0.3576 + b * 0.1805
-        y = r * 0.2126 + g * 0.7152 + b * 0.0722
-        z = r * 0.0193 + g * 0.1192 + b * 0.9505
+        # convert to LMS
+        lg = 0.4122214708 * rl + 0.5363325363 * gl + 0.0514459929 * bl
+        md = 0.2119034982 * rl + 0.6806995451 * gl + 0.1073969566 * bl
+        st = 0.0883024619 * rl + 0.2817188376 * gl + 0.6299787005 * bl
 
-        # reference illuminant
-        x /= 0.950489
-        # y /= 1
-        z /= 1.088840
+        lg = lg**(1/3)
+        md = md**(1/3)
+        st = st**(1/3)
 
-        # scale xyz
-        x = self.scale_xyz(x)
-        y = self.scale_xyz(y)
-        z = self.scale_xyz(z)
-
-        return LabColor(116 * y - 16, 500 * (x - y), 200 * (y - z))
+        return OklabColor(
+            0.2104542553 * lg + 0.7936177850 * md - 0.0040720468 * st,
+            1.9779984951 * lg - 2.4285922050 * md + 0.4505937099 * st,
+            0.0259040371 * lg + 0.7827717662 * md - 0.8086757660 * st
+        )
 
     def luma(self) -> float:
         return 0.299 * self.red + 0.587 * self.green + 0.114 * self.blue
@@ -150,22 +148,17 @@ class RgbColor:
         return RgbColor.from_rgb(0x7FFF, RgbBitSize.Rgb5)
 
     @staticmethod
-    def scale_rgb(value: float) -> float:
+    def srgb_to_linear(value: float) -> float:
         if value > 0.04045:
             return math.pow((value + 0.055) / 1.055, 2.4)
         return value / 12.92
-
-    @staticmethod
-    def scale_xyz(value: float) -> float:
-        if value > 0.008856:
-            return math.pow(value, 0.333333)
-        return 7.78704 * value + 0.137931
 
 
 class HsvColor:
     """
     Color represented as HSV, where 0 <= hue <= 360,
     0 <= saturation <= 1, and 0 <= value <= 1.
+    See https://en.wikipedia.org/wiki/HSL_and_HSV
     """
 
     def __init__(self, hue: float, saturation: float, value: float):
@@ -211,10 +204,11 @@ class HsvColor:
         return RgbColor(r, g, b, RgbBitSize.Rgb8)
 
 
-class LabColor:
+class OklabColor:
     """
-    Color represented as LAB, where 0 <= L <= 100,
-    A and B are typically between -100 and 100.
+    Color represented as Oklab, where 0.0 <= L <= 1.0,
+    and A and B are typically between -0.4 and 0.4.
+    See https://bottosson.github.io/posts/oklab/
     """
 
     def __init__(self, L: float, A: float, B: float):
@@ -223,7 +217,7 @@ class LabColor:
         self.b_star = B
 
     def __eq__(self, other: Any) -> bool:
-        if isinstance(other, LabColor):
+        if isinstance(other, OklabColor):
             return (
                 self.l_star == other.l_star
                 and self.a_star == other.a_star
@@ -235,30 +229,24 @@ class LabColor:
         return hash(self.l_star) ^ hash(self.a_star) ^ hash(self.b_star)
 
     def rgb(self) -> RgbColor:
-        # convert to XYZ
-        y = (self.l_star + 16) / 116
-        x = self.a_star / 500 + y
-        z = y - self.b_star / 200
+        # convert to LMS
+        lg = self.l_star + 0.3963377774 * self.a_star + 0.2158037573 * self.b_star
+        md = self.l_star - 0.1055613458 * self.a_star - 0.0638541728 * self.b_star
+        st = self.l_star - 0.0894841775 * self.a_star - 1.2914855480 * self.b_star
 
-        # scale XYZ
-        x = self.scale_xyz(x)
-        y = self.scale_xyz(y)
-        z = self.scale_xyz(z)
+        lg = lg**3
+        md = md**3
+        st = st**3
 
-        # reference illuminant
-        x *= 0.950489
-        # y *= 1
-        z *= 1.088840
-
-        # convert to RGB linear
-        rf = x * 3.2406 + y * -1.5372 + z * -0.4986
-        gf = x * -0.9689 + y * 1.8758 + z * 0.0415
-        bf = x * 0.0557 + y * -0.2040 + z * 1.0570
-
-        # gamma coorection
-        rf = self.scale_rgb(rf)
-        gf = self.scale_rgb(gf)
-        bf = self.scale_rgb(bf)
+        # convert to linear RGB
+        rl = +4.0767416621 * lg - 3.3077115913 * md + 0.2309699292 * st
+        gl = -1.2684380046 * lg + 2.6097574011 * md - 0.3413193965 * st
+        bl = -0.0041960863 * lg - 0.7034186147 * md + 1.7076147010 * st
+        
+        # convert to sRGB
+        rf = self.linear_to_srgb(rl)
+        gf = self.linear_to_srgb(gl)
+        bf = self.linear_to_srgb(bl)
 
         r = int(round(rf * 255))
         g = int(round(gf * 255))
@@ -278,7 +266,7 @@ class LabColor:
         neutral gray of the same lightness."""
         return math.sqrt(self.a_star * self.a_star + self.b_star * self.b_star)
 
-    def shift_hue(self, shift: float) -> "LabColor":
+    def shift_hue(self, shift: float) -> "OklabColor":
         """Shifts hue by the provided amount, measured in radians."""
         # get hue in range 0 to 2pi
         hue = self.hue() + math.pi
@@ -290,16 +278,10 @@ class LabColor:
         chroma = self.chroma()
         a = chroma * math.cos(hue)
         b = chroma * math.sin(hue)
-        return LabColor(self.l_star, a, b)
+        return OklabColor(self.l_star, a, b)
 
     @staticmethod
-    def scale_xyz(value: float) -> float:
-        if value > 0.206897:
-            return math.pow(value, 3)
-        return (value - 0.137931) / 7.78704
-
-    @staticmethod
-    def scale_rgb(value: float) -> float:
+    def linear_to_srgb(value: float) -> float:
         if value > 0.0031308:
-            return 1.055 * math.pow(value, 1 / 2.4) - 0.055
+            return 1.055 * math.pow(value, 1.0 / 2.4) - 0.055
         return value * 12.92
