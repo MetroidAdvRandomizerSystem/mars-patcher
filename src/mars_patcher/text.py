@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import List
 
+from mars_patcher.constants.game_data import character_widths, file_screen_text_ptrs
 from mars_patcher.rom import Rom
 
 
@@ -124,7 +125,7 @@ def parse_escape_expr(expr: str) -> int:
 
 
 def encode_text(rom: Rom, string: str, max_width: int) -> List[int]:
-    char_widths = rom.character_widths_addr()
+    char_widths = character_widths(rom)
     text = []
     line_width = 0
     line_number = 0
@@ -185,7 +186,7 @@ def encode_text(rom: Rom, string: str, max_width: int) -> List[int]:
 
 
 def write_seed_hash(rom: Rom, seed_hash: str) -> None:
-    lang_ptrs = rom.file_screen_text()
+    lang_ptrs = file_screen_text_ptrs(rom)
     for lang in Language:
         # get address of first text entry
         text_ptrs = rom.read_ptr(lang_ptrs + lang.value * 4)

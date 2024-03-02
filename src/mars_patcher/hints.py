@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import Dict
 
+from mars_patcher.constants.game_data import navigation_text_ptrs
 from mars_patcher.rom import Rom
 from mars_patcher.text import Language, encode_text
 
@@ -62,7 +63,7 @@ class Hints:
 
     def write(self, rom: Rom) -> None:
         for lang, lang_hints in self.hints.items():
-            navigation_text = rom.read_ptr(rom.navigation_text() + lang.value * 4)
+            navigation_text = rom.read_ptr(navigation_text_ptrs(rom) + lang.value * 4)
             text_addr = HINT_TEXT_ADDR
 
             for nav_room, hint in lang_hints.items():

@@ -1,10 +1,11 @@
+from mars_patcher.constants.game_data import area_room_entry_ptrs
 from mars_patcher.rom import Rom
 
 
 class RoomEntry(object):
     def __init__(self, rom: Rom, area: int, room: int):
         self.rom = rom
-        self.addr = rom.read_ptr(rom.room_entry_addr() + area * 4) + room * 0x3C
+        self.addr = rom.read_ptr(area_room_entry_ptrs(rom) + area * 4) + room * 0x3C
 
     def tileset(self) -> int:
         return self.rom.read_8(self.addr)

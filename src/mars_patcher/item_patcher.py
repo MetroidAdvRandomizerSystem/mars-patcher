@@ -1,6 +1,8 @@
 from typing import Dict
 
 from mars_patcher.compress import comp_rle, decomp_rle
+from mars_patcher.constants.game_data import starting_equipment
+from mars_patcher.constants.items import BEAM_FLAGS, MISSILE_BOMB_FLAGS, SUIT_MISC_FLAGS
 from mars_patcher.locations import ItemType, ItemSprite, LocationSettings
 from mars_patcher.rom import Rom
 from mars_patcher.room_entry import RoomEntry
@@ -93,28 +95,6 @@ class ItemPatcher:
         self.rom.write_bytes(block_addr + 2, comp_data, 0, len(comp_data))
 
 
-# TODO: move this?
-BEAM_FLAGS = {"ChargeBeam": 1, "WideBeam": 2, "PlasmaBeam": 4, "WaveBeam": 8, "IceBeam": 0x10}
-MISSILE_BOMB_FLAGS = {
-    "Missiles": 1,
-    "SuperMissiles": 2,
-    "IceMissiles": 4,
-    "DiffusionMissiles": 8,
-    "Bombs": 0x10,
-    "PowerBombs": 0x20,
-}
-SUIT_MISC_FLAGS = {
-    "HiJump": 1,
-    "SpeedBooster": 2,
-    "SpaceJump": 4,
-    "ScrewAttack": 8,
-    "VariaSuit": 0x10,
-    "GravitySuit": 0x20,
-    "MorphBall": 0x40,
-    "SaxSuit": 0x80,
-}
-
-
 def set_starting_items(rom: Rom, data: Dict) -> None:
     def get_ability_flags(ability_flags: Dict[str, int]) -> int:
         status = 0
@@ -143,7 +123,7 @@ def set_starting_items(rom: Rom, data: Dict) -> None:
     for map in maps:
         map_status |= 1 << map
     # write to rom
-    addr = rom.starting_equipment_addr()
+    addr = starting_equipment(rom)
     rom.write_16(addr, energy)
     rom.write_16(addr + 2, energy)
     rom.write_16(addr + 4, missiles)

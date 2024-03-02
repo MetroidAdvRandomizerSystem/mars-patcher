@@ -1,39 +1,18 @@
 from enum import Enum
-import json
 import random
 from typing import Dict, List
 
-from mars_patcher.data import get_data_path
+from mars_patcher.constants.enemies import EnemyType, ENEMY_TYPES
+from mars_patcher.constants.game_data import sprite_vram_sizes, spriteset_ptrs, spriteset_count
 from mars_patcher.rom import Rom
-
-
-class EnemyType(Enum):
-    CRAWLING = 1
-    GROUND = 2
-    CEILING = 3
-    GROUND_CEILING = 4
-    WALL = 5
-    FLYING = 6
-
-
-TYPE_ENUMS = {
-    "Crawling": EnemyType.CRAWLING,
-    "Ground": EnemyType.GROUND,
-    "Ceiling": EnemyType.CEILING,
-    "GroundCeiling": EnemyType.GROUND_CEILING,
-    "Wall": EnemyType.WALL,
-    "Flying": EnemyType.FLYING
-}
 
 
 def randomize_enemies(rom: Rom) -> None:
     # setup enemy types dictionary
-    with open(get_data_path("enemy_types.json")) as f:
-        data = json.load(f)
-    enemy_types = {d["ID"]: TYPE_ENUMS[d["Type"]] for d in data}
-    
+    enemy_types = {k: v[1] for k, v in ENEMY_TYPES.items()}
+
     # get graphics info for each enemy
-    size_addr = rom.sprite_vram_size_addr()
+    size_addr = sprite_vram_sizes(rom)
     gfx_rows = {}
     for en_id in enemy_types:
         size = rom.read_32(size_addr + (en_id - 0x10) * 4)
@@ -54,9 +33,9 @@ def randomize_enemies(rom: Rom) -> None:
         # Ground, Ceiling, Wall, and Flying cannot replace others
     
     # randomize spritesets
-    spriteset_ptrs = rom.spriteset_addr()
-    for i in range(rom.spriteset_count()):
-        spriteset_addr = rom.read_ptr(spriteset_ptrs + i * 4)
+    ss_ptrs = spriteset_ptrs(rom)
+    for i in range(spriteset_count(rom)):
+        spriteset_addr = rom.read_ptr(ss_ptrs + i * 4)
         used_gfx_rows: Dict[int, int] = {}
         for j in range(0xF):
             addr = spriteset_addr + j * 2

@@ -1,9 +1,9 @@
-import json
 import random
 from enum import Enum
 from typing import Dict, List, Set, Tuple
 
-from mars_patcher.data import get_data_path
+import mars_patcher.constants.game_data as gd
+from mars_patcher.constants.palettes import MF_TILESET_ALT_PAL_ROWS, ENEMY_GROUPS
 from mars_patcher.palette import Palette
 from mars_patcher.rom import Game, Rom
 
@@ -120,17 +120,17 @@ class PaletteRandomizer:
 
     def randomize_samus(self) -> None:
         shift = self.get_hue_shift()
-        self.shift_palettes(self.rom.samus_palettes(), shift)
-        self.shift_palettes(self.rom.file_select_helmet_palettes(), shift)
+        self.shift_palettes(gd.samus_palettes(self.rom), shift)
+        self.shift_palettes(gd.file_select_helmet_palettes(self.rom), shift)
 
     def randomize_beams(self) -> None:
         shift = self.get_hue_shift()
-        self.shift_palettes(self.rom.beam_palettes(), shift)
+        self.shift_palettes(gd.beam_palettes(self.rom), shift)
 
     def randomize_tilesets(self) -> None:
         rom = self.rom
-        ts_addr = rom.tileset_addr()
-        ts_count = rom.tileset_count()
+        ts_addr = gd.tileset_entries(rom)
+        ts_count = gd.tileset_count(rom)
         randomized_pals = set()
 
         for ts_id in range(ts_count):
@@ -154,8 +154,8 @@ class PaletteRandomizer:
             randomized_pals.add(pal_addr)
 
         # animated palettes
-        anim_pal_addr = rom.anim_palette_addr()
-        anim_pal_count = rom.anim_palette_count()
+        anim_pal_addr = gd.anim_palette_entries(rom)
+        anim_pal_count = gd.anim_palette_count(rom)
         for _ in range(anim_pal_count):
             rows = rom.read_8(anim_pal_addr + 2)
             pal_addr = rom.read_ptr(anim_pal_addr + 4)
@@ -174,12 +174,12 @@ class PaletteRandomizer:
             excluded = set()
         elif rom.is_zm():
             excluded = {0x10, 0x11, 0x8A}
-        sprite_count = rom.sprite_count()
-        to_randomize = set(range(0x10, sprite_count))
+        sp_count = gd.sprite_count(rom)
+        to_randomize = set(range(0x10, sp_count))
         to_randomize -= excluded
 
         # go through sprites in groups
-        groups = self.get_enemy_groups()
+        groups = ENEMY_GROUPS[rom.game]
         for _, sprite_ids in groups.items():
             shift = self.get_hue_shift()
             for sprite_id in sprite_ids:
@@ -193,35 +193,30 @@ class PaletteRandomizer:
     def randomize_enemy(self, sprite_id: int, shift: int) -> None:
         rom = self.rom
         sprite_gfx_id = sprite_id - 0x10
-        pal_ptr = rom.sprite_palette_addr()
+        pal_ptr = gd.sprite_palette_ptrs(rom)
         pal_addr = rom.read_ptr(pal_ptr + sprite_gfx_id * 4)
         if rom.is_mf():
             if sprite_id == 0x4D or sprite_id == 0xBE:
                 # ice beam ability and zozoros only have 1 row, not 2
                 rows = 1
             else:
-                vram_size_addr = rom.sprite_vram_size_addr()
+                vram_size_addr = gd.sprite_vram_sizes(rom)
                 vram_size = rom.read_32(vram_size_addr + sprite_gfx_id * 4)
                 rows = vram_size // 0x800
         elif rom.is_zm():
-            gfx_ptr = rom.sprite_graphics_addr()
+            gfx_ptr = gd.sprite_graphics_ptrs(rom)
             gfx_addr = rom.read_ptr(gfx_ptr + sprite_gfx_id * 4)
             rows = (rom.read_32(gfx_addr) >> 8) // 0x800
         pal = Palette(rows, rom, pal_addr)
         self.shift_func(pal, shift)
         pal.write(rom, pal_addr)
 
-    def get_enemy_groups(self) -> Dict:
-        with open(get_data_path("enemy_groups.json")) as f:
-            data: Dict[str, Dict] = json.load(f)
-        return data[self.rom.game.name]
-
     def get_sprite_addr(self, sprite_id: int) -> int:
-        addr = self.rom.sprite_palette_addr() + (sprite_id - 0x10) * 4
+        addr = gd.sprite_palette_ptrs(self.rom) + (sprite_id - 0x10) * 4
         return self.rom.read_ptr(addr)
 
     def get_tileset_addr(self, sprite_id: int) -> int:
-        addr = self.rom.tileset_addr() + sprite_id * 0x14 + 4
+        addr = gd.tileset_entries(self.rom) + sprite_id * 0x14 + 4
         return self.rom.read_ptr(addr)
 
     def fix_zm_palettes(self) -> None:
@@ -247,43 +242,5 @@ class PaletteRandomizer:
             ts_addr = self.get_tileset_addr(0x41)
             self.rom.copy_bytes(ts_addr + 0x60, sp_addr, 0x20)
             # fix cutscene
-            sp_addr = self.rom.tourian_statues_cutscene_palette()
+            sp_addr = gd.tourian_statues_cutscene_palette(self.rom)
             self.rom.copy_bytes(ts_addr, sp_addr, 0xC0)
-
-
-# TODO: move this
-MF_TILESET_ALT_PAL_ROWS = {
-    0x08: 0xD,
-    0x09: 0xD,
-    0x0B: 0xB,
-    0x0E: 0xA,
-    0x12: 0xD,
-    0x13: 0xD,
-    0x19: 0xD,
-    0x1B: 0xD,
-    0x1E: 0xB,
-    0x1F: 0xD,
-    0x20: 0xD,
-    0x21: 0xD,
-    0x22: 0xD,
-    0x28: 0xC,
-    0x29: 0xB,
-    0x2A: 0xC,
-    0x2B: 0xC,
-    0x2F: 0xC,
-    0x30: 0xD,
-    0x31: 0xD,
-    0x34: 0xD,
-    0x38: 0xC,
-    0x3D: 0xD,
-    0x3E: 0xB,
-    0x40: 0xD,
-    0x43: 0xC,
-    0x48: 0xD,
-    0x54: 0xD,
-    0x56: 0xC,
-    0x57: 0xD,
-    0x58: 0xD,
-    0x5B: 0xD,
-    0x5E: 0xD
-}
