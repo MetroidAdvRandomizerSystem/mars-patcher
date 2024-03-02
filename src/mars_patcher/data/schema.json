@@ -59,6 +59,9 @@
                             },
                             "Item": {
                                 "$ref": "#/$defs/ValidItems"
+                            },
+                            "ItemSprite": {
+                                "$ref": "#/$defs/ValidItemSprites"
                             }
                         },
                         "required": ["Area", "Room", "BlockX", "BlockY", "Item"]
@@ -299,6 +302,41 @@
                 "MissileTank",
                 "EnergyTank",
                 "PowerBombTank"
+            ]
+        },
+        "ValidItemSprites": {
+            "type": "string",
+            "description": "Valid graphics for items.",
+            "enum": [
+                "Empty",
+                "Missiles",
+                "MorphBall",
+                "ChargeBeam",
+                "Level1",
+                "Bombs",
+                "HiJump",
+                "SpeedBooster",
+                "Level2",
+                "SuperMissiles",
+                "VariaSuit",
+                "Level3",
+                "IceMissiles",
+                "WideBeam",
+                "PowerBombs",
+                "SpaceJump",
+                "PlasmaBeam",
+                "GravitySuit",
+                "Level4",
+                "DiffusionMissiles",
+                "WaveBeam",
+                "ScrewAttack",
+                "IceBeam",
+                "MissileTank",
+                "EnergyTank",
+                "PowerBombTank",
+                "Anonymous",
+                "ShinyMissileTank",
+                "ShinyPowerBombTank"
             ]
         },
         "ValidAbilities": {

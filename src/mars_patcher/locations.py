@@ -64,6 +64,39 @@ class ItemType(Enum):
         return NotImplemented
 
 
+class ItemSprite(Enum):
+    UNCHANGED = -1
+    EMPTY = 0
+    MISSILES = 1
+    MORPH_BALL = 2
+    CHARGE_BEAM = 3
+    LEVEL_1 = 4
+    BOMBS = 5
+    HI_JUMP = 6
+    SPEED_BOOSTER = 7
+    LEVEL_2 = 8
+    SUPER_MISSILES = 9
+    VARIA_SUIT = 10
+    LEVEL_3 = 11
+    ICE_MISSILES = 12
+    WIDE_BEAM = 13
+    POWER_BOMBS = 14
+    SPACE_JUMP = 15
+    PLASMA_BEAM = 16
+    GRAVITY_SUIT = 17
+    LEVEL_4 = 18
+    DIFFUSION_MISSILES = 19
+    WAVE_BEAM = 20
+    SCREW_ATTACK = 21
+    ICE_BEAM = 22
+    MISSILE_TANK = 23
+    ENERGY_TANK = 24
+    POWER_BOMB_TANK = 25
+    ANONYMOUS = 26
+    SHINY_MISSILE_TANK = 27
+    SHINY_POWER_BOMB_TANK = 28
+
+
 class Location:
     def __init__(
         self, area: int, room: int, orig_item: ItemType, new_item: ItemType = ItemType.UNDEFINED
@@ -105,11 +138,13 @@ class MinorLocation(Location):
         hidden: bool,
         orig_item: ItemType,
         new_item: ItemType = ItemType.UNDEFINED,
+        item_sprite: ItemSprite = ItemSprite.UNCHANGED
     ):
         super().__init__(area, room, orig_item, new_item)
         self.block_x = block_x
         self.block_y = block_y
         self.hidden = hidden
+        self.item_sprite = item_sprite
 
 
 KEY_MAJOR_LOCS = "MajorLocations"
@@ -122,6 +157,7 @@ KEY_BLOCK_Y = "BlockY"
 KEY_HIDDEN = "Hidden"
 KEY_ORIGINAL = "Original"
 KEY_ITEM = "Item"
+KEY_ITEM_SPRITE = "ItemSprite"
 
 
 class LocationSettings:
@@ -179,6 +215,38 @@ class LocationSettings:
         "PowerBombTank": ItemType.POWER_BOMB_TANK,
     }
 
+    ITEM_SPRITE_ENUMS = {
+        "Empty": ItemSprite.EMPTY,
+        "Missiles": ItemSprite.MISSILES,
+        "MorphBall": ItemSprite.MORPH_BALL,
+        "ChargeBeam": ItemSprite.CHARGE_BEAM,
+        "Level1": ItemSprite.LEVEL_1,
+        "Bombs": ItemSprite.BOMBS,
+        "HiJump": ItemSprite.HI_JUMP,
+        "SpeedBooster": ItemSprite.SPEED_BOOSTER,
+        "Level2": ItemSprite.LEVEL_2,
+        "SuperMissiles": ItemSprite.SUPER_MISSILES,
+        "VariaSuit": ItemSprite.VARIA_SUIT,
+        "Level3": ItemSprite.LEVEL_3,
+        "IceMissiles": ItemSprite.ICE_MISSILES,
+        "WideBeam": ItemSprite.WIDE_BEAM,
+        "PowerBombs": ItemSprite.POWER_BOMBS,
+        "SpaceJump": ItemSprite.SPACE_JUMP,
+        "PlasmaBeam": ItemSprite.PLASMA_BEAM,
+        "GravitySuit": ItemSprite.GRAVITY_SUIT,
+        "Level4": ItemSprite.LEVEL_4,
+        "DiffusionMissiles": ItemSprite.DIFFUSION_MISSILES,
+        "WaveBeam": ItemSprite.WAVE_BEAM,
+        "ScrewAttack": ItemSprite.SCREW_ATTACK,
+        "IceBeam": ItemSprite.ICE_BEAM,
+        "MissileTank": ItemSprite.MISSILE_TANK,
+        "EnergyTank": ItemSprite.ENERGY_TANK,
+        "PowerBombTank": ItemSprite.POWER_BOMB_TANK,
+        "Anonymous": ItemSprite.ANONYMOUS,
+        "ShinyMissileTank": ItemSprite.SHINY_MISSILE_TANK,
+        "ShinyPowerBombTank": ItemSprite.SHINY_POWER_BOMB_TANK
+    }
+
     def __init__(self, major_locs: List[MajorLocation], minor_locs: List[MinorLocation]):
         self.major_locs = major_locs
         self.minor_locs = minor_locs
@@ -222,12 +290,11 @@ class LocationSettings:
             maj_loc.new_item = item
 
         for min_loc_entry in data[KEY_MINOR_LOCS]:
-            # get area, room, block X, block Y, item
+            # get area, room, block X, block Y
             area = min_loc_entry[KEY_AREA]
             room = min_loc_entry[KEY_ROOM]
             block_x = min_loc_entry[KEY_BLOCK_X]
             block_y = min_loc_entry[KEY_BLOCK_Y]
-            item = self.ITEM_ENUMS[min_loc_entry[KEY_ITEM]]
             # find location with this source
             try:
                 min_loc = next(
@@ -242,4 +309,8 @@ class LocationSettings:
                 raise ValueError(
                     f"Invalid minor location: Area {area}, Room {room}, X {block_x}, Y {block_y}"
                 )
+            # set item and item sprite
+            item = self.ITEM_ENUMS[min_loc_entry[KEY_ITEM]]
             min_loc.new_item = item
+            if KEY_ITEM_SPRITE in min_loc_entry:
+                min_loc.item_sprite = self.ITEM_SPRITE_ENUMS[min_loc_entry[KEY_ITEM_SPRITE]]

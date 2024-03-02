@@ -1,10 +1,11 @@
 from typing import Dict
 
 from mars_patcher.compress import comp_rle, decomp_rle
-from mars_patcher.locations import ItemType, LocationSettings
+from mars_patcher.locations import ItemType, ItemSprite, LocationSettings
 from mars_patcher.rom import Rom
 from mars_patcher.room_entry import RoomEntry
 from mars_patcher.tileset import Tileset
+
 
 # keep these in sync with base patch
 MINOR_LOCS_ADDR = 0x7FF000
@@ -68,7 +69,8 @@ class ItemPatcher:
             assert rom.read_8(addr + 2) == min_loc.orig_item.value
             if min_loc.new_item != ItemType.UNDEFINED:
                 rom.write_8(addr + 2, min_loc.new_item.value)
-                rom.write_8(addr + 3, min_loc.new_item.value)
+                if min_loc.item_sprite != ItemSprite.UNCHANGED:
+                    rom.write_8(addr + 3, min_loc.item_sprite.value)
 
         # handle major locations
         for maj_loc in self.settings.major_locs:
