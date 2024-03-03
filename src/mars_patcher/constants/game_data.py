@@ -57,6 +57,28 @@ def tileset_count(rom: Rom) -> int:
     raise ValueError(rom.game)
 
 
+def area_doors_ptrs(rom: Rom) -> int:
+    """Returns the address of the area doors pointers."""
+    if rom.game == Game.MF:
+        if rom.region == Region.U:
+            return 0x79B894
+        elif rom.region == Region.E:
+            return 0x79C0C8
+        elif rom.region == Region.J:
+            return 0x7EDF44
+        elif rom.region == Region.C:
+            return 0x77D598
+    elif rom.game == Game.ZM:
+        if rom.region == Region.U:
+            return 0x75FAA8
+        elif rom.region == Region.E:
+            return 0x773948
+        elif rom.region == Region.J:
+            return 0x75FBB8
+        elif rom.region == Region.C:
+            return 0x79ECA0
+
+
 def starting_equipment(rom: Rom) -> int:
     """Returns the address of the starting equipment data."""
     if rom.game == Game.MF:

@@ -15,3 +15,9 @@ class RoomEntry(object):
 
     def clip_addr(self) -> int:
         return self.rom.read_ptr(self.addr + 0x14)
+
+    def default_sprite_layout_addr(self) -> int:
+        return self.rom.read_ptr(self.addr + 0x20)
+
+    def default_spriteset(self) -> int:
+        return self.rom.read_8(self.addr + 0x24)

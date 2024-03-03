@@ -70,6 +70,28 @@
             },
             "required": ["MinorLocations", "MajorLocations"]
         },
+        "StartingLocation": {
+            "type": "object",
+            "description": "The location the player should spawn at the start of the game",
+            "properties": {
+                "Area": {
+                    "$ref": "#/$defs/TypeU8",
+                    "description": "The area ID of the starting location."
+                },
+                "Room": {
+                    "$ref": "#/$defs/TypeU8",
+                    "description": "The room ID of the starting location."
+                },
+                "BlockX": {
+                    "$ref": "#/$defs/TypeU8",
+                    "description": "The X-coordinate in the room where the player should spawn."
+                },
+                "BlockY": {
+                    "$ref": "#/$defs/TypeU8",
+                    "description": "The Y-coordinate in the room where the player should spawn."
+                }
+            }
+        },
         "StartingItems": {
             "type": "object",
             "properties": {
@@ -306,7 +328,7 @@
         },
         "ValidItemSprites": {
             "type": "string",
-            "description": "Valid graphics for items.",
+            "description": "Valid graphics for minor location items.",
             "enum": [
                 "Empty",
                 "Missiles",

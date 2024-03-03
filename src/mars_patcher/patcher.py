@@ -5,11 +5,12 @@ from jsonschema import validate
 
 from mars_patcher.data import get_data_path
 from mars_patcher.hints import Hints
-from mars_patcher.item_patcher import ItemPatcher, set_starting_items, set_tank_increments
+from mars_patcher.item_patcher import ItemPatcher, set_tank_increments
 from mars_patcher.locations import LocationSettings
 from mars_patcher.random_palettes import PaletteRandomizer, PaletteSettings
 from mars_patcher.rom import Rom
 from mars_patcher.text import write_seed_hash
+from mars_patcher.starting import set_starting_location, set_starting_items
 
 
 def patch(input_path: str,
@@ -38,10 +39,15 @@ def patch(input_path: str,
 
     # load locations and set assignments
     status_update(-1, "Writing item assignments...")
-    loc_settings = LocationSettings.load()
+    loc_settings = LocationSettings.initialize()
     loc_settings.set_assignments(patch_data["Locations"])
     item_patcher = ItemPatcher(rom, loc_settings)
     item_patcher.write_items()
+
+    # starting location
+    if "StartingLocation" in patch_data:
+        status_update(-1, "Writing starting location...")
+        set_starting_location(rom, patch_data["StartingLocation"])
 
     # starting items
     if "StartingItems" in patch_data:

@@ -61,7 +61,7 @@ class LocationSettings:
         self.minor_locs = minor_locs
 
     @classmethod
-    def load(cls) -> "LocationSettings":
+    def initialize(cls) -> "LocationSettings":
         with open(get_data_path("locations.json")) as f:
             data = json.load(f)
 
