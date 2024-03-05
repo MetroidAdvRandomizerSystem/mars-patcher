@@ -229,7 +229,7 @@ def spriteset_count(rom: Rom) -> int:
 
 
 def samus_palettes(rom: Rom) -> List[Tuple[int, int]]:
-    """Returns a list of (address, row count) pairs."""
+    """Returns a list of (address, row count) pairs for all of Samus's palettes."""
     if rom.game == Game.MF:
         if rom.region == Region.U:
             return [(0x28DD7C, 0x5E), (0x28EAFC, 0x70)]
@@ -251,26 +251,29 @@ def samus_palettes(rom: Rom) -> List[Tuple[int, int]]:
     raise ValueError(rom.game, rom.region)
 
 
-def file_select_helmet_palettes(rom: Rom) -> List[Tuple[int, int]]:
-    """Returns a list of (address, row count) pairs."""
+def helmet_cursor_palettes(rom: Rom) -> List[Tuple[int, int]]:
+    """
+    Returns a list of (address, row count) pairs for Samus's helmet as a cursor
+    (file select and game over)
+    """
     if rom.game == Game.MF:
         if rom.region == Region.U:
-            return [(0x740E08, 0x1), (0x740EA8, 0x2)]
+            return [(0x740E08, 1), (0x740EA8, 2), (0x73C544, 1), (0x73C584, 2)]
         elif rom.region == Region.E:
-            return [(0x741618, 0x1), (0x7416B8, 0x2)]
+            return [(0x741618, 1), (0x7416B8, 2), (0x73CD54, 1), (0x73CD94, 2)]
         elif rom.region == Region.J:
-            return [(0x73FCDC, 0x1), (0x73FD7C, 0x2)]
+            return [(0x73FCDC, 1), (0x73FD7C, 2), (0x73C030, 1), (0x73C070, 2)]
         elif rom.region == Region.C:
-            return [(0x6CE360, 0x1), (0x6CE400, 0x2)]
+            return [(0x6CE360, 1), (0x6CE400, 2), (0x6CA8F8, 1), (0x6CA938, 2)]
     elif rom.game == Game.ZM:
         if rom.region == Region.U:
-            return [(0x454938, 0x1), (0x4549B8, 0x1)]
+            return [(0x454938, 1), (0x4549B8, 1)]
         elif rom.region == Region.E:
-            return [(0x4603F8, 0x1), (0x460478, 0x1)]
+            return [(0x4603F8, 1), (0x460478, 1)]
         elif rom.region == Region.J:
-            return [(0x454994, 0x1), (0x454A14, 0x1)]
+            return [(0x454994, 1), (0x454A14, 1)]
         elif rom.region == Region.C:
-            return [(0x4768FC, 0x1), (0x47697C, 0x1)]
+            return [(0x4768FC, 1), (0x47697C, 1)]
     raise ValueError(rom.game, rom.region)
 
 
@@ -278,22 +281,22 @@ def beam_palettes(rom: Rom) -> List[Tuple[int, int]]:
     """Returns a list of (address, row count) pairs."""
     if rom.game == Game.MF:
         if rom.region == Region.U:
-            return [(0x58B464, 0x6)]
+            return [(0x58B464, 6)]
         elif rom.region == Region.E:
-            return [(0x58BAC0, 0x6)]
+            return [(0x58BAC0, 6)]
         elif rom.region == Region.J:
-            return [(0x58BBF4, 0x6)]
+            return [(0x58BBF4, 6)]
         elif rom.region == Region.C:
-            return [(0x592578, 0x6)]
+            return [(0x592578, 6)]
     elif rom.game == Game.ZM:
         if rom.region == Region.U:
-            return [(0x3270E8, 0x6)]
+            return [(0x3270E8, 6)]
         elif rom.region == Region.E:
-            return [(0x327D74, 0x6)]
+            return [(0x327D74, 6)]
         elif rom.region == Region.J:
-            return [(0x327144, 0x6)]
+            return [(0x327144, 6)]
         elif rom.region == Region.C:
-            return [(0x3408D4, 0x6)]
+            return [(0x3408D4, 6)]
     raise ValueError(rom.game, rom.region)
 
 

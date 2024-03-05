@@ -121,7 +121,7 @@ class PaletteRandomizer:
     def randomize_samus(self) -> None:
         shift = self.get_hue_shift()
         self.shift_palettes(gd.samus_palettes(self.rom), shift)
-        self.shift_palettes(gd.file_select_helmet_palettes(self.rom), shift)
+        self.shift_palettes(gd.helmet_cursor_palettes(self.rom), shift)
 
     def randomize_beams(self) -> None:
         shift = self.get_hue_shift()
