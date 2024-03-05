@@ -70,9 +70,15 @@
             },
             "required": ["MinorLocations", "MajorLocations"]
         },
+        "RequiredMetroidCount": {
+            "type": "integer",
+            "description": "The number of infant Metroids that must be collected to beat the game.",
+            "minimum": 0,
+            "maximum": 20
+        },
         "StartingLocation": {
             "type": "object",
-            "description": "The location the player should spawn at the start of the game",
+            "description": "The location the player should spawn at the start of the game.",
             "properties": {
                 "Area": {
                     "$ref": "#/$defs/TypeU8",
@@ -250,7 +256,7 @@
             "default": false
         }
     },
-    "required": ["SeedHash", "Locations"],
+    "required": ["SeedHash", "Locations", "RequiredMetroidCount"],
     "$defs": {
         "TypeU8": {
             "type": "integer",
@@ -323,7 +329,9 @@
                 "IceBeam",
                 "MissileTank",
                 "EnergyTank",
-                "PowerBombTank"
+                "PowerBombTank",
+                "IceTrap",
+                "InfantMetroid"
             ]
         },
         "ValidItemSprites": {
@@ -358,7 +366,8 @@
                 "PowerBombTank",
                 "Anonymous",
                 "ShinyMissileTank",
-                "ShinyPowerBombTank"
+                "ShinyPowerBombTank",
+                "InfantMetroid"
             ]
         },
         "ValidAbilities": {

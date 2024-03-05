@@ -11,6 +11,7 @@ from mars_patcher.tileset import Tileset
 MINOR_LOCS_ADDR = 0x7FF000
 MAJOR_LOCS_ADDR = 0x7FF200
 TANK_INC_ADDR = 0x7FF220
+METROID_COUNT_ADDR = 0x7FF227
 
 TANK_CLIP = (0x62, 0x63, 0x68)
 HIDDEN_TANK_CLIP = (0x64, 0x65, 0x69)
@@ -93,7 +94,11 @@ class ItemPatcher:
         self.rom.write_bytes(block_addr + 2, comp_data, 0, len(comp_data))
 
 
-# TODO: move this?
+# TODO: move these?
+def set_metroid_count(rom: Rom, count: int) -> None:
+    rom.write_8(METROID_COUNT_ADDR, count)
+
+
 def set_tank_increments(rom: Rom, data: Dict) -> None:
     rom.write_16(TANK_INC_ADDR, data["MissileTank"])
     rom.write_16(TANK_INC_ADDR + 2, data["EnergyTank"])

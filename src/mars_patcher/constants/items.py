@@ -54,6 +54,8 @@ class ItemType(Enum):
     MISSILE_TANK = 23
     ENERGY_TANK = 24
     POWER_BOMB_TANK = 25
+    ICE_TRAP = 26
+    INFANT_METROID = 27
 
     def __le__(self, other: Any) -> bool:
         if isinstance(other, ItemType):
@@ -92,6 +94,7 @@ class ItemSprite(Enum):
     ANONYMOUS = 26
     SHINY_MISSILE_TANK = 27
     SHINY_POWER_BOMB_TANK = 28
+    INFANT_METROID = 29
 
 
 KEY_MAJOR_LOCS = "MajorLocations"
@@ -159,6 +162,8 @@ ITEM_ENUMS = {
     "MissileTank": ItemType.MISSILE_TANK,
     "EnergyTank": ItemType.ENERGY_TANK,
     "PowerBombTank": ItemType.POWER_BOMB_TANK,
+    "IceTrap": ItemType.ICE_TRAP,
+    "InfantMetroid": ItemType.INFANT_METROID
 }
 
 ITEM_SPRITE_ENUMS = {
@@ -190,7 +195,8 @@ ITEM_SPRITE_ENUMS = {
     "PowerBombTank": ItemSprite.POWER_BOMB_TANK,
     "Anonymous": ItemSprite.ANONYMOUS,
     "ShinyMissileTank": ItemSprite.SHINY_MISSILE_TANK,
-    "ShinyPowerBombTank": ItemSprite.SHINY_POWER_BOMB_TANK
+    "ShinyPowerBombTank": ItemSprite.SHINY_POWER_BOMB_TANK,
+    "InfantMetroid": ItemSprite.INFANT_METROID
 }
 
 

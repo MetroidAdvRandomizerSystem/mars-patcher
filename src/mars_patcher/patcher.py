@@ -5,7 +5,7 @@ from jsonschema import validate
 
 from mars_patcher.data import get_data_path
 from mars_patcher.hints import Hints
-from mars_patcher.item_patcher import ItemPatcher, set_tank_increments
+from mars_patcher.item_patcher import ItemPatcher, set_metroid_count, set_tank_increments
 from mars_patcher.locations import LocationSettings
 from mars_patcher.random_palettes import PaletteRandomizer, PaletteSettings
 from mars_patcher.rom import Rom
@@ -43,6 +43,9 @@ def patch(input_path: str,
     loc_settings.set_assignments(patch_data["Locations"])
     item_patcher = ItemPatcher(rom, loc_settings)
     item_patcher.write_items()
+
+    # required metroid count
+    set_metroid_count(rom, patch_data["RequiredMetroidCount"])
 
     # starting location
     if "StartingLocation" in patch_data:
