@@ -100,8 +100,8 @@ def set_starting_items(rom: Rom, data: Dict) -> None:
     missile_bomb_status = get_ability_flags(MISSILE_BOMB_FLAGS)
     suit_misc_status = get_ability_flags(SUIT_MISC_FLAGS)
     # get security level flags
-    levels = data.get("SecurityLevels", [])
-    level_status = 1
+    levels = data.get("SecurityLevels", [0])
+    level_status = 0
     for level in levels:
         level_status |= 1 << level
     # get downloaded map flags
