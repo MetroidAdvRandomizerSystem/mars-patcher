@@ -183,6 +183,34 @@
             "required": ["MissileTank", "EnergyTank", "PowerBombTank"],
             "default": null
         },
+        "ElevatorConnections": {
+            "type": "object",
+            "description": "Defines the elevator that each elevator connects to.",
+            "properties": {
+                "ElevatorTops": {
+                    "type": "object",
+                    "description": "Defines the bottom elevator that each top elevator connects to.",
+                    "propertyNames": {
+                        "$ref": "#/$defs/ValidElevatorTops"
+                    },
+                    "additionalProperties": {
+                        "$ref": "#/$defs/ValidElevatorBottoms"
+                    },
+                    "minProperties": 10
+                },
+                "ElevatorBottoms": {
+                    "type": "object",
+                    "description": "Defines the top elevator that each bottom elevator connects to.",
+                    "propertyNames": {
+                        "$ref": "#/$defs/ValidElevatorBottoms"
+                    },
+                    "additionalProperties": {
+                        "$ref": "#/$defs/ValidElevatorTops"
+                    },
+                    "minProperties": 10
+                }
+            }
+        },
         "Palettes": {
             "type": "object",
             "description": "Properties for randomized in-game palettes.",
@@ -392,6 +420,38 @@
                 "WaveBeam",
                 "ScrewAttack",
                 "IceBeam"
+            ]
+        },
+        "ValidElevatorTops": {
+            "type": "string",
+            "description": "Valid elevators at the top of elevator shafts.",
+            "enum": [
+                "OperationsDeckTop",
+                "MainHubToSector1",
+                "MainHubToSector2",
+                "MainHubToSector3",
+                "MainHubToSector4",
+                "MainHubToSector5",
+                "MainHubToSector6",
+                "MainHubTop",
+                "HabitationDeckTop",
+                "Sector1ToRestrictedLab"
+            ]
+        },
+        "ValidElevatorBottoms": {
+            "type": "string",
+            "description": "Valid elevators at the bottom of elevator shafts.",
+            "enum": [
+                "OperationsDeckBottom",
+                "MainHubBottom",
+                "RestrictedLabToSector1",
+                "HabitationDeckBottom",
+                "Sector1ToMainHub",
+                "Sector2ToMainHub",
+                "Sector3ToMainHub",
+                "Sector4ToMainHub",
+                "Sector5ToMainHub",
+                "Sector6ToMainHub"
             ]
         },
         "ValidLanguages": {

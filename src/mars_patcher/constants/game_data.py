@@ -79,6 +79,37 @@ def area_doors_ptrs(rom: Rom) -> int:
             return 0x79ECA0
 
 
+def area_connections(rom: Rom) -> int:
+    """Returns the address of the area connections list."""
+    if rom.game == Game.MF:
+        if rom.region == Region.U:
+            return 0x3C8B90
+        elif rom.region == Region.E:
+            return 0x3C91EC
+        elif rom.region == Region.J:
+            return 0x3CB158
+        elif rom.region == Region.C:
+            return 0x3CB19C
+    elif rom.game == Game.ZM:
+        if rom.region == Region.U:
+            return 0x360274
+        elif rom.region == Region.E:
+            return 0x360F00
+        elif rom.region == Region.J:
+            return 0x3602D0
+        elif rom.region == Region.C:
+            return 0x379A60
+
+
+def area_connections_count(rom: Rom) -> int:
+    """Returns the number of area connections in the game. Excludes the final entry of FFs."""
+    if rom.game == Game.MF:
+        return 0x22
+    elif rom.game == Game.ZM:
+        return 0x19
+    raise ValueError(rom.game)
+
+
 def starting_equipment(rom: Rom) -> int:
     """Returns the address of the starting equipment data."""
     if rom.game == Game.MF:
