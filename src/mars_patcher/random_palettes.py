@@ -133,7 +133,7 @@ class PaletteRandomizer:
         ts_count = gd.tileset_count(rom)
         randomized_pals = set()
 
-        for ts_id in range(ts_count):
+        for _ in range(ts_count):
             # get tileset palette address
             pal_ptr = ts_addr + 4
             pal_addr = rom.read_ptr(pal_ptr)
@@ -143,7 +143,7 @@ class PaletteRandomizer:
             # get excluded palette rows
             excluded_rows = set()
             if rom.game == Game.MF:
-                row = MF_TILESET_ALT_PAL_ROWS.get(ts_id)
+                row = MF_TILESET_ALT_PAL_ROWS.get(pal_addr)
                 if row is not None:
                     excluded_rows = {row}
             # load palette and shift hue
