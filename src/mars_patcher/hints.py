@@ -7,7 +7,7 @@ from mars_patcher.text import Language, encode_text
 
 
 # keep these in sync with base patch
-HINT_TEXT_ADDR = 0x7FE000
+HINT_TEXT_ADDR = 0x7F0000
 HINT_TEXT_END = 0x7FF000
 
 
@@ -62,9 +62,9 @@ class Hints:
         return cls(hints)
 
     def write(self, rom: Rom) -> None:
+        text_addr = HINT_TEXT_ADDR
         for lang, lang_hints in self.hints.items():
             navigation_text = rom.read_ptr(navigation_text_ptrs(rom) + lang.value * 4)
-            text_addr = HINT_TEXT_ADDR
 
             for nav_room, hint in lang_hints.items():
                 rom.write_ptr(navigation_text + nav_room.value * 8, text_addr)
