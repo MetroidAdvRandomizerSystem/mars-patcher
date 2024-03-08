@@ -193,24 +193,29 @@
                     "default": null
                 },
                 "Randomize": {
-                    "type": "array",
+                    "type": "object",
                     "description": "What kind of palettes should be randomized.",
-                    "uniqueItems": true,
-                    "items": {
+                    "propertyNames": {
                         "type": "string",
                         "enum": ["Tilesets", "Enemies", "Samus", "Beams"]
                     },
-                    "default": []
-                },
-                "HueMin": {
-                    "$ref": "#/$defs/HueRotation",
-                    "description": "The minimum value to use for rotating palette hues. If not specified, the patcher will randomly generate one.",
-                    "default": null
-                },
-                "HueMax": {
-                    "$ref": "#/$defs/HueRotation",
-                    "description": "The maximum value to use for rotating palette hues. If not specified, the patcher will randomly generate one.",
-                    "default": null
+                    "additionalProperties": {
+                        "type": "object",
+                        "description": "The range to use for rotating palette hues.",
+                        "properties": {
+                            "HueMin": {
+                                "$ref": "#/$defs/HueRotation",
+                                "description": "The minimum value to use for rotating palette hues. If not specified, the patcher will randomly generate one.",
+                                "default": null
+                            },
+                            "HueMax": {
+                                "$ref": "#/$defs/HueRotation",
+                                "description": "The maximum value to use for rotating palette hues. If not specified, the patcher will randomly generate one.",
+                                "default": null
+                            }
+                        },
+                        "additionalProperties": false
+                    }
                 },
                 "ColorSpace": {
                     "type": "string",
@@ -219,6 +224,7 @@
                     "default": "Oklab"
                 }
             },
+            "additionalProperties": false,
             "required": ["Randomize"],
             "default": null
         },
