@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Dict, List, Set, Tuple
 
 import mars_patcher.constants.game_data as gd
-from mars_patcher.constants.palettes import MF_TILESET_ALT_PAL_ROWS, ENEMY_GROUPS
+from mars_patcher.constants.palettes import *
 from mars_patcher.palette import Palette
 from mars_patcher.rom import Game, Rom
 
@@ -132,6 +132,7 @@ class PaletteRandomizer:
         shift = self.get_hue_shift(hue_range)
         self.shift_palettes(gd.samus_palettes(self.rom), shift)
         self.shift_palettes(gd.helmet_cursor_palettes(self.rom), shift)
+        self.shift_palettes(gd.sax_palettes(self.rom), shift)
 
     def randomize_beams(self, hue_range: Tuple[int, int]) -> None:
         shift = self.get_hue_shift(hue_range)
@@ -179,10 +180,7 @@ class PaletteRandomizer:
 
     def randomize_enemies(self, hue_range: Tuple[int, int]) -> None:
         rom = self.rom
-        if rom.is_mf():
-            excluded = set()
-        elif rom.is_zm():
-            excluded = {0x10, 0x11, 0x8A}
+        excluded = EXCLUDED_ENEMIES[rom.game]
         sp_count = gd.sprite_count(rom)
         to_randomize = set(range(0x10, sp_count))
         to_randomize -= excluded
@@ -192,10 +190,9 @@ class PaletteRandomizer:
         for name, sprite_ids in groups.items():
             shift = self.get_hue_shift(hue_range)
             for sprite_id in sprite_ids:
+                assert sprite_id in to_randomize, f"{sprite_id:X} should be excluded"
                 self.randomize_enemy(sprite_id, shift)
                 to_randomize.remove(sprite_id)
-            if name == "SA-X":
-                self.shift_palettes(gd.sax_palettes(self.rom), shift)
 
         # go through remaining sprites
         for sprite_id in to_randomize:

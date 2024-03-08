@@ -301,16 +301,17 @@ def beam_palettes(rom: Rom) -> List[Tuple[int, int]]:
 
 
 def sax_palettes(rom: Rom) -> List[Tuple[int, int]]:
-    """Returns a list of (address, row count) pairs for the SA-X's extra palettes."""
+    """Returns a list of (address, row count) pairs for all of the SA-X's palettes."""
     if rom.game == Game.MF:
+        # Normal, Lab, Monster, Extra
         if rom.region == Region.U:
-            return [(0x2B4368, 5)]
+            return [(0x2E7D60, 2), (0x2E91D8, 2), (0x38CFB4, 8), (0x2B4368, 5)]
         elif rom.region == Region.E:
-            return [(0x2B49C4, 5)]
+            return [(0x2E83BC, 2), (0x2E9834, 2), (0x38D610, 8), (0x2B49C4, 5)]
         elif rom.region == Region.J:
-            return [(0x2B6670, 5)]
+            return [(0x2EA068, 2), (0x2EB4E0, 2), (0x38F2BC, 8), (0x2B6670, 5)]
         elif rom.region == Region.C:
-            return [(0x2B66B4, 5)]
+            return [(0x2EA0AC, 2), (0x2EB524, 2), (0x38F300, 8), (0x2B66B4, 5)]
     raise ValueError(rom.game)
 
 

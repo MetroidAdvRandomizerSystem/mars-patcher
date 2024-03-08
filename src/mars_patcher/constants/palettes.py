@@ -34,9 +34,27 @@ MF_TILESET_ALT_PAL_ROWS = {
     0x4078DC: 0xD, # 5E
 }
 
+EXCLUDED_ENEMIES = {
+    Game.MF: {
+        0x11, # SA-X (elevator)
+        0x8C, # SA-X (TRO 1)
+        0x8D, # SA-X (NOC)
+        0xA0, # SA-X (ARC)
+        0xBC, # SA-X (lab)
+        0xC0, # SA-X (boss)
+        0xC1, # SA-X monster
+        0xC9, # SA-X (Omega cutscene)
+        0xCD  # SA-X (TRO 2)
+    },
+    Game.ZM: {
+        0x10, # Unused
+        0x11, # Item banner
+        0x8A  # Crocomire
+    }
+}
+
 ENEMY_GROUPS = {
     Game.MF: {
-        "SA-X": [0x11, 0x8C, 0x8D, 0xA0, 0xBC, 0xC0, 0xC1, 0xC9, 0xCD],
         "Zebesian": [0x14, 0x73, 0xA2, 0xB3, 0xB4],
         "Zeela": [0x31, 0xA3],
         "Sciser": [0x3C, 0x8B],
