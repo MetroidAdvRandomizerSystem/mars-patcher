@@ -1,4 +1,5 @@
 - [ ] BPS file patcher (to apply base patch)
+- [ ] Tie animated palettes to tileset palettes where possible
 - [ ] Ability to overwrite credits text
 - [ ] Allow parsing/writing non-English text
 - [x] Display seed hash on file select screen

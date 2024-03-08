@@ -104,6 +104,7 @@ class PaletteRandomizer:
 
     def randomize(self) -> None:
         random.seed(self.settings.seed)
+        self.randomized_pals: Set[int] = set()
         pal_types = self.settings.pal_types
         if PaletteType.TILESETS in pal_types:
             self.randomize_tilesets(pal_types[PaletteType.TILESETS])
@@ -120,9 +121,12 @@ class PaletteRandomizer:
 
     def shift_palettes(self, pals: List[Tuple[int, int]], shift: int) -> None:
         for addr, rows in pals:
+            if addr in self.randomized_pals:
+                continue
             pal = Palette(rows, self.rom, addr)
             self.shift_func(pal, shift)
             pal.write(self.rom, addr)
+            self.randomized_pals.add(addr)
 
     def randomize_samus(self, hue_range: Tuple[int, int]) -> None:
         shift = self.get_hue_shift(hue_range)
@@ -137,14 +141,13 @@ class PaletteRandomizer:
         rom = self.rom
         ts_addr = gd.tileset_entries(rom)
         ts_count = gd.tileset_count(rom)
-        randomized_pals = set()
 
         for _ in range(ts_count):
             # get tileset palette address
             pal_ptr = ts_addr + 4
             pal_addr = rom.read_ptr(pal_ptr)
             ts_addr += 0x14
-            if pal_addr in randomized_pals:
+            if pal_addr in self.randomized_pals:
                 continue
             # get excluded palette rows
             excluded_rows = set()
@@ -157,7 +160,7 @@ class PaletteRandomizer:
             shift = self.get_hue_shift(hue_range)
             self.shift_func(pal, shift, excluded_rows)
             pal.write(rom, pal_addr)
-            randomized_pals.add(pal_addr)
+            self.randomized_pals.add(pal_addr)
 
         # animated palettes
         anim_pal_addr = gd.anim_palette_entries(rom)
@@ -166,9 +169,9 @@ class PaletteRandomizer:
             rows = rom.read_8(anim_pal_addr + 2)
             pal_addr = rom.read_ptr(anim_pal_addr + 4)
             anim_pal_addr += 8
-            if pal_addr in randomized_pals:
+            if pal_addr in self.randomized_pals:
                 continue
-            randomized_pals.add(pal_addr)
+            self.randomized_pals.add(pal_addr)
             pal = Palette(rows, rom, pal_addr)
             shift = self.get_hue_shift(hue_range)
             self.shift_func(pal, shift)
@@ -186,11 +189,13 @@ class PaletteRandomizer:
 
         # go through sprites in groups
         groups = ENEMY_GROUPS[rom.game]
-        for _, sprite_ids in groups.items():
+        for name, sprite_ids in groups.items():
             shift = self.get_hue_shift(hue_range)
             for sprite_id in sprite_ids:
                 self.randomize_enemy(sprite_id, shift)
                 to_randomize.remove(sprite_id)
+            if name == "SA-X":
+                self.shift_palettes(gd.sax_palettes(self.rom), shift)
 
         # go through remaining sprites
         for sprite_id in to_randomize:
@@ -201,6 +206,8 @@ class PaletteRandomizer:
         sprite_gfx_id = sprite_id - 0x10
         pal_ptr = gd.sprite_palette_ptrs(rom)
         pal_addr = rom.read_ptr(pal_ptr + sprite_gfx_id * 4)
+        if pal_addr in self.randomized_pals:
+            return
         if rom.is_mf():
             if sprite_id == 0x4D or sprite_id == 0xBE:
                 # ice beam ability and zozoros only have 1 row, not 2
@@ -216,6 +223,7 @@ class PaletteRandomizer:
         pal = Palette(rows, rom, pal_addr)
         self.shift_func(pal, shift)
         pal.write(rom, pal_addr)
+        self.randomized_pals.add(pal_addr)
 
     def get_sprite_addr(self, sprite_id: int) -> int:
         addr = gd.sprite_palette_ptrs(self.rom) + (sprite_id - 0x10) * 4

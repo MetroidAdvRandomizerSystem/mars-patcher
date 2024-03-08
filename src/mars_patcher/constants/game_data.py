@@ -138,7 +138,7 @@ def sprite_vram_sizes(rom: Rom) -> int:
             return 0x2E6D58
         elif rom.region == Region.C:
             return 0x2E6D9C
-    raise NotImplementedError(rom.game)
+    raise ValueError(rom.game)
 
 
 def sprite_graphics_ptrs(rom: Rom) -> int:
@@ -278,7 +278,7 @@ def helmet_cursor_palettes(rom: Rom) -> List[Tuple[int, int]]:
 
 
 def beam_palettes(rom: Rom) -> List[Tuple[int, int]]:
-    """Returns a list of (address, row count) pairs."""
+    """Returns a list of (address, row count) pairs for beam palettes."""
     if rom.game == Game.MF:
         if rom.region == Region.U:
             return [(0x58B464, 6)]
@@ -298,6 +298,20 @@ def beam_palettes(rom: Rom) -> List[Tuple[int, int]]:
         elif rom.region == Region.C:
             return [(0x3408D4, 6)]
     raise ValueError(rom.game, rom.region)
+
+
+def sax_palettes(rom: Rom) -> List[Tuple[int, int]]:
+    """Returns a list of (address, row count) pairs for the SA-X's extra palettes."""
+    if rom.game == Game.MF:
+        if rom.region == Region.U:
+            return [(0x2B4368, 5)]
+        elif rom.region == Region.E:
+            return [(0x2B49C4, 5)]
+        elif rom.region == Region.J:
+            return [(0x2B6670, 5)]
+        elif rom.region == Region.C:
+            return [(0x2B66B4, 5)]
+    raise ValueError(rom.game)
 
 
 def tourian_statues_cutscene_palette(rom: Rom) -> int:
