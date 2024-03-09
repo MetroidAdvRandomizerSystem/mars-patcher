@@ -171,7 +171,6 @@ class PaletteRandomizer:
                 anim_pal_to_randomize.remove(anim_pal_id)
 
         # go through remaining animated palettes
-        print(anim_pal_to_randomize)
         for anim_pal_id in anim_pal_to_randomize:
             shift = self.get_hue_shift(hue_range)
             self.randomize_anim_palette(anim_pal_id, shift)
