@@ -142,6 +142,8 @@ class PaletteRandomizer:
         rom = self.rom
         ts_addr = gd.tileset_entries(rom)
         ts_count = gd.tileset_count(rom)
+        anim_pal_count = gd.anim_palette_count(rom)
+        anim_pal_to_randomize = set(range(anim_pal_count))
 
         for _ in range(ts_count):
             # get tileset palette address
@@ -162,22 +164,30 @@ class PaletteRandomizer:
             self.shift_func(pal, shift, excluded_rows)
             pal.write(rom, pal_addr)
             self.randomized_pals.add(pal_addr)
+            # check animated palette
+            anim_pal_id = TILESET_ANIM_PALS.get(pal_addr)
+            if anim_pal_id is not None:
+                self.randomize_anim_palette(anim_pal_id, shift)
+                anim_pal_to_randomize.remove(anim_pal_id)
 
-        # animated palettes
-        anim_pal_addr = gd.anim_palette_entries(rom)
-        anim_pal_count = gd.anim_palette_count(rom)
-        for _ in range(anim_pal_count):
-            rows = rom.read_8(anim_pal_addr + 2)
-            pal_addr = rom.read_ptr(anim_pal_addr + 4)
-            anim_pal_addr += 8
-            if pal_addr in self.randomized_pals:
-                continue
-            self.randomized_pals.add(pal_addr)
-            pal = Palette(rows, rom, pal_addr)
+        # go through remaining animated palettes
+        print(anim_pal_to_randomize)
+        for anim_pal_id in anim_pal_to_randomize:
             shift = self.get_hue_shift(hue_range)
-            self.shift_func(pal, shift)
-            pal.write(rom, pal_addr)
+            self.randomize_anim_palette(anim_pal_id, shift)
 
+    def randomize_anim_palette(self, anim_pal_id: int, shift: int) -> None:
+        rom = self.rom
+        addr = gd.anim_palette_entries(rom) + anim_pal_id * 8
+        pal_addr = rom.read_ptr(addr + 4)
+        if pal_addr in self.randomized_pals:
+            return
+        rows = rom.read_8(addr + 2)
+        pal = Palette(rows, rom, pal_addr)
+        self.shift_func(pal, shift)
+        pal.write(rom, pal_addr)
+        self.randomized_pals.add(pal_addr)
+        
     def randomize_enemies(self, hue_range: Tuple[int, int]) -> None:
         rom = self.rom
         excluded = EXCLUDED_ENEMIES[rom.game]
@@ -187,7 +197,7 @@ class PaletteRandomizer:
 
         # go through sprites in groups
         groups = ENEMY_GROUPS[rom.game]
-        for name, sprite_ids in groups.items():
+        for _, sprite_ids in groups.items():
             shift = self.get_hue_shift(hue_range)
             for sprite_id in sprite_ids:
                 assert sprite_id in to_randomize, f"{sprite_id:X} should be excluded"

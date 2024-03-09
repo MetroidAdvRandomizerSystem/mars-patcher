@@ -34,6 +34,43 @@ MF_TILESET_ALT_PAL_ROWS = {
     0x4078DC: 0xD, # 5E
 }
 
+
+# animated palettes not included here are used for multiple tileset palettes
+TILESET_ANIM_PALS = {
+    0x40769C: 0x01, # Navigation room
+    0x407A9C: 0x02, # Save room
+    0x406F5C: 0x03, # Recharge room
+    0x405E9C: 0x04, # Data room
+    # 0x05 Docking bay
+    0x46EA74: 0x07, # Operations deck
+    # 0x08 Main elevator top/bottom
+    0x46BCD4: 0x09, # Sector 1 elevator
+    0x46BF94: 0x0A, # Sector 2 elevator
+    0x46C254: 0x0B, # Sector 3 elevator
+    0x46C514: 0x0C, # Sector 4 elevator
+    0x46C7D4: 0x0D, # Sector 5 elevator
+    0x46CA94: 0x0E, # Sector 6 elevator
+    0x4F27B8: 0x0F, # Sector 3 glowing BG3
+    0x4F2A58: 0x10, # Meltdown alarm
+    0x498AC8: 0x11, # Stabilizer rooms
+    0x54D0DC: 0x12, # Sector 6 glowing BG3
+    0x406D1C: 0x13, # Security room
+    # 0x14 Electrified water
+    0x46DE74: 0x15, # Near quarantine bay
+    0x4F2578: 0x16, # Boiler control room
+    0x4F1D38: 0x17, # Main boiler
+    0x46ECB4: 0x18, # Operations deck (SA-X fight)
+    0x4F1F98: 0x19, # Main boiler
+    0x46E4B4: 0x1A, # Auxiliary power
+    0x46B814: 0x1B, # Reactor silo
+    # 0x1C Restricted lab alarm
+    0x46AF14: 0x1D, # Operations room
+    0x40719C: 0x1E, # Sector 2 flashing panels 1
+    0x40741C: 0x1F, # Sector 2 flashing panels 2
+    0x46D554: 0x20  # Restricted lab
+}
+
+
 EXCLUDED_ENEMIES = {
     Game.MF: {
         0x11, # SA-X (elevator)
