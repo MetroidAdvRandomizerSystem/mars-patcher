@@ -228,29 +228,80 @@
             "required": ["Randomize"],
             "default": null
         },
-        "Hints": {
+        "NavigationText": {
             "type": "object",
-            "description": "Specifies hints to be displayed at navigation rooms.",
+            "description": "Specifies text to be displayed at navigation rooms and the ship.",
             "propertyNames": {
                 "$ref": "#/$defs/ValidLanguages"
             },
             "additionalProperties": {
                 "type": "object",
-                "description": "Assigns each navigation room a specific hint.",
-                "minProperties": 11,
-                "maxProperties": 11,
+                "description": "Specifies text for a specific language.",
                 "properties": {
-                    "MainDeckWest": { "type": "string" },
-                    "MainDeckEast": { "type": "string" },
-                    "OperationsDeck": { "type": "string" },
-                    "Sector1Entrance": { "type": "string" },
-                    "Sector2Entrance": { "type": "string" },
-                    "Sector3Entrance": { "type": "string" },
-                    "Sector4Entrance": { "type": "string" },
-                    "Sector5Entrance": { "type": "string" },
-                    "Sector6Entrance": { "type": "string" },
-                    "AuxiliaryPower": { "type": "string" },
-                    "RestrictedLabs": { "type": "string" }
+                    "NavigationTerminals": {
+                        "type": "object",
+                        "description": "Assigns each navigation room a specific text.",
+                        "properties": {
+                            "MainDeckWest": {
+                                "type": "string",
+                                "description": "Specifies what text should appear at the west Navigation Terminal in Main Deck."
+                            },
+                            "MainDeckEast": {
+                                "type": "string",
+                                "description": "Specifies what text should appear at the east Navigation Terminal in Main Deck."
+                            },
+                            "OperationsDeck": {
+                                "type": "string",
+                                "description": "Specifies what text should appear at the Navigation Terminal in Operations Deck."
+                            },
+                            "Sector1Entrance": {
+                                "type": "string",
+                                "description": "Specifies what text should appear at the Navigation Terminal in Sector 1."
+                            },
+                            "Sector2Entrance": {
+                                "type": "string",
+                                "description": "Specifies what text should appear at the Navigation Terminal in Sector 2."
+                            },
+                            "Sector3Entrance": {
+                                "type": "string",
+                                "description": "Specifies what text should appear at the Navigation Terminal in Sector 3."
+                            },
+                            "Sector4Entrance": {
+                                "type": "string",
+                                "description": "Specifies what text should appear at the Navigation Terminal in Sector 4."
+                            },
+                            "Sector5Entrance": {
+                                "type": "string",
+                                "description": "Specifies what text should appear at the Navigation Terminal in Sector 5."
+                            },
+                            "Sector6Entrance": {
+                                "type": "string",
+                                "description": "Specifies what text should appear at the Navigation Terminal in Sector 6."
+                            },
+                            "AuxiliaryPower": {
+                                "type": "string",
+                                "description": "Specifies what text should appear at the Navigation Terminal near the Auxiliary Power Station."
+                            },
+                            "RestrictedLabs": {
+                                "type": "string",
+                                "description": "Specifies what text should appear at the Navigation Terminal in the Restricted Labs."
+                            }
+                        }
+                    },
+                    "ShipText": {
+                        "type": "object",
+                        "description": "Assigns the ship specific text.",
+                        "properties": {
+                            "InitialText": {
+                                "type": "string",
+                                "description": "Specifies what text should appear at the initial ship communication."
+                            },
+                            "ConfirmText": {
+                                "type": "string",
+                                "description": "Specifies what text should appear at the ship after confirming 'No' on subsequent ship communications."
+                            }
+                        }
+                    }
                 },
                 "additionalProperties": false
             },
