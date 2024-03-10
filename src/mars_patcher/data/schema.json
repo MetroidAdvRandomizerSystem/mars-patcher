@@ -311,6 +311,7 @@
             "description": "Valid items for shuffling.",
             "enum": [
                 "None",
+                "Level0",
                 "Missiles",
                 "MorphBall",
                 "ChargeBeam",
@@ -346,6 +347,7 @@
             "enum": [
                 "Empty",
                 "Missiles",
+                "Level0",
                 "MorphBall",
                 "ChargeBeam",
                 "Level1",

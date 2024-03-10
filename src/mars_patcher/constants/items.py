@@ -29,33 +29,34 @@ class MajorSource(Enum):
 class ItemType(Enum):
     UNDEFINED = -1
     NONE = 0
-    MISSILES = 1
-    MORPH_BALL = 2
-    CHARGE_BEAM = 3
-    LEVEL_1 = 4
-    BOMBS = 5
-    HI_JUMP = 6
-    SPEED_BOOSTER = 7
-    LEVEL_2 = 8
-    SUPER_MISSILES = 9
-    VARIA_SUIT = 10
-    LEVEL_3 = 11
-    ICE_MISSILES = 12
-    WIDE_BEAM = 13
-    POWER_BOMBS = 14
-    SPACE_JUMP = 15
-    PLASMA_BEAM = 16
-    GRAVITY_SUIT = 17
-    LEVEL_4 = 18
-    DIFFUSION_MISSILES = 19
-    WAVE_BEAM = 20
-    SCREW_ATTACK = 21
-    ICE_BEAM = 22
-    MISSILE_TANK = 23
-    ENERGY_TANK = 24
-    POWER_BOMB_TANK = 25
-    ICE_TRAP = 26
-    INFANT_METROID = 27
+    LEVEL_0 = 1
+    MISSILES = 2
+    MORPH_BALL = 3
+    CHARGE_BEAM = 4
+    LEVEL_1 = 5
+    BOMBS = 6
+    HI_JUMP = 7
+    SPEED_BOOSTER = 8
+    LEVEL_2 = 9
+    SUPER_MISSILES = 10
+    VARIA_SUIT = 11
+    LEVEL_3 = 12
+    ICE_MISSILES = 13
+    WIDE_BEAM = 14
+    POWER_BOMBS = 15
+    SPACE_JUMP = 16
+    PLASMA_BEAM = 17
+    GRAVITY_SUIT = 18
+    LEVEL_4 = 19
+    DIFFUSION_MISSILES = 20
+    WAVE_BEAM = 21
+    SCREW_ATTACK = 22
+    ICE_BEAM = 23
+    MISSILE_TANK = 24
+    ENERGY_TANK = 25
+    POWER_BOMB_TANK = 26
+    ICE_TRAP = 27
+    INFANT_METROID = 28
 
     def __le__(self, other: Any) -> bool:
         if isinstance(other, ItemType):
@@ -66,35 +67,36 @@ class ItemType(Enum):
 class ItemSprite(Enum):
     UNCHANGED = -1
     EMPTY = 0
-    MISSILES = 1
-    MORPH_BALL = 2
-    CHARGE_BEAM = 3
-    LEVEL_1 = 4
-    BOMBS = 5
-    HI_JUMP = 6
-    SPEED_BOOSTER = 7
-    LEVEL_2 = 8
-    SUPER_MISSILES = 9
-    VARIA_SUIT = 10
-    LEVEL_3 = 11
-    ICE_MISSILES = 12
-    WIDE_BEAM = 13
-    POWER_BOMBS = 14
-    SPACE_JUMP = 15
-    PLASMA_BEAM = 16
-    GRAVITY_SUIT = 17
-    LEVEL_4 = 18
-    DIFFUSION_MISSILES = 19
-    WAVE_BEAM = 20
-    SCREW_ATTACK = 21
-    ICE_BEAM = 22
-    MISSILE_TANK = 23
-    ENERGY_TANK = 24
-    POWER_BOMB_TANK = 25
-    ANONYMOUS = 26
-    SHINY_MISSILE_TANK = 27
-    SHINY_POWER_BOMB_TANK = 28
-    INFANT_METROID = 29
+    LEVEL_0 = 1
+    MISSILES = 2
+    MORPH_BALL = 3
+    CHARGE_BEAM = 4
+    LEVEL_1 = 5
+    BOMBS = 6
+    HI_JUMP = 7
+    SPEED_BOOSTER = 8
+    LEVEL_2 = 9
+    SUPER_MISSILES = 10
+    VARIA_SUIT = 11
+    LEVEL_3 = 12
+    ICE_MISSILES = 13
+    WIDE_BEAM = 14
+    POWER_BOMBS = 15
+    SPACE_JUMP = 16
+    PLASMA_BEAM = 17
+    GRAVITY_SUIT = 18
+    LEVEL_4 = 19
+    DIFFUSION_MISSILES = 20
+    WAVE_BEAM = 21
+    SCREW_ATTACK = 22
+    ICE_BEAM = 23
+    MISSILE_TANK = 24
+    ENERGY_TANK = 25
+    POWER_BOMB_TANK = 26
+    ANONYMOUS = 27
+    SHINY_MISSILE_TANK = 28
+    SHINY_POWER_BOMB_TANK = 29
+    INFANT_METROID = 30
 
 
 KEY_MAJOR_LOCS = "MajorLocations"
@@ -137,6 +139,7 @@ SOURCE_ENUMS = {
 ITEM_ENUMS = {
     "Undefined": ItemType.UNDEFINED,
     "None": ItemType.NONE,
+    "Level0": ItemType.LEVEL_0,
     "Missiles": ItemType.MISSILES,
     "MorphBall": ItemType.MORPH_BALL,
     "ChargeBeam": ItemType.CHARGE_BEAM,
@@ -168,6 +171,7 @@ ITEM_ENUMS = {
 
 ITEM_SPRITE_ENUMS = {
     "Empty": ItemSprite.EMPTY,
+    "Level0": ItemSprite.LEVEL_0,
     "Missiles": ItemSprite.MISSILES,
     "MorphBall": ItemSprite.MORPH_BALL,
     "ChargeBeam": ItemSprite.CHARGE_BEAM,
