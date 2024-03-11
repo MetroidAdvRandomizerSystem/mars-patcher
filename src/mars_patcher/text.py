@@ -99,6 +99,7 @@ ESCAPE_EXPRESSIONS = {
     "OBJECTIVE": 0xFB00,
     "/COLOR": 0x8100,
     "TARGET": 0xE00,
+    "GAME_START": 0xB003,
 }
 
 
