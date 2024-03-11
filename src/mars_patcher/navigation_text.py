@@ -24,6 +24,7 @@ class NavRoom(Enum):
     AUXILIARY_POWER = 10
     RESTRICTED_LABS = 11
 
+
 # Later down the line, when/if Nav terminals don't have their
 # confirm text patched out, combine these two.
 class ShipText(Enum):
@@ -56,8 +57,13 @@ class NavigationText:
         "RestrictedLabs": NavRoom.RESTRICTED_LABS
     }
 
+    GAME_START_CHAR = "[GAME_START]"
+    INITIAL_TEXT_KEY = "InitialText"
+    NAV_TERMINALS_KEY = "NavigationTerminals"
+    SHIP_TEXT_KEY = "ShipText"
+
     INFO_TEXT_ENUMS = {
-        "InitialText": ShipText.INITIAL_TEXT,
+        INITIAL_TEXT_KEY: ShipText.INITIAL_TEXT,
         "ConfirmText": ShipText.CONFIRM_TEXT,
     }
 
@@ -67,19 +73,17 @@ class NavigationText:
     @classmethod
     def from_json(cls, data: dict) -> NavigationText:
         navigation_text: dict[Language, dict[str, dict[Enum, str]]] = {}
-        # A bit of a hack. The initial text string *has* to start with [GAME_START], but we also
-        # dont want to the user to input it, so we hardcode it here.
-        intial_text_str = [
-            k for k, v in cls.INFO_TEXT_ENUMS.items() if v == ShipText.INITIAL_TEXT
-        ][0]
         for lang, lang_text in data.items():
             lang = cls.LANG_ENUMS[lang]
             navigation_text[lang] = {
-                "NavigationTerminals":
-                    {cls.NAV_ROOM_ENUMS[k]: v for k, v in lang_text["NavigationTerminals"].items()},
-                "ShipText": {
-                    cls.INFO_TEXT_ENUMS[k]: f"[GAME_START]{v}" if k == intial_text_str else v
-                    for k, v in lang_text["ShipText"].items()
+                cls.NAV_TERMINALS_KEY: {
+                    cls.NAV_ROOM_ENUMS[k]: v for k, v in lang_text[cls.NAV_TERMINALS_KEY].items()
+                },
+                cls.SHIP_TEXT_KEY: {
+                    # make sure initial text string starts with [GAME_START]
+                    cls.INFO_TEXT_ENUMS[k]: cls.GAME_START_CHAR + v
+                    if k == cls.INITIAL_TEXT_KEY and not v.startswith(cls.GAME_START_CHAR) else v
+                    for k, v in lang_text[cls.SHIP_TEXT_KEY].items()
                 }
             }
         return cls(navigation_text)
@@ -110,5 +114,3 @@ class NavigationText:
                     text_addr += 2
                     if text_addr >= HINT_TEXT_END:
                         raise ValueError("Attempted to write too much text to ROM.")
-
-
