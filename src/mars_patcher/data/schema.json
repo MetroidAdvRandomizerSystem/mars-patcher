@@ -222,6 +222,11 @@
                     "description": "The color space to use for rotating palette hues.",
                     "enum": ["HSV", "Oklab"],
                     "default": "Oklab"
+                },
+                "Symmetric": {
+                    "type": "boolean",
+                    "description": "Randomly rotates hues in the positive or negative direction true.",
+                    "default": true
                 }
             },
             "additionalProperties": false,
@@ -343,7 +348,7 @@
         "HueRotation": {
             "type": "integer",
             "minimum": 0,
-            "maximum": 180
+            "maximum": 360
         },
         "ValidSources": {
             "type": "string",

@@ -43,10 +43,12 @@ class PaletteSettings:
         seed: int,
         pal_types: Dict[PaletteType, Tuple[int, int]],
         color_space: ColorSpace,
+        symmetric: bool
     ):
         self.seed = seed
         self.pal_types = pal_types
         self.color_space = color_space
+        self.symmetric = symmetric
 
     @classmethod
     def from_json(cls, data: Dict) -> "PaletteSettings":
@@ -61,7 +63,8 @@ class PaletteSettings:
             color_space = cls.COLOR_SPACE_ENUMS[data["ColorSpace"]]
         else:
             color_space = ColorSpace.OKLAB
-        return cls(seed, pal_types, color_space)
+        symmetric = data.get("Symmetric", True)
+        return cls(seed, pal_types, color_space, symmetric)
 
     @classmethod
     def get_hue_range(cls, data: Dict) -> Tuple[int, int]:
@@ -71,10 +74,10 @@ class PaletteSettings:
             if hue_max is not None:
                 hue_min = random.randint(0, hue_max)
             elif hue_min is not None:
-                hue_max = random.randint(hue_min, 180)
+                hue_max = random.randint(hue_min, 360)
             else:
-                hue_min = random.randint(0, 180)
-                hue_max = random.randint(hue_min, 180)
+                hue_min = random.randint(0, 360)
+                hue_max = random.randint(hue_min, 360)
         if hue_min > hue_max:
             raise ValueError("HueMin cannot be greater than HueMax")
         return hue_min, hue_max
@@ -99,11 +102,10 @@ class PaletteRandomizer:
     def shift_palette_oklab(pal: Palette, shift: int, excluded_rows: Set[int] = set()) -> None:
         pal.shift_hue_oklab(shift, excluded_rows)
 
-    @staticmethod
-    def get_hue_shift(hue_range: Tuple[int, int]) -> int:
+    def get_hue_shift(self, hue_range: Tuple[int, int]) -> int:
         """Returns a hue shift in a random direction between hue_min and hue_max."""
         shift = random.randint(hue_range[0], hue_range[1])
-        if random.random() < 0.5:
+        if self.settings.symmetric and random.random() < 0.5:
             shift = 360 - shift
         return shift
 
