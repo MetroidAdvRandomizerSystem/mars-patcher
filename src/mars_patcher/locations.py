@@ -1,7 +1,25 @@
 import json
 from typing import Dict, List
 
-from mars_patcher.constants.items import *
+from mars_patcher.constants.items import (
+    ITEM_ENUMS,
+    ITEM_SPRITE_ENUMS,
+    KEY_AREA,
+    KEY_BLOCK_X,
+    KEY_BLOCK_Y,
+    KEY_HIDDEN,
+    KEY_ITEM,
+    KEY_ITEM_SPRITE,
+    KEY_MAJOR_LOCS,
+    KEY_MINOR_LOCS,
+    KEY_ORIGINAL,
+    KEY_ROOM,
+    KEY_SOURCE,
+    SOURCE_ENUMS,
+    ItemSprite,
+    ItemType,
+    MajorSource,
+)
 from mars_patcher.data import get_data_path
 
 

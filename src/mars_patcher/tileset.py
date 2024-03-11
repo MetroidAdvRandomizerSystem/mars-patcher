@@ -2,7 +2,7 @@ from mars_patcher.constants.game_data import tileset_entries
 from mars_patcher.rom import Rom
 
 
-class Tileset(object):
+class Tileset:
     def __init__(self, rom: Rom, id: int):
         self.rom = rom
         self.addr = tileset_entries(rom) + id * 0x14

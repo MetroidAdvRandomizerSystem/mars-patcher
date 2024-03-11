@@ -6,7 +6,12 @@ from jsonschema import validate
 from mars_patcher.data import get_data_path
 from mars_patcher.item_patcher import ItemPatcher, set_metroid_count, set_tank_increments
 from mars_patcher.locations import LocationSettings
-from mars_patcher.misc_patches import *
+from mars_patcher.misc_patches import (
+    disable_music,
+    disable_sound_effects,
+    skip_door_transitions,
+    stereo_default,
+)
 from mars_patcher.navigation_text import NavigationText
 from mars_patcher.random_palettes import PaletteRandomizer, PaletteSettings
 from mars_patcher.rom import Rom
@@ -71,10 +76,10 @@ def patch(input_path: str,
 
     if patch_data.get("SkipDoorTransitions"):
         skip_door_transitions(rom)
-    
+
     if patch_data.get("StereoDefault", True):
         stereo_default(rom)
-    
+
     if patch_data.get("DisableMusic"):
         disable_music(rom)
 

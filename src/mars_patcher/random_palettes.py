@@ -3,7 +3,12 @@ from enum import Enum
 from typing import Dict, List, Set, Tuple
 
 import mars_patcher.constants.game_data as gd
-from mars_patcher.constants.palettes import *
+from mars_patcher.constants.palettes import (
+    ENEMY_GROUPS,
+    EXCLUDED_ENEMIES,
+    MF_TILESET_ALT_PAL_ROWS,
+    TILESET_ANIM_PALS,
+)
 from mars_patcher.palette import Palette
 from mars_patcher.rom import Game, Rom
 
@@ -186,7 +191,7 @@ class PaletteRandomizer:
         self.shift_func(pal, shift)
         pal.write(rom, pal_addr)
         self.randomized_pals.add(pal_addr)
-        
+
     def randomize_enemies(self, hue_range: Tuple[int, int]) -> None:
         rom = self.rom
         excluded = EXCLUDED_ENEMIES[rom.game]
