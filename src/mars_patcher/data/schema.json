@@ -316,6 +316,16 @@
             "type": "boolean",
             "description": "Forces stereo sound by default when true.",
             "default": true
+        },
+        "DisableMusic": {
+            "type": "boolean",
+            "description": "Disables all music tracks when true.",
+            "default": false
+        },
+        "DisableSoundEffects": {
+            "type": "boolean",
+            "description": "Disables all sound effects when true.",
+            "default": false
         }
     },
     "required": ["SeedHash", "Locations", "RequiredMetroidCount"],

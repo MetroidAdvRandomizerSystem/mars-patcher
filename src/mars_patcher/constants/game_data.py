@@ -376,3 +376,35 @@ def navigation_text_ptrs(rom: Rom) -> int:
         elif rom.region == Region.C:
             return 0x77DDF4
     raise ValueError(rom.game)
+
+
+def sound_data_entries(rom: Rom) -> int:
+    """Returns the address of the sound data entries."""
+    if rom.game == Game.MF:
+        if rom.region == Region.U:
+            return 0xA8D3C
+        elif rom.region == Region.E:
+            return 0xA9398
+        elif rom.region == Region.J:
+            return 0xAB0A0
+        elif rom.region == Region.C:
+            return 0xAB0E4
+    elif rom.game == Game.ZM:
+        if rom.region == Region.U:
+            return 0x8F2C0
+        elif rom.region == Region.E:
+            return 0x8FF4C
+        elif rom.region == Region.J:
+            return 0x8F31C
+        elif rom.region == Region.C:
+            return 0xA8AAC
+    raise ValueError(rom.game, rom.region)
+
+
+def sound_count(rom: Rom) -> int:
+    """Returns the number of sounds in the game."""
+    if rom.game == Game.MF:
+        return 0x2E9
+    elif rom.game == Game.ZM:
+        return 0x2C4
+    raise ValueError(rom.game)

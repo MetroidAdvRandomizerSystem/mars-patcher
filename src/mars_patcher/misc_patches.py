@@ -1,5 +1,6 @@
-from mars_patcher.patching import IpsDecoder
+import mars_patcher.constants.game_data as gd
 from mars_patcher.data import get_data_path
+from mars_patcher.patching import IpsDecoder
 from mars_patcher.rom import Rom
 
 
@@ -19,3 +20,18 @@ def stereo_default(rom: Rom) -> None:
     with open(path, "rb") as f:
         patch = f.read()
     IpsDecoder().apply_patch(patch, rom.data)
+
+
+def disable_sounds(rom: Rom, start: int, end: int) -> None:
+    sound_data_addr = gd.sound_data_entries(rom)
+    for idx in range(start, end):
+        addr = sound_data_addr + idx * 8
+        rom.write_8(rom.read_ptr(addr), 0)
+
+
+def disable_music(rom: Rom) -> None:
+    disable_sounds(rom, 0, 100)
+
+
+def disable_sound_effects(rom: Rom) -> None:
+    disable_sounds(rom, 100, gd.sound_count(rom))

@@ -74,6 +74,12 @@ def patch(input_path: str,
     
     if patch_data.get("StereoDefault", True):
         stereo_default(rom)
+    
+    if patch_data.get("DisableMusic"):
+        disable_music(rom)
+
+    if patch_data.get("DisableSoundEffects"):
+        disable_sound_effects(rom)
 
     write_seed_hash(rom, patch_data["SeedHash"])
 
