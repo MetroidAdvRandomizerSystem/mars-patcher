@@ -4,13 +4,13 @@ from typing import Callable
 from jsonschema import validate
 
 from mars_patcher.data import get_data_path
-from mars_patcher.hints import Hints
 from mars_patcher.item_patcher import ItemPatcher, set_metroid_count, set_tank_increments
 from mars_patcher.locations import LocationSettings
+from mars_patcher.navigation_text import NavigationText
 from mars_patcher.random_palettes import PaletteRandomizer, PaletteSettings
 from mars_patcher.rom import Rom
+from mars_patcher.starting import set_starting_items, set_starting_location
 from mars_patcher.text import write_seed_hash
-from mars_patcher.starting import set_starting_location, set_starting_items
 
 
 def patch(input_path: str,
@@ -63,10 +63,10 @@ def patch(input_path: str,
         set_tank_increments(rom, patch_data["TankIncrements"])
 
     # hints
-    if "Hints" in patch_data:
-        status_update(-1, "Writing hints...")
-        hints = Hints.from_json(patch_data["Hints"])
-        hints.write(rom)
+    if "NavigationText" in patch_data:
+        status_update(-1, "Writing navigation text...")
+        navigation_text = NavigationText.from_json(patch_data["NavigationText"])
+        navigation_text.write(rom)
 
     if patch_data.get("SkipDoorTransitions"):
         # TODO: move to separate patch
