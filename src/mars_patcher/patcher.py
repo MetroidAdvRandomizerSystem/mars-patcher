@@ -6,6 +6,7 @@ from jsonschema import validate
 from mars_patcher.data import get_data_path
 from mars_patcher.item_patcher import ItemPatcher, set_metroid_count, set_tank_increments
 from mars_patcher.locations import LocationSettings
+from mars_patcher.misc_patches import *
 from mars_patcher.navigation_text import NavigationText
 from mars_patcher.random_palettes import PaletteRandomizer, PaletteSettings
 from mars_patcher.rom import Rom
@@ -69,9 +70,10 @@ def patch(input_path: str,
         navigation_text.write(rom)
 
     if patch_data.get("SkipDoorTransitions"):
-        # TODO: move to separate patch
-        rom.write_32(0x69500, 0x3000BDE)
-        rom.write_8(0x694E2, 0xC)
+        skip_door_transitions(rom)
+    
+    if patch_data.get("StereoDefault", True):
+        stereo_default(rom)
 
     write_seed_hash(rom, patch_data["SeedHash"])
 

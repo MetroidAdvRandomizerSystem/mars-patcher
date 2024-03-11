@@ -311,6 +311,11 @@
             "type": "boolean",
             "description": "Makes all door transitions instant when true.",
             "default": false
+        },
+        "StereoDefault": {
+            "type": "boolean",
+            "description": "Forces stereo sound by default when true.",
+            "default": true
         }
     },
     "required": ["SeedHash", "Locations", "RequiredMetroidCount"],
