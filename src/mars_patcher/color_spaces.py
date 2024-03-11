@@ -242,7 +242,7 @@ class OklabColor:
         rl = +4.0767416621 * lg - 3.3077115913 * md + 0.2309699292 * st
         gl = -1.2684380046 * lg + 2.6097574011 * md - 0.3413193965 * st
         bl = -0.0041960863 * lg - 0.7034186147 * md + 1.7076147010 * st
-        
+
         # convert to sRGB
         rf = self.linear_to_srgb(rl)
         gf = self.linear_to_srgb(gl)

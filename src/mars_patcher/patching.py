@@ -50,7 +50,8 @@ class BpsDecoder:
 
             source_checksum_actual = crc32(self.source)
             if source_size != len(source) or source_checksum_expected != source_checksum_actual:
-                if len(source) == target_size and source_checksum_actual == target_checksum_expected:
+                if (len(source) == target_size and
+                    source_checksum_actual == target_checksum_expected):
                     self.error(BpsDecodeError.ALREADY_PATCHED)
                 self.error(BpsDecodeError.INVALID_SOURCE)
 
@@ -183,7 +184,8 @@ class IpsDecoder:
                     target[i] = rle_byte
             else:
                 if idx + size > patch_len:
-                    self.error(IpsDecodeError.ABRUPT_IPS_END, "entry cut off before end of data block")
+                    self.error(IpsDecodeError.ABRUPT_IPS_END,
+                               "entry cut off before end of data block")
                 if addr + size > len(target):
                     self.error(IpsDecodeError.PAST_TARGET_END)
                 target[addr:addr + size] = patch[idx:idx + size]

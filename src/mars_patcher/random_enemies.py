@@ -1,9 +1,8 @@
-from enum import Enum
 import random
 from typing import Dict, List
 
-from mars_patcher.constants.enemies import EnemyType, ENEMY_TYPES
-from mars_patcher.constants.game_data import sprite_vram_sizes, spriteset_ptrs, spriteset_count
+from mars_patcher.constants.enemies import ENEMY_TYPES, EnemyType
+from mars_patcher.constants.game_data import sprite_vram_sizes, spriteset_count, spriteset_ptrs
 from mars_patcher.rom import Rom
 
 
@@ -31,7 +30,7 @@ def randomize_enemies(rom: Rom) -> None:
             replacements[EnemyType.GROUND].append(en_id)
             replacements[EnemyType.CEILING].append(en_id)
         # Ground, Ceiling, Wall, and Flying cannot replace others
-    
+
     # randomize spritesets
     ss_ptrs = spriteset_ptrs(rom)
     for i in range(spriteset_count(rom)):

@@ -1,11 +1,10 @@
 from typing import Dict
 
 from mars_patcher.compress import comp_rle, decomp_rle
-from mars_patcher.locations import ItemType, ItemSprite, LocationSettings
+from mars_patcher.locations import ItemSprite, ItemType, LocationSettings
 from mars_patcher.rom import Rom
 from mars_patcher.room_entry import RoomEntry
 from mars_patcher.tileset import Tileset
-
 
 # keep these in sync with base patch
 MINOR_LOCS_ADDR = 0x7FF000
