@@ -67,12 +67,20 @@ class NavigationText:
     @classmethod
     def from_json(cls, data: dict) -> NavigationText:
         navigation_text: dict[Language, dict[str, dict[Enum, str]]] = {}
+        # A bit of a hack. The initial text string *has* to start with [GAME_START], but we also
+        # dont want to the user to input it, so we hardcode it here.
+        intial_text_str = [
+            k for k, v in cls.INFO_TEXT_ENUMS.items() if v == ShipText.INITIAL_TEXT
+        ][0]
         for lang, lang_text in data.items():
             lang = cls.LANG_ENUMS[lang]
             navigation_text[lang] = {
                 "NavigationTerminals":
                     {cls.NAV_ROOM_ENUMS[k]: v for k, v in lang_text["NavigationTerminals"].items()},
-                "ShipText": {cls.INFO_TEXT_ENUMS[k]: v for k, v in lang_text["ShipText"].items()}
+                "ShipText": {
+                    cls.INFO_TEXT_ENUMS[k]: f"[GAME_START]{v}" if k == intial_text_str else v
+                    for k, v in lang_text["ShipText"].items()
+                }
             }
         return cls(navigation_text)
 
@@ -83,7 +91,6 @@ class NavigationText:
 
             # Info Text
             for info_place, text in lang_texts["ShipText"].items():
-
                 rom.write_ptr(base_text_address + info_place.value * 4, text_addr)
                 rom.write_ptr(base_text_address + info_place.value * 4 + 4, text_addr)
 
