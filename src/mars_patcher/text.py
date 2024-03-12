@@ -4,7 +4,6 @@ from typing import List
 from mars_patcher.constants.game_data import character_widths, file_screen_text_ptrs
 from mars_patcher.rom import Rom
 
-
 CHARS = {
     " ": 0x40,
     "!": 0x41,
@@ -89,9 +88,19 @@ CHARS = {
     "z": 0xDA
 }
 
+
 NEXT = 0xFD00
 NEWLINE = 0xFE00
 END = 0xFF00
+ESCAPE_EXPRESSIONS = {
+    "NEXT": NEXT,
+    "NEWLINE": NEWLINE,
+    "END": END,
+    "OBJECTIVE": 0xFB00,
+    "/COLOR": 0x8100,
+    "TARGET": 0xE00,
+    "GAME_START": 0xB003,
+}
 
 
 class Language(Enum):
@@ -112,14 +121,8 @@ def parse_escape_expr(expr: str) -> int:
         else:
             raise NotImplementedError(f"Unimplemented bracketed expression \"{expr}\"")
 
-    if expr == "NEWLINE":
-        return NEWLINE
-    elif expr == "NEXT":
-        return NEXT
-    elif expr == "/COLOR":
-        return 0x8100
-    elif expr == "TARGET":
-        return 0xE000
+    if expr in ESCAPE_EXPRESSIONS:
+        return ESCAPE_EXPRESSIONS[expr]
     else:
         raise NotImplementedError(f"Unimplemented bracketed expression \"{expr}\"")
 

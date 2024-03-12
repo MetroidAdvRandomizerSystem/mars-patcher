@@ -30,7 +30,8 @@ test = [
     "pytest-mock",
 ]
 typing = [
-    "mypy"
+    "mypy",
+    "pre-commit"
 ]
 
 [project.urls]

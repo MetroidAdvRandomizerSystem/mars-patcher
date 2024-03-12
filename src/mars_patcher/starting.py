@@ -5,7 +5,6 @@ from mars_patcher.constants.items import BEAM_FLAGS, MISSILE_BOMB_FLAGS, SUIT_MI
 from mars_patcher.rom import Rom
 from mars_patcher.room_entry import RoomEntry
 
-
 # keep in sync with base patch
 STARTING_LOC_ADDR = 0x7FF228
 
