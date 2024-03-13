@@ -5,6 +5,7 @@ from jsonschema import validate
 
 from mars_patcher.connections import Connections
 from mars_patcher.data import get_data_path
+from mars_patcher.door_locks import set_door_locks
 from mars_patcher.item_patcher import ItemPatcher, set_metroid_count, set_tank_increments
 from mars_patcher.locations import LocationSettings
 from mars_patcher.misc_patches import (
@@ -74,6 +75,11 @@ def patch(input_path: str,
         status_update(-1, "Writing elevator connections...")
         conns = Connections(rom)
         conns.set_elevator_connections(patch_data["ElevatorConnections"])
+
+    # door locks
+    if "DoorLocks" in patch_data:
+        status_update(-1, "Writing door locks...")
+        set_door_locks(rom, patch_data["DoorLocks"])
 
     # hints
     if "NavigationText" in patch_data:

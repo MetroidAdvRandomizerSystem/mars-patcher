@@ -107,6 +107,26 @@ def area_connections_count(rom: Rom) -> int:
         return 0x22
     elif rom.game == Game.ZM:
         return 0x19
+
+
+def hatch_lock_events(rom: Rom) -> int:
+    """Returns the address of the hatch lock events."""
+    if rom.game == Game.MF:
+        if rom.region == Region.U:
+            return 0x3C8A5C
+        elif rom.region == Region.E:
+            return 0x3C90B8
+        elif rom.region == Region.J:
+            return 0x3CB024
+        elif rom.region == Region.C:
+            return 0x3CB068
+    raise ValueError(rom.game)
+
+
+def hatch_lock_event_count(rom: Rom) -> int:
+    """Returns the number of hatch lock events in the game."""
+    if rom.game == Game.MF:
+        return 0x4B
     raise ValueError(rom.game)
 
 
