@@ -77,5 +77,5 @@ class BlockLayer:
             addr = rom.read_ptr(ptr)
         rom.write_8(addr, self.width)
         rom.write_8(addr + 1, self.height)
-        rom.write_bytes(addr + 2, comp_data, 0, comp_len)
+        rom.write_bytes(addr + 2, comp_data)
         self.comp_len = comp_len
