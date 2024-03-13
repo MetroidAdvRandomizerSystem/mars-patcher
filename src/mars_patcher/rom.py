@@ -118,7 +118,15 @@ class Rom:
         assert val < ROM_OFFSET, f"Pointer should be less than {ROM_OFFSET:X} but is {val:X}"
         self.write_32(addr, val + ROM_OFFSET)
 
-    def write_bytes(self, dst_addr: int, vals: BytesLike, src_addr: int, size: int) -> None:
+    def write_bytes(
+        self,
+        dst_addr: int,
+        vals: BytesLike,
+        src_addr: int = 0,
+        size: int | None = None
+    ) -> None:
+        if size is None:
+            size = len(vals) - src_addr
         dst_end = dst_addr + size
         src_end = src_addr + size
         self.data[dst_addr:dst_end] = vals[src_addr:src_end]

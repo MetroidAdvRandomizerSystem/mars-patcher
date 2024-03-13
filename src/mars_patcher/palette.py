@@ -30,7 +30,7 @@ class Palette:
 
     def write(self, rom: Rom, addr: int) -> None:
         data = self.byte_data()
-        rom.write_bytes(addr, data, 0, len(data))
+        rom.write_bytes(addr, data)
 
     def shift_hue_hsv(self, shift: int, excluded_rows: Set[int]) -> None:
         """
