@@ -60,6 +60,11 @@ class Rom:
             raise ValueError("Not compatible with Metroid Zero Mission")
         if self.region != Region.U:
             raise ValueError("Only compatible with the North American (U) version")
+        # set free space address
+        if self.is_mf():
+            self.free_space_addr = 0x7E0000
+        elif self.is_zm():
+            raise NotImplementedError()
 
     def is_mf(self) -> bool:
         return self.game == Game.MF
@@ -120,6 +125,14 @@ class Rom:
 
     def copy_bytes(self, src_addr: int, dst_addr: int, size: int) -> None:
         self.write_bytes(dst_addr, self.data, src_addr, size)
+
+    def reserve_free_space(self, size: int, align: int = 1) -> int:
+        remain = self.free_space_addr % align
+        if remain != 0:
+            self.free_space_addr += align - remain
+        addr = self.free_space_addr
+        self.free_space_addr += size
+        return addr
 
     def save(self, path: str) -> None:
         with open(path, "wb") as f:

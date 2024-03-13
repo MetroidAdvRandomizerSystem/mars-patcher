@@ -42,7 +42,7 @@
                         "type": "object",
                         "properties": {
                             "Area": {
-                                "$ref": "#/$defs/TypeU8",
+                                "$ref": "#/$defs/AreaID",
                                 "description": "The area ID where this item is located."
                             },
                             "Room": {
@@ -81,7 +81,7 @@
             "description": "The location the player should spawn at the start of the game.",
             "properties": {
                 "Area": {
-                    "$ref": "#/$defs/TypeU8",
+                    "$ref": "#/$defs/AreaID",
                     "description": "The area ID of the starting location."
                 },
                 "Room": {
@@ -146,8 +146,7 @@
                     "description": "Which area maps will be downloaded from the start.",
                     "uniqueItems": true,
                     "items": {
-                        "type": "integer",
-                        "enum": [0, 1, 2, 3, 4, 5, 6]
+                        "$ref": "#/$defs/AreaID"
                     },
                     "default": []
                 }
@@ -182,6 +181,37 @@
             },
             "required": ["MissileTank", "EnergyTank", "PowerBombTank"],
             "default": null
+        },
+        "DoorLocks": {
+            "type": "array",
+            "description": "List of all lockable doors and their lock type.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "Area": {
+                        "$ref": "#/$defs/AreaID",
+                        "description": "The area ID where this door is located."
+                    },
+                    "Door": {
+                        "$ref": "#/$defs/TypeU8",
+                        "description": "The door ID of this door."
+                    },
+                    "LockType": {
+                        "type": "string",
+                        "description": "The type of cover on the hatch.",
+                        "enum": [
+                            "Open",
+                            "Level0",
+                            "Level1",
+                            "Level2",
+                            "Level3",
+                            "Level4",
+                            "Locked"
+                        ]
+                    }
+                },
+                "required": ["Area", "Door", "LockType"]
+            }
         },
         "Palettes": {
             "type": "object",
@@ -339,6 +369,11 @@
             "type": "integer",
             "minimum": 0,
             "maximum": 255
+        },
+        "AreaID": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 6
         },
         "Seed": {
             "type": "integer",
