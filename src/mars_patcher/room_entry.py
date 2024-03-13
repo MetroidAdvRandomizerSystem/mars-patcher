@@ -57,7 +57,7 @@ class BlockLayer:
         self.height = rom.read_8(addr + 1)
         self.block_data, self.comp_len = decomp_rle(rom.data, addr + 2)
 
-    def get_block_value(self, x: int, y: int) -> None:
+    def get_block_value(self, x: int, y: int) -> int:
         idx = (y * self.width + x) * 2
         return self.block_data[idx] | self.block_data[idx + 1] << 8
 
