@@ -11,6 +11,9 @@ class RoomEntry:
     def bg1_ptr(self) -> int:
         return self.addr + 0xC
 
+    def bg2_ptr(self) -> int:
+        return self.addr + 0x10
+
     def clip_ptr(self) -> int:
         return self.addr + 0x14
 
@@ -19,6 +22,9 @@ class RoomEntry:
 
     def bg1_addr(self) -> int:
         return self.rom.read_ptr(self.bg1_ptr())
+
+    def bg2_addr(self) -> int:
+        return self.rom.read_ptr(self.bg2_ptr())
 
     def clip_addr(self) -> int:
         return self.rom.read_ptr(self.clip_ptr())
@@ -37,6 +43,15 @@ class RoomEntry:
 
     def write_bg1(self) -> None:
         self.bg1_data.write(self.rom, self.bg1_ptr())
+
+    def load_bg2(self) -> None:
+        self.bg2_data = BlockLayer(self.rom, self.bg2_addr())
+
+    def set_bg2_block(self, value: int, x: int, y: int) -> None:
+        self.bg2_data.set_block_value(value, x, y)
+
+    def write_bg2(self) -> None:
+        self.bg2_data.write(self.rom, self.bg2_ptr())
 
     def load_clip(self) -> None:
         self.clip_data = BlockLayer(self.rom, self.clip_addr())
