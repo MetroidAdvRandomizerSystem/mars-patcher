@@ -3,6 +3,7 @@ from typing import Callable
 
 from jsonschema import validate
 
+from mars_patcher.connections import Connections
 from mars_patcher.data import get_data_path
 from mars_patcher.door_locks import set_door_locks
 from mars_patcher.item_patcher import ItemPatcher, set_metroid_count, set_tank_increments
@@ -68,6 +69,12 @@ def patch(input_path: str,
     if "TankIncrements" in patch_data:
         status_update(-1, "Writing tank increments...")
         set_tank_increments(rom, patch_data["TankIncrements"])
+
+    # elevator connections
+    if "ElevatorConnections" in patch_data:
+        status_update(-1, "Writing elevator connections...")
+        conns = Connections(rom)
+        conns.set_elevator_connections(patch_data["ElevatorConnections"])
 
     # door locks
     if "DoorLocks" in patch_data:
