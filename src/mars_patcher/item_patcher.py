@@ -1,6 +1,5 @@
 from typing import Dict
 
-from mars_patcher.compress import comp_rle, decomp_rle
 from mars_patcher.locations import ItemSprite, ItemType, LocationSettings
 from mars_patcher.rom import Rom
 from mars_patcher.room_entry import RoomEntry
@@ -46,12 +45,12 @@ class ItemPatcher:
 
             # overwrite clipdata
             room = RoomEntry(rom, min_loc.area, min_loc.room)
-            clip_addr = room.clip_addr()
             val = HIDDEN_TANK_CLIP[tank_slot] if min_loc.hidden else TANK_CLIP[tank_slot]
-            self.write_block_val(clip_addr, min_loc.block_x, min_loc.block_y, val)
+            room.load_clip()
+            room.set_clip_block(val, min_loc.block_x, min_loc.block_y)
+            room.write_clip()
+            # overwrite BG1 if not hidden
             if not min_loc.hidden:
-                # overwrite BG1
-                bg1_addr = room.bg1_addr()
                 # get tilemap
                 tileset = Tileset(rom, room.tileset())
                 addr = tileset.rle_tilemap_addr()
@@ -60,7 +59,9 @@ class ItemPatcher:
                 tile = TANK_TILE[tank_slot]
                 idx = next(i for i in range(16) if rom.read_8(addr + i * 8) == tile)
                 val = TANK_BG1_START + idx
-                self.write_block_val(bg1_addr, min_loc.block_x, min_loc.block_y, val)
+                room.load_bg1()
+                room.set_bg1_block(val, min_loc.block_x, min_loc.block_y)
+                room.write_bg1()
 
             # write to minors table
             addr = MINOR_LOCS_ADDR + i * 4
@@ -78,19 +79,6 @@ class ItemPatcher:
             if maj_loc.new_item != ItemType.UNDEFINED:
                 addr = MAJOR_LOCS_ADDR + maj_loc.major_src.value
                 rom.write_8(addr, maj_loc.new_item.value)
-
-    def write_block_val(self, block_addr: int, x: int, y: int, val: int) -> None:
-        # get block data
-        width = self.rom.read_8(block_addr)
-        data, comp_len = decomp_rle(self.rom.data, block_addr + 2)
-        # overwrite value
-        idx = (y * width + x) * 2
-        data[idx] = val
-        data[idx + 1] = 0
-        # compress and write to rom
-        comp_data = comp_rle(data)
-        assert len(comp_data) <= comp_len, f"{len(comp_data):X} > {comp_len:X}"
-        self.rom.write_bytes(block_addr + 2, comp_data, 0, len(comp_data))
 
 
 # TODO: move these?

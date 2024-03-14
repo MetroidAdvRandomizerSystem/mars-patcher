@@ -60,6 +60,11 @@ class Rom:
             raise ValueError("Not compatible with Metroid Zero Mission")
         if self.region != Region.U:
             raise ValueError("Only compatible with the North American (U) version")
+        # set free space address
+        if self.is_mf():
+            self.free_space_addr = 0x7E0000
+        elif self.is_zm():
+            raise NotImplementedError()
 
     def is_mf(self) -> bool:
         return self.game == Game.MF
@@ -113,13 +118,29 @@ class Rom:
         assert val < ROM_OFFSET, f"Pointer should be less than {ROM_OFFSET:X} but is {val:X}"
         self.write_32(addr, val + ROM_OFFSET)
 
-    def write_bytes(self, dst_addr: int, vals: BytesLike, src_addr: int, size: int) -> None:
+    def write_bytes(
+        self,
+        dst_addr: int,
+        vals: BytesLike,
+        src_addr: int = 0,
+        size: int | None = None
+    ) -> None:
+        if size is None:
+            size = len(vals) - src_addr
         dst_end = dst_addr + size
         src_end = src_addr + size
         self.data[dst_addr:dst_end] = vals[src_addr:src_end]
 
     def copy_bytes(self, src_addr: int, dst_addr: int, size: int) -> None:
         self.write_bytes(dst_addr, self.data, src_addr, size)
+
+    def reserve_free_space(self, size: int, align: int = 1) -> int:
+        remain = self.free_space_addr % align
+        if remain != 0:
+            self.free_space_addr += align - remain
+        addr = self.free_space_addr
+        self.free_space_addr += size
+        return addr
 
     def save(self, path: str) -> None:
         with open(path, "wb") as f:

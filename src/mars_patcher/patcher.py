@@ -4,6 +4,7 @@ from typing import Callable
 from jsonschema import validate
 
 from mars_patcher.data import get_data_path
+from mars_patcher.door_locks import set_door_locks
 from mars_patcher.item_patcher import ItemPatcher, set_metroid_count, set_tank_increments
 from mars_patcher.locations import LocationSettings
 from mars_patcher.misc_patches import (
@@ -67,6 +68,11 @@ def patch(input_path: str,
     if "TankIncrements" in patch_data:
         status_update(-1, "Writing tank increments...")
         set_tank_increments(rom, patch_data["TankIncrements"])
+
+    # door locks
+    if "DoorLocks" in patch_data:
+        status_update(-1, "Writing door locks...")
+        set_door_locks(rom, patch_data["DoorLocks"])
 
     # hints
     if "NavigationText" in patch_data:
