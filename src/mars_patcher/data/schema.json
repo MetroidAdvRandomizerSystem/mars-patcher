@@ -400,6 +400,11 @@
                 "required": ["LineType"]
             }
         },
+        "DisableDemos": {
+            "type": "boolean",
+            "description": "Disables title screen demos when true.",
+            "default": false
+        },
         "SkipDoorTransitions": {
             "type": "boolean",
             "description": "Makes all door transitions instant when true.",

@@ -9,6 +9,12 @@ def get_patch_path(rom: Rom, filename: str) -> str:
     return get_data_path("patches", dir, filename)
 
 
+def disable_demos(rom: Rom) -> None:
+    # TODO: move to patch
+    # b 0x8087460
+    rom.write_16(0x87436, 0xE013)
+
+
 def skip_door_transitions(rom: Rom) -> None:
     # TODO: move to patch
     rom.write_32(0x69500, 0x3000BDE)

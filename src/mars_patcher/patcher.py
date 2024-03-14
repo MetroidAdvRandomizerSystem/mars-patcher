@@ -10,6 +10,7 @@ from mars_patcher.door_locks import set_door_locks
 from mars_patcher.item_patcher import ItemPatcher, set_metroid_count, set_tank_increments
 from mars_patcher.locations import LocationSettings
 from mars_patcher.misc_patches import (
+    disable_demos,
     disable_music,
     disable_sound_effects,
     skip_door_transitions,
@@ -92,6 +93,11 @@ def patch(input_path: str,
     if "CreditsText" in patch_data:
         status_update(-1, "Writing credits text...")
         write_credits(rom, patch_data["CreditsText"])
+
+    # misc patches
+
+    if patch_data.get("DisableDemos"):
+        disable_demos(rom)
 
     if patch_data.get("SkipDoorTransitions"):
         skip_door_transitions(rom)
