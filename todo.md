@@ -1,9 +1,12 @@
-- [ ] BPS file patcher (to apply base patch)
+- [x] BPS file patcher (to apply base patch)
 - [x] Tie animated palettes to tileset palettes where possible
 - [ ] Ability to overwrite credits text
 - [ ] Allow parsing/writing non-English text
 - [x] Display seed hash on file select screen
-- [ ] Option to start with stereo audio
-- [ ] Option to disable music
+- [x] Option to start with stereo audio
+- [x] Option to disable music
 - [ ] Elevator connection shuffle
+- [ ] Door lock shuffle
+  - [x] Existing lock types
+  - [ ] New lock types
 - [ ] Tube connection shuffle
