@@ -370,6 +370,36 @@
             },
             "default": null
         },
+        "CreditsText": {
+            "type": "array",
+            "description": "Lines of text to insert into the credits.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "LineType": {
+                        "type": "string",
+                        "description": "The color and line height of the text (or blank).",
+                        "enum": ["Blank", "Blue", "Red", "White1", "White2"]
+                    },
+                    "Text": {
+                        "type": "string",
+                        "description": "The ASCII text for this line.",
+                        "pattern": "^[ -~]{0,34}$"
+                    },
+                    "BlankLines": {
+                        "$ref": "#/$defs/TypeU8",
+                        "description": "Inserts the provided number of blank lines after the text line.",
+                        "default": 0
+                    },
+                    "Centered": {
+                        "type": "boolean",
+                        "description": "Centers the text horizontally when true.",
+                        "default": true
+                    }
+                },
+                "required": ["LineType"]
+            }
+        },
         "SkipDoorTransitions": {
             "type": "boolean",
             "description": "Makes all door transitions instant when true.",

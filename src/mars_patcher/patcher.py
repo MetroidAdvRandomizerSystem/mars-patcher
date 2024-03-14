@@ -4,6 +4,7 @@ from typing import Callable
 from jsonschema import validate
 
 from mars_patcher.connections import Connections
+from mars_patcher.credits import write_credits
 from mars_patcher.data import get_data_path
 from mars_patcher.door_locks import set_door_locks
 from mars_patcher.item_patcher import ItemPatcher, set_metroid_count, set_tank_increments
@@ -86,6 +87,11 @@ def patch(input_path: str,
         status_update(-1, "Writing navigation text...")
         navigation_text = NavigationText.from_json(patch_data["NavigationText"])
         navigation_text.write(rom)
+
+    # credits
+    if "CreditsText" in patch_data:
+        status_update(-1, "Writing credits text...")
+        write_credits(rom, patch_data["CreditsText"])
 
     if patch_data.get("SkipDoorTransitions"):
         skip_door_transitions(rom)
