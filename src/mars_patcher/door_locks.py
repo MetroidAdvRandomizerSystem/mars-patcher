@@ -80,11 +80,10 @@ def set_door_locks(rom: Rom, data: List[dict]) -> None:
             room = rom.read_8(door_addr + 1)
             if room == 0xFF:
                 continue
-            # skip excluded doors
-            if (area, door) in EXCLUDED_DOORS:
-                continue
-            # check if type is lockable hatch
-            if door_type & 0xF != 4:
+            # skip excluded doors and doors that aren't lockable hatches
+            lock = door_locks.get((area, door))
+            if (area, door) in EXCLUDED_DOORS or door_type & 0xF != 4:
+                assert lock is None, f"Area {area} door {door} cannot have its lock changed"
                 continue
             # load room's BG1 and clipdata if not already loaded
             area_room = (area, room)
@@ -117,7 +116,6 @@ def set_door_locks(rom: Rom, data: List[dict]) -> None:
                 capless_slot -= 1
             orig_room_hatch_slots[area_room] = (capped_slot, capless_slot)
             # get new hatch slot number
-            lock = door_locks.get((area, door))
             capped_slot, capless_slot = new_room_hatch_slots[area_room]
             if (
                 (lock is None and orig_has_cap) or
