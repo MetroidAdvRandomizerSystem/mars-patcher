@@ -73,10 +73,18 @@ def patch(input_path: str,
         set_tank_increments(rom, patch_data["TankIncrements"])
 
     # elevator connections
+    conns = None
     if "ElevatorConnections" in patch_data:
         status_update(-1, "Writing elevator connections...")
         conns = Connections(rom)
         conns.set_elevator_connections(patch_data["ElevatorConnections"])
+
+    # sector shortcuts
+    if "SectorShortcuts" in patch_data:
+        status_update(-1, "Writing sector shortcuts...")
+        if conns is None:
+            conns = Connections(rom)
+        conns.set_shortcut_connections(patch_data["SectorShortcuts"])
 
     # door locks
     if "DoorLocks" in patch_data:

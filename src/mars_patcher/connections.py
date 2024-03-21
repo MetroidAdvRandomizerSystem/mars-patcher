@@ -45,6 +45,15 @@ ELEVATOR_BOTTOMS = {
     "Sector6ToMainHub": (6, 0x00, True)
 }
 
+# (Area ID, Dest area): Door ID
+SHORTCUT_LEFT_DOORS = [0x6B, 0x7F, 0x59, 0x6C, 0x02, 0x51]
+SHORTCUT_RIGHT_DOORS = [0x68, 0x82, 0x56, 0x6A, 0x53, 0x54]
+
+SHORTCUT_LEFT_NUM_COORD = (6, 3)
+SHORTCUT_RIGHT_NUM_COORD = (9, 3)
+SHORTCUT_NUM_X_OFFSET = 3
+SHORTCUT_NUM_BLOCKS = [0x101, 0x104, 0xE5, 0xE6, 0xE7, 0xE8]
+
 DOOR_TYPE_AREA_CONN = 1
 DOOR_TYPE_NO_HATCH = 2
 
@@ -77,6 +86,43 @@ class Connections:
         # update area number tiles in main hub rooms
         self.fix_main_hub_tiles()
 
+    def set_shortcut_connections(self, data: dict) -> None:
+        for i, dst_area in enumerate(data["LeftAreas"]):
+            self.connect_shortcuts(i + 1, dst_area, True)
+        for i, dst_area in enumerate(data["RightAreas"]):
+            self.connect_shortcuts(i + 1, dst_area, False)
+
+    def connect_shortcuts(self, area: int, dst_area: int, left: bool) -> None:
+        # connect doors and update area connection
+        if left:
+            src_list = SHORTCUT_LEFT_DOORS
+            dst_list = SHORTCUT_RIGHT_DOORS
+            x, y = SHORTCUT_LEFT_NUM_COORD
+            left_area, right_area = dst_area, area
+        else:
+            src_list = SHORTCUT_RIGHT_DOORS
+            dst_list = SHORTCUT_LEFT_DOORS
+            x, y = SHORTCUT_RIGHT_NUM_COORD
+            left_area, right_area = area, dst_area
+        door = src_list[area - 1]
+        dst_door = dst_list[dst_area - 1]
+        self.connect_doors(area, door, dst_area, dst_door)
+        self.connect_areas(area, door, dst_area, True)
+
+        # update area numbers on BG1
+        addr = self.rom.read_ptr(self.area_doors_ptrs + area * 4) + door * 0xC
+        room = self.rom.read_8(addr + 1)
+        room_entry = RoomEntry(self.rom, area, room)
+        room_entry.load_bg1()
+        block = SHORTCUT_NUM_BLOCKS[left_area - 1]
+        room_entry.set_bg1_block(block, x, y)
+        room_entry.set_bg1_block(block + 0x10, x, y + 1)
+        block = SHORTCUT_NUM_BLOCKS[right_area - 1]
+        x += SHORTCUT_NUM_X_OFFSET
+        room_entry.set_bg1_block(block, x, y)
+        room_entry.set_bg1_block(block + 0x10, x, y + 1)
+        room_entry.write_bg1()
+
     def connect_elevators(
         self, src_dict: Dict, dst_dict: Dict, pairs: Dict[str, str]
     ) -> None:
@@ -84,19 +130,16 @@ class Connections:
             src_area, src_door, in_list = src_dict[src_name]
             dst_area, dst_door, _ = dst_dict[dst_name]
             # modify door entry
-            self.connect_doors(src_area, src_door, dst_area, dst_door, True)
+            self.connect_doors(src_area, src_door, dst_area, dst_door)
             # modify area connection
             self.connect_areas(src_area, src_door, dst_area, in_list)
 
-    def connect_doors(
-        self, src_area: int, src_door: int, dst_area: int, dst_door: int, is_elevator: bool
-    ) -> None:
+    def connect_doors(self, src_area: int, src_door: int, dst_area: int, dst_door: int) -> None:
         addr = self.rom.read_ptr(self.area_doors_ptrs + src_area * 4) + src_door * 0xC
-        if is_elevator:
-            # fix door type
-            props = self.rom.read_8(addr)
-            door_type = DOOR_TYPE_AREA_CONN if src_area != dst_area else DOOR_TYPE_NO_HATCH
-            self.rom.write_8(addr, props & 0xF0 | door_type)
+        # fix door type
+        props = self.rom.read_8(addr)
+        door_type = DOOR_TYPE_AREA_CONN if src_area != dst_area else DOOR_TYPE_NO_HATCH
+        self.rom.write_8(addr, props & 0xF0 | door_type)
         # set destination door
         self.rom.write_8(addr + 6, dst_door)
 

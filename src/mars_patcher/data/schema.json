@@ -210,6 +210,20 @@
                 }
             }
         },
+        "SectorShortcuts": {
+            "type": "object",
+            "description": "Defines the sector that each sector shortcut connects to.",
+            "properties": {
+                "LeftAreas": {
+                    "$ref": "#/$defs/ShortcutSectorList",
+                    "description": "Destination areas on the left side of sectors."
+                },
+                "RightAreas": {
+                    "$ref": "#/$defs/ShortcutSectorList",
+                    "description": "Destination areas on the right side of sectors"
+                }
+            }
+        },
         "DoorLocks": {
             "type": "array",
             "description": "List of all lockable doors and their lock type.",
@@ -428,6 +442,11 @@
     },
     "required": ["SeedHash", "Locations", "RequiredMetroidCount"],
     "$defs": {
+        "Seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647
+        },
         "TypeU8": {
             "type": "integer",
             "minimum": 0,
@@ -438,10 +457,18 @@
             "minimum": 0,
             "maximum": 6
         },
-        "Seed": {
+        "SectorID": {
             "type": "integer",
-            "minimum": 0,
-            "maximum": 2147483647
+            "minimum": 1,
+            "maximum": 6
+        },
+        "ShortcutSectorList": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/SectorID"
+            },
+            "minItems": 6,
+            "maxItems": 6
         },
         "HueRotation": {
             "type": "integer",
