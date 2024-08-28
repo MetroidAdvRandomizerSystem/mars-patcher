@@ -44,4 +44,4 @@ def disable_sound_effects(rom: Rom) -> None:
 
 
 def change_missile_limit(rom: Rom, limit: int) -> None:
-    rom.write_8(0x815E6, limit)
+    rom.write_8(0x7FF06A, limit)
