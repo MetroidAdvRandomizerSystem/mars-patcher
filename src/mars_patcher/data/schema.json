@@ -438,6 +438,11 @@
             "type": "boolean",
             "description": "Disables all sound effects when true.",
             "default": false
+        },
+        "MissileLimit": {
+            "$ref": "#/$defs/TypeU8",
+            "description": "Changes how many missiles can be on-screen at a time. The vanilla game has it set to 2, the randomizer changes it to 3 by default. Zero Mission uses 4.",
+            "default": 3
         }
     },
     "required": ["SeedHash", "Locations", "RequiredMetroidCount"],
