@@ -6,10 +6,12 @@ from mars_patcher.room_entry import RoomEntry
 from mars_patcher.tileset import Tileset
 
 # keep these in sync with base patch
-MINOR_LOCS_ADDR = 0x7FF000
-MAJOR_LOCS_ADDR = 0x7FF200
-TANK_INC_ADDR = 0x7FF220
-METROID_COUNT_ADDR = 0x7FF227
+MINOR_LOCS_TABLE_ADDR = 0x7FF000
+MINOR_LOCS_ARRAY_ADDR = 0x7FF06C
+MAJOR_LOCS_ADDR = 0x7FF01C
+MINOR_LOC_SIZE = 0x8
+TANK_INC_ADDR = 0x7FF046
+METROID_COUNT_ADDR = 0x7FF04D
 
 TANK_CLIP = (0x62, 0x63, 0x68)
 HIDDEN_TANK_CLIP = (0x64, 0x65, 0x69)
@@ -24,13 +26,30 @@ class ItemPatcher:
         self.rom = rom
         self.settings = settings
 
+    def _binary_search_rooms_array(self, start_address: int, room: int) -> int:
+        """Returns either the address of the room, or -1 if the room was not found."""
+        low_end = 0
+        high_end = 16
+        while low_end < high_end:
+            middle = (low_end+high_end)//2
+            read_value = self.rom.read_8(start_address+middle)
+            if read_value < room:
+                low_end = middle + 1
+            elif read_value > room:
+                high_end = middle
+            else:
+                return start_address+middle
+            
+        return -1
+
+
+
     # TODO: use separate classes for handling tilesets and backgrounds
     def write_items(self) -> None:
         rom = self.rom
         # handle minor locations
-        minor_locs = sorted(
-            self.settings.minor_locs, key=lambda m: (m.area, m.room, m.block_x, m.block_y)
-        )
+        minor_locs = self.settings.minor_locs
+        MINOR_LOCS_ARRAY = rom.read_ptr(MINOR_LOCS_ARRAY_ADDR)
         prev_area_room = (-1, -1)
         room_tank_count = 0
         for i, min_loc in enumerate(minor_locs):
@@ -63,15 +82,40 @@ class ItemPatcher:
                 room.set_bg1_block(val, min_loc.block_x, min_loc.block_y)
                 room.write_bg1()
 
-            # write to minors table
-            addr = MINOR_LOCS_ADDR + i * 4
-            assert rom.read_8(addr) == min_loc.block_x
-            assert rom.read_8(addr + 1) == min_loc.block_y
-            assert rom.read_8(addr + 2) == min_loc.orig_item.value
+            # write to minors array
+            # Assembly has:
+            # - a list that contains pointers to below area array
+            # - an array with 16 elements per each area, that contains sorted internal room ids which contain minor items
+            # - an array right after that contains the index where this room starts in the big item array
+            # - a big array of all items and their attributes. 
+            area_addr = MINOR_LOCS_TABLE_ADDR + (min_loc.area * 4)
+            rooms_list_addr = rom.read_ptr(area_addr)
+            room_entry_addr = self._binary_search_rooms_array(rooms_list_addr, min_loc.room)
+            assert room_entry_addr != -1
+            room_entry_index = rom.read_8(room_entry_addr + 16)
+            
+            found_item = False
+            item_index = -1
+            item_addr = -1
+            while not found_item:
+                item_index += 1
+                item_addr = MINOR_LOCS_ARRAY + ((room_entry_index + item_index) * MINOR_LOC_SIZE)
+                area = rom.read_8(item_addr)
+                room = rom.read_8(item_addr + 1)
+                room_index = rom.read_8(item_addr + 2)
+                block_x = rom.read_8(item_addr + 3)
+                block_y = rom.read_8(item_addr + 4)
+
+                assert area == min_loc.area, f"area was '{area}', but was expected to be {min_loc.area}"
+                assert room == min_loc.room, f"room was '{room}', but was expected to be {min_loc.room}"
+                found_item = (block_x == min_loc.block_x) and (block_y == min_loc.block_y)
+            
+            assert item_addr != -1
+
             if min_loc.new_item != ItemType.UNDEFINED:
-                rom.write_8(addr + 2, min_loc.new_item.value)
+                rom.write_8(item_addr + 5, min_loc.new_item.value)
                 if min_loc.item_sprite != ItemSprite.UNCHANGED:
-                    rom.write_8(addr + 3, min_loc.item_sprite.value)
+                    rom.write_8(item_addr + 6, min_loc.item_sprite.value)
 
         # handle major locations
         for maj_loc in self.settings.major_locs:
