@@ -100,15 +100,15 @@ class ItemPatcher:
             while not found_item:
                 item_index += 1
                 item_addr = MINOR_LOCS_ARRAY + ((room_entry_index + item_index) * MINOR_LOC_SIZE)
-                area = rom.read_8(item_addr)
-                room = rom.read_8(item_addr + 1)
-                room_index = rom.read_8(item_addr + 2)
-                block_x = rom.read_8(item_addr + 3)
-                block_y = rom.read_8(item_addr + 4)
+                read_area = rom.read_8(item_addr)
+                read_room = rom.read_8(item_addr + 1)
+                read_room_index = rom.read_8(item_addr + 2)
+                read_block_x = rom.read_8(item_addr + 3)
+                read_block_y = rom.read_8(item_addr + 4)
 
-                assert area == min_loc.area, f"area was '{area}', but was expected to be {min_loc.area}"
-                assert room == min_loc.room, f"room was '{room}', but was expected to be {min_loc.room}"
-                found_item = (block_x == min_loc.block_x) and (block_y == min_loc.block_y)
+                assert read_area == min_loc.area, f"area was '{read_area}', but was expected to be {min_loc.area}"
+                assert read_room == min_loc.room, f"room was '{read_room}', but was expected to be {min_loc.room}"
+                found_item = (read_block_x == min_loc.block_x) and (read_block_y == min_loc.block_y)
             
             assert item_addr != -1
 
