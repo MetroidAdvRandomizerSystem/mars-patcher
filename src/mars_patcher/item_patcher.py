@@ -10,6 +10,7 @@ MINOR_LOCS_TABLE_ADDR = 0x7FF000
 MINOR_LOCS_ARRAY_ADDR = 0x7FF06C
 MINOR_LOC_SIZE = 0x8
 MAJOR_LOCS_ADDR = 0x7FF01C
+MAJOR_LOC_SIZE = 0x2
 TANK_INC_ADDR = 0x7FF046
 METROID_COUNT_ADDR = 0x7FF04D
 
@@ -121,7 +122,7 @@ class ItemPatcher:
         for maj_loc in self.settings.major_locs:
             # write to majors table
             if maj_loc.new_item != ItemType.UNDEFINED:
-                addr = MAJOR_LOCS_ADDR + maj_loc.major_src.value
+                addr = MAJOR_LOCS_ADDR + (maj_loc.major_src.value * MAJOR_LOC_SIZE)
                 rom.write_8(addr, maj_loc.new_item.value)
 
 
