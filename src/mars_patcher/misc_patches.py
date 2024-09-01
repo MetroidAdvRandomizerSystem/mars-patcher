@@ -41,3 +41,7 @@ def disable_music(rom: Rom) -> None:
 
 def disable_sound_effects(rom: Rom) -> None:
     disable_sounds(rom, 100, gd.sound_count(rom))
+
+
+def change_missile_limit(rom: Rom, limit: int) -> None:
+    rom.write_8(0x7FF06A, limit)
