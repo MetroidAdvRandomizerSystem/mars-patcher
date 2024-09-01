@@ -52,7 +52,7 @@ class ItemPatcher:
         MINOR_LOCS_ARRAY = rom.read_ptr(MINOR_LOCS_ARRAY_ADDR)
         prev_area_room = (-1, -1)
         room_tank_count = 0
-        for i, min_loc in enumerate(minor_locs):
+        for min_loc in minor_locs:
             # update room tank count
             area_room = (min_loc.area, min_loc.room)
             if area_room == prev_area_room:
