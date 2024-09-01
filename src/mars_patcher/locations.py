@@ -38,7 +38,7 @@ class Location:
         item_str = self.orig_item.name
         if self.new_item != ItemType.UNDEFINED:
             item_str += "/" + self.new_item.name
-        return f"{self.area},{self.room:02X}: {item_str}"
+        return f"{self.area},0x{self.room:02X}: {item_str}"
 
 
 class MajorLocation(Location):
