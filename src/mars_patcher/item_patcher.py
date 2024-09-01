@@ -4,15 +4,15 @@ from mars_patcher.locations import ItemSprite, ItemType, LocationSettings
 from mars_patcher.rom import Rom
 from mars_patcher.room_entry import RoomEntry
 from mars_patcher.tileset import Tileset
-from mars_patcher.constants import reserved_space
+from mars_patcher.constants.reserved_space import ReservedConstants
 
-MINOR_LOCS_TABLE_ADDR = reserved_space.MINOR_LOCS_TABLE_ADDR
-MINOR_LOCS_ARRAY_ADDR = reserved_space.MINOR_LOCS_ARRAY_ADDR
-MINOR_LOC_SIZE = 0x8    
-MAJOR_LOCS_ADDR = reserved_space.MAJOR_LOCS_ADDR
+MINOR_LOCS_TABLE_ADDR = ReservedConstants.MINOR_LOCS_TABLE_ADDR
+MINOR_LOCS_ARRAY_ADDR = ReservedConstants.MINOR_LOCS_ARRAY_ADDR
+MINOR_LOC_SIZE = 0x8
+MAJOR_LOCS_ADDR = ReservedConstants.MAJOR_LOCS_ADDR
 MAJOR_LOC_SIZE = 0x2
-TANK_INC_ADDR = reserved_space.TANK_INC_ADDR
-REQUIRED_METROID_COUNT_ADDR = reserved_space.REQUIRED_METROID_COUNT_ADDR
+TANK_INC_ADDR = ReservedConstants.TANK_INC_ADDR
+REQUIRED_METROID_COUNT_ADDR = ReservedConstants.REQUIRED_METROID_COUNT_ADDR
 
 TANK_CLIP = (0x62, 0x63, 0x68)
 HIDDEN_TANK_CLIP = (0x64, 0x65, 0x69)
