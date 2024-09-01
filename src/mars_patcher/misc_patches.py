@@ -45,3 +45,9 @@ def disable_sound_effects(rom: Rom) -> None:
 
 def change_missile_limit(rom: Rom, limit: int) -> None:
     rom.write_8(0x7FF06A, limit)
+
+def apply_unexplored_map(rom: Rom) -> None:
+    path = get_patch_path(rom, "unhidden_map.ips")
+    with open(path, "rb") as f:
+        patch = f.read()
+    IpsDecoder().apply_patch(patch, rom.data)

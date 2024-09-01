@@ -443,6 +443,11 @@
             "$ref": "#/$defs/TypeU8",
             "description": "Changes how many missiles can be on-screen at a time. The vanilla game has it set to 2, the randomizer changes it to 3 by default. Zero Mission uses 4.",
             "default": 3
+        },
+        "UnexploredMap": {
+            "type": "boolean",
+            "description": "When enabled, starts you with a map where all unexplored items and non-visited tiles have a gray background. This is different from the downloaded map stations where there, the full tile is gray.",
+            "default": false
         }
     },
     "required": ["SeedHash", "Locations", "RequiredMetroidCount"],
