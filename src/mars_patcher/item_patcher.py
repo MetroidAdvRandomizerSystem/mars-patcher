@@ -8,8 +8,8 @@ from mars_patcher.tileset import Tileset
 # keep these in sync with base patch
 MINOR_LOCS_TABLE_ADDR = 0x7FF000
 MINOR_LOCS_ARRAY_ADDR = 0x7FF06C
-MAJOR_LOCS_ADDR = 0x7FF01C
 MINOR_LOC_SIZE = 0x8
+MAJOR_LOCS_ADDR = 0x7FF01C
 TANK_INC_ADDR = 0x7FF046
 METROID_COUNT_ADDR = 0x7FF04D
 
