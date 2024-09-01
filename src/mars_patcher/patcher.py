@@ -7,7 +7,7 @@ from mars_patcher.connections import Connections
 from mars_patcher.credits import write_credits
 from mars_patcher.data import get_data_path
 from mars_patcher.door_locks import set_door_locks
-from mars_patcher.item_patcher import ItemPatcher, set_metroid_count, set_tank_increments
+from mars_patcher.item_patcher import ItemPatcher, set_required_metroid_count, set_tank_increments
 from mars_patcher.locations import LocationSettings
 from mars_patcher.misc_patches import (
     disable_demos,
@@ -56,7 +56,7 @@ def patch(input_path: str,
     item_patcher.write_items()
 
     # required metroid count
-    set_metroid_count(rom, patch_data["RequiredMetroidCount"])
+    set_required_metroid_count(rom, patch_data["RequiredMetroidCount"])
 
     # starting location
     if "StartingLocation" in patch_data:
