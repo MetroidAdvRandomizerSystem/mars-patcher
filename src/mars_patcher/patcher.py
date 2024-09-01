@@ -16,6 +16,7 @@ from mars_patcher.misc_patches import (
     skip_door_transitions,
     stereo_default,
     change_missile_limit,
+    apply_unexplored_map,
 )
 from mars_patcher.navigation_text import NavigationText
 from mars_patcher.random_palettes import PaletteRandomizer, PaletteSettings
@@ -122,6 +123,9 @@ def patch(input_path: str,
     
     if patch_data.get("MissileLimit"):
         change_missile_limit(rom, patch_data["MissileLimit"])
+
+    if patch_data.get("UnexploredMap"):
+        apply_unexplored_map(rom)
 
     write_seed_hash(rom, patch_data["SeedHash"])
 
