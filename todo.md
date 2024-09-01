@@ -9,4 +9,4 @@
 - [ ] Door lock shuffle
   - [x] Existing lock types
   - [ ] New lock types
-- [ ] Tube connection shuffle
+- [x] Tube connection shuffle
