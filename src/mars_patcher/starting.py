@@ -4,9 +4,10 @@ from mars_patcher.constants.game_data import area_doors_ptrs, spriteset_ptrs, st
 from mars_patcher.constants.items import BEAM_FLAGS, MISSILE_BOMB_FLAGS, SUIT_MISC_FLAGS
 from mars_patcher.rom import Rom
 from mars_patcher.room_entry import RoomEntry
+from mars_patcher.constants.reserved_space import ReservedConstants
 
 # keep in sync with base patch
-STARTING_LOC_ADDR = 0x7FF228
+STARTING_LOC_ADDR = ReservedConstants.STARTING_LOCATION_ADDR
 
 
 def set_starting_location(rom: Rom, data: Dict) -> None:
