@@ -24,6 +24,8 @@ def area_room_entry_ptrs(rom: Rom) -> int:
             return 0x75FBD4
         elif rom.region == Region.C:
             return 0x79ECBC
+    
+    raise ValueError("Rom has unknown game loaded.")
 
 
 def tileset_entries(rom: Rom) -> int:
@@ -46,6 +48,8 @@ def tileset_entries(rom: Rom) -> int:
             return 0x33E038
         elif rom.region == Region.C:
             return 0x3577C8
+    
+    raise ValueError("Rom has unknown game loaded.")
 
 
 def tileset_count(rom: Rom) -> int:
@@ -77,6 +81,8 @@ def area_doors_ptrs(rom: Rom) -> int:
             return 0x75FBB8
         elif rom.region == Region.C:
             return 0x79ECA0
+    
+    raise ValueError("Rom has unknown game loaded.")
 
 
 def area_connections(rom: Rom) -> int:
@@ -99,6 +105,8 @@ def area_connections(rom: Rom) -> int:
             return 0x3602D0
         elif rom.region == Region.C:
             return 0x379A60
+    
+    raise ValueError("Rom has unknown game loaded.")
 
 
 def area_connections_count(rom: Rom) -> int:
@@ -107,6 +115,9 @@ def area_connections_count(rom: Rom) -> int:
         return 0x22
     elif rom.game == Game.ZM:
         return 0x19
+
+    raise ValueError("Rom has unknown game loaded.")
+
 
 
 def hatch_lock_events(rom: Rom) -> int:
@@ -164,6 +175,8 @@ def anim_palette_entries(rom: Rom) -> int:
             return 0x35FC58
         elif rom.region == Region.C:
             return 0x3793E8
+    
+    raise ValueError("Rom has unknown game loaded.")
 
 
 def anim_palette_count(rom: Rom) -> int:

@@ -2,13 +2,13 @@ from enum import Enum
 from typing import Union
 from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from os import PathLike
+
 BytesLike = Union[bytes, bytearray]
 
 SIZE_8MB = 0x800000
 ROM_OFFSET = 0x8000000
-
-if TYPE_CHECKING:
-    from os import PathLike
 
 
 class Game(Enum):
@@ -92,8 +92,12 @@ class Rom:
         if title not in self._title_to_game:
             raise ValueError("Not a valid GBA Metroid ROM")
             
-        self.game = self._title_to_game[title]["game"]
-        self.region = self._title_to_game[title]["region"]
+        game = self._title_to_game[title]["game"]
+        region = self._title_to_game[title]["region"]
+        assert isinstance(game, Game)
+        assert isinstance(region, Region)
+        self.game = game
+        self.region = region
 
         # for now we only allow MF U
         if self.game == Game.ZM:
@@ -214,7 +218,7 @@ class Rom:
         self.free_space_addr += size
         return addr
 
-    def save(self, path: PathLike) -> None:
+    def save(self, path: Union[str, PathLike[str]]  ) -> None:
         """Saves the currently loaded data to a specified path."""
         with open(path, "wb") as f:
             f.write(self.data)
