@@ -13,6 +13,7 @@ MAJOR_LOCS_ADDR = ReservedConstants.MAJOR_LOCS_ADDR
 MAJOR_LOC_SIZE = 0x2
 TANK_INC_ADDR = ReservedConstants.TANK_INC_ADDR
 REQUIRED_METROID_COUNT_ADDR = ReservedConstants.REQUIRED_METROID_COUNT_ADDR
+TOTAL_METROID_COUNT_ADDR = ReservedConstants.TOTAL_METROID_COUNT_ADDR
 
 TANK_CLIP = (0x62, 0x63, 0x68)
 HIDDEN_TANK_CLIP = (0x64, 0x65, 0x69)
@@ -53,7 +54,11 @@ class ItemPatcher:
         MINOR_LOCS_ARRAY = rom.read_ptr(MINOR_LOCS_ARRAY_ADDR)
         prev_area_room = (-1, -1)
         room_tank_count = 0
+        total_metroids = 0
         for min_loc in minor_locs:
+            if min_loc.new_item.value == ItemType.INFANT_METROID:
+                total_metroids += 1
+
             # update room tank count
             area_room = (min_loc.area, min_loc.room)
             if area_room == prev_area_room:
@@ -114,6 +119,8 @@ class ItemPatcher:
             assert item_addr != -1
 
             if min_loc.new_item != ItemType.UNDEFINED:
+                if min_loc.new_item.value == ItemType.INFANT_METROID:
+                    total_metroids += 1
                 rom.write_8(item_addr + 5, min_loc.new_item.value)
                 if min_loc.item_sprite != ItemSprite.UNCHANGED:
                     rom.write_8(item_addr + 6, min_loc.item_sprite.value)
@@ -124,6 +131,9 @@ class ItemPatcher:
             if maj_loc.new_item != ItemType.UNDEFINED:
                 addr = MAJOR_LOCS_ADDR + (maj_loc.major_src.value * MAJOR_LOC_SIZE)
                 rom.write_8(addr, maj_loc.new_item.value)
+
+        # Write total metroid count
+        rom.write_8(TOTAL_METROID_COUNT_ADDR, total_metroids)
 
 
 # TODO: move these?
