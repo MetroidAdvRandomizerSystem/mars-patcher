@@ -493,6 +493,11 @@
             "minimum": 0,
             "maximum": 255
         },
+        "TypeU16": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535 
+        },
         "AreaID": {
             "type": "integer",
             "minimum": 0,
@@ -703,7 +708,7 @@
                         "description": "The Y position in the room that should get edited."
                     },
                     "Value": {
-                        "$ref": "#/$defs/TypeU8",
+                        "$ref": "#/$defs/TypeU16",
                         "description": "That value that should be used to edit the room. For backgrounds, this is calculated via `((Row-1) * ColumnsInTileset) + (Column-1)`."
                     }
                 }
