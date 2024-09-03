@@ -5,7 +5,7 @@ class ReservedConstants:
     MINOR_LOCS_TABLE_ADDR = 0x7FF000
     MAJOR_LOCS_ADDR = 0x7FF01C
     TANK_INC_ADDR = 0x7FF046
-    TOTAL_METROID_COUNT_ADDR = 0x7FF04C  # TODO: patch uses this variable for showing messages boxes more nicely, implement this
+    TOTAL_METROID_COUNT_ADDR = 0x7FF04C
     REQUIRED_METROID_COUNT_ADDR = 0x7FF04D
     STARTING_LOCATION_ADDR = 0x7FF04E
     CREDITS_END_DELAY_ADDR = 0x7FF056   # TODO: is this meant to be changed?
