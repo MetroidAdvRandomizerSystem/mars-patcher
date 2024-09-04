@@ -448,7 +448,38 @@
             "type": "boolean",
             "description": "When enabled, starts you with a map where all unexplored items and non-visited tiles have a gray background. This is different from the downloaded map stations where there, the full tile is gray.",
             "default": false
+        },
+        "LevelEdits": {
+            "type": "object",
+            "description": "Specifies room edits that should be done. These will be applied last.",
+            "propertyNames": {
+                "description": "Specifies the Area ID.",
+                "$ref": "#/$defs/AreaIDKey"
+            },
+            "additionalProperties": {
+                "patternProperties": {
+                    "[0-9]+": {
+                        "description": "Specifies the Room ID.",
+                        "properties": {
+                            "BG1": {
+                                "description": "The BG1 layer that should be edited.",
+                                "$ref": "#/$defs/BlockLayer"
+                            },
+                            "BG2": {
+                                "description": "The BG2 layer that should be edited.",
+                                "$ref": "#/$defs/BlockLayer"
+                            },
+                            "Clipdata": {
+                                "description": "The Clipdata layer that should be edited.",
+                                "$ref": "#/$defs/BlockLayer"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            }
         }
+        
     },
     "required": ["SeedHash", "Locations", "RequiredMetroidCount"],
     "$defs": {
@@ -462,10 +493,19 @@
             "minimum": 0,
             "maximum": 255
         },
+        "TypeU16": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535 
+        },
         "AreaID": {
             "type": "integer",
             "minimum": 0,
             "maximum": 6
+        },
+        "AreaIDKey": {
+            "type": "string",
+            "enum": ["0", "1", "2", "3", "4", "5", "6"]
         },
         "SectorID": {
             "type": "integer",
@@ -652,6 +692,27 @@
                 "Italian",
                 "Spanish"
             ]
+        },
+        "BlockLayer": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "X": {
+                        "$ref": "#/$defs/TypeU8",
+                        "description": "The X position in the room that should get edited."
+                    },
+                    "Y": {
+                        "$ref": "#/$defs/TypeU8",
+                        "description": "The Y position in the room that should get edited."
+                    },
+                    "Value": {
+                        "$ref": "#/$defs/TypeU16",
+                        "description": "That value that should be used to edit the room. For backgrounds, this is calculated via `((Row-1) * ColumnsInTileset) + (Column-1)`."
+                    }
+                }
+            }   
         }
     }
 }

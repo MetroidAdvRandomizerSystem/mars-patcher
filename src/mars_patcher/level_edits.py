@@ -1,0 +1,36 @@
+from mars_patcher.rom import Rom
+from typing import Callable
+from mars_patcher.room_entry import RoomEntry
+
+
+def apply_level_edits(rom: Rom, edit_dict: dict) -> None:
+    # Go through every area
+    for area, rooms in edit_dict.items():
+        # Go through every room
+        for room, layers in rooms.items():
+            r = RoomEntry(rom, int(area), int(room))
+            
+            # Go through every layer
+            for layer, changes in layers.items():
+                if layer == "BG1":
+                    load = r.load_bg1
+                    edit = r.set_bg1_block
+                    clean = r.write_bg1
+                elif layer == "BG2":
+                    load = r.load_bg2
+                    edit = r.set_bg2_block
+                    clean = r.write_bg2
+                elif layer == "Clipdata":
+                    load = r.load_clip
+                    edit= r.set_clip_block
+                    clean= r.write_clip
+                else:
+                    ValueError("Unsupported Block Layer")
+
+                # Load layer, do every edit that's provided and write back.
+                load()
+                for change in changes:
+                    edit(change["Value"], change["X"], change["Y"])
+                clean()
+
+            
