@@ -74,6 +74,8 @@ class BlockLayer:
 
     def get_block_value(self, x: int, y: int) -> int:
         idx = (y * self.width + x) * 2
+        if idx >= len(self.block_data):
+            raise IndexError(f"Block coordinate ({x}, {y}) is out of bounds! Room size: ({self.width}, {self.height})")
         return self.block_data[idx] | self.block_data[idx + 1] << 8
 
     def set_block_value(self, value: int, x: int, y: int) -> None:
