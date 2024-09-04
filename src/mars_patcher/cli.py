@@ -10,8 +10,6 @@ def main() -> None:
     parser.add_argument("patch_data_path", type=str, help="Path to patch data json file")
     args = parser.parse_args()
 
-    patch(args.rom_path,
-          args.out_path,
-          args.patch_data_path,
-          lambda progress, message: print(message)
-          )
+    patch(
+        args.rom_path, args.out_path, args.patch_data_path, lambda progress, message: print(message)
+    )

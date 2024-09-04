@@ -29,7 +29,7 @@ ELEVATOR_TOPS = {
     "MainHubToSector6": (0, 0x48, True),
     "MainHubTop": (0, 0x5E, False),
     "HabitationDeckTop": (0, 0xB2, False),
-    "Sector1ToRestrictedLab": (1, 0x41, True)
+    "Sector1ToRestrictedLab": (1, 0x41, True),
 }
 
 ELEVATOR_BOTTOMS = {
@@ -42,7 +42,7 @@ ELEVATOR_BOTTOMS = {
     "Sector3ToMainHub": (3, 0x00, True),
     "Sector4ToMainHub": (4, 0x00, True),
     "Sector5ToMainHub": (5, 0x00, True),
-    "Sector6ToMainHub": (6, 0x00, True)
+    "Sector6ToMainHub": (6, 0x00, True),
 }
 
 # (Area ID, Dest area): Door ID
@@ -123,9 +123,7 @@ class Connections:
         room_entry.set_bg1_block(block + 0x10, x, y + 1)
         room_entry.write_bg1()
 
-    def connect_elevators(
-        self, src_dict: Dict, dst_dict: Dict, pairs: Dict[str, str]
-    ) -> None:
+    def connect_elevators(self, src_dict: Dict, dst_dict: Dict, pairs: Dict[str, str]) -> None:
         for src_name, dst_name in pairs.items():
             src_area, src_door, in_list = src_dict[src_name]
             dst_area, dst_door, _ = dst_dict[dst_name]
@@ -211,10 +209,7 @@ class Connections:
             room_entry.write_bg2()
 
     def write_main_hub_small_nums(
-        self,
-        room_entry: RoomEntry,
-        coords: Sequence[Tuple[int, int] | None],
-        ele_areas: List[int]
+        self, room_entry: RoomEntry, coords: Sequence[Tuple[int, int] | None], ele_areas: List[int]
     ) -> None:
         for area, coord in enumerate(coords):
             if coord is None:

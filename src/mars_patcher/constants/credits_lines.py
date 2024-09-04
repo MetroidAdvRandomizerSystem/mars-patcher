@@ -24,7 +24,7 @@ LINE_TYPE_VALS = {
     LineType.COPYRIGHT2: 0xB,
     LineType.COPYRIGHT3: 0xC,
     LineType.COPYRIGHT4: 0xD,
-    LineType.END: 0x6
+    LineType.END: 0x6,
 }
 
 LINE_TYPE_HEIGHTS = {
@@ -37,15 +37,10 @@ LINE_TYPE_HEIGHTS = {
     LineType.COPYRIGHT2: 1,
     LineType.COPYRIGHT3: 1,
     LineType.COPYRIGHT4: 1,
-    LineType.END: 0
+    LineType.END: 0,
 }
 
-TEXT_LINE_TYPES = {
-    LineType.BLUE,
-    LineType.RED,
-    LineType.WHITE1,
-    LineType.WHITE2
-}
+TEXT_LINE_TYPES = {LineType.BLUE, LineType.RED, LineType.WHITE1, LineType.WHITE2}
 
 
 # shortened from 462 lines to 308 lines
@@ -145,7 +140,7 @@ FUSION_STAFF_LINES = [
     (LineType.COPYRIGHT2, 0, None),
     (LineType.COPYRIGHT3, 0, None),
     (LineType.COPYRIGHT4, 9, None),
-    (LineType.END, 0, None)
+    (LineType.END, 0, None),
 ]
 
 

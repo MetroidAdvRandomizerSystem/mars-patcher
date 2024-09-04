@@ -33,17 +33,14 @@ class PaletteSettings:
         "Beams": PaletteType.BEAMS,
     }
 
-    COLOR_SPACE_ENUMS = {
-        "HSV": ColorSpace.HSV,
-        "Oklab": ColorSpace.OKLAB
-    }
+    COLOR_SPACE_ENUMS = {"HSV": ColorSpace.HSV, "Oklab": ColorSpace.OKLAB}
 
     def __init__(
         self,
         seed: int,
         pal_types: Dict[PaletteType, Tuple[int, int]],
         color_space: ColorSpace,
-        symmetric: bool
+        symmetric: bool,
     ):
         self.seed = seed
         self.pal_types = pal_types
@@ -247,8 +244,10 @@ class PaletteRandomizer:
         return self.rom.read_ptr(addr)
 
     def fix_zm_palettes(self) -> None:
-        if (PaletteType.ENEMIES in self.settings.pal_types
-            or PaletteType.TILESETS in self.settings.pal_types):
+        if (
+            PaletteType.ENEMIES in self.settings.pal_types
+            or PaletteType.TILESETS in self.settings.pal_types
+        ):
             # fix kraid's body
             sp_addr = self.get_sprite_addr(0x6F)
             ts_addr = self.get_tileset_addr(9)

@@ -64,7 +64,7 @@ class MinorLocation(Location):
         hidden: bool,
         orig_item: ItemType,
         new_item: ItemType = ItemType.UNDEFINED,
-        item_sprite: ItemSprite = ItemSprite.UNCHANGED
+        item_sprite: ItemSprite = ItemSprite.UNCHANGED,
     ):
         super().__init__(area, room, orig_item, new_item)
         self.block_x = block_x

@@ -1,6 +1,5 @@
 from enum import Enum
-from typing import Union
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
     from os import PathLike
@@ -13,6 +12,7 @@ ROM_OFFSET = 0x8000000
 
 class Game(Enum):
     """The possible GBA games."""
+
     MF = 1
     """Metroid Fusion"""
     ZM = 2
@@ -21,6 +21,7 @@ class Game(Enum):
 
 class Region(Enum):
     """The possible regions."""
+
     U = 1
     """USA"""
     E = 2
@@ -34,7 +35,7 @@ class Region(Enum):
 class Rom:
     """
     A class dealing with ROM operations, like loading and saving the ROM, or reading and writing bytes.
-    
+
     Attributes:
         game: An enum indicating the current game that is loaded.
         region: An enum indicating the region of the currently loaded game.
@@ -79,7 +80,6 @@ class Rom:
         },
     }
 
-
     def __init__(self, path: str):
         # read file
         with open(path, "rb") as f:
@@ -91,7 +91,7 @@ class Rom:
         title = self.read_ascii(0xA0, 0x10)
         if title not in self._title_to_game:
             raise ValueError("Not a valid GBA Metroid ROM")
-            
+
         game = self._title_to_game[title]["game"]
         region = self._title_to_game[title]["region"]
         assert isinstance(game, Game)
@@ -137,7 +137,7 @@ class Rom:
 
     def read_ptr(self, addr: int) -> int:
         """
-        Reads a pointer (four bytes) from the specified address, and returns the read address. 
+        Reads a pointer (four bytes) from the specified address, and returns the read address.
         The return value is adjusted to be used right away, by subtracting the offset on where the ROM is loaded in the GBA.
 
         Raises:
@@ -181,11 +181,7 @@ class Rom:
         self.write_32(addr, val + ROM_OFFSET)
 
     def write_bytes(
-        self,
-        data_addr: int,
-        vals: BytesLike,
-        val_addr: int = 0,
-        size: int | None = None
+        self, data_addr: int, vals: BytesLike, val_addr: int = 0, size: int | None = None
     ) -> None:
         """
         Writes a bytes like object either in full or partially to a specified address.
@@ -208,7 +204,7 @@ class Rom:
 
     def reserve_free_space(self, size: int, align: int = 1) -> int:
         """
-        Returns an address that is able to fit in a specified size which is aligned by a certain amount. 
+        Returns an address that is able to fit in a specified size which is aligned by a certain amount.
         The default alignment is 1.
         """
         remain = self.free_space_addr % align
@@ -218,7 +214,7 @@ class Rom:
         self.free_space_addr += size
         return addr
 
-    def save(self, path: Union[str, PathLike[str]]  ) -> None:
+    def save(self, path: Union[str, PathLike[str]]) -> None:
         """Saves the currently loaded data to a specified path."""
         with open(path, "wb") as f:
             f.write(self.data)

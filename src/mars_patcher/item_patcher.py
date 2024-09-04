@@ -1,10 +1,10 @@
 from typing import Dict
 
+from mars_patcher.constants.reserved_space import ReservedConstants
 from mars_patcher.locations import ItemSprite, ItemType, LocationSettings
 from mars_patcher.rom import Rom
 from mars_patcher.room_entry import RoomEntry
 from mars_patcher.tileset import Tileset
-from mars_patcher.constants.reserved_space import ReservedConstants
 
 MINOR_LOCS_TABLE_ADDR = ReservedConstants.MINOR_LOCS_TABLE_ADDR
 MINOR_LOCS_ARRAY_ADDR = ReservedConstants.MINOR_LOCS_ARRAY_ADDR
@@ -33,18 +33,16 @@ class ItemPatcher:
         low_end = 0
         high_end = 16
         while low_end < high_end:
-            middle = (low_end+high_end)//2
-            read_value = self.rom.read_8(start_address+middle)
+            middle = (low_end + high_end) // 2
+            read_value = self.rom.read_8(start_address + middle)
             if read_value < room:
                 low_end = middle + 1
             elif read_value > room:
                 high_end = middle
             else:
-                return start_address+middle
-            
+                return start_address + middle
+
         return -1
-
-
 
     # TODO: use separate classes for handling tilesets and backgrounds
     def write_items(self) -> None:
@@ -93,13 +91,13 @@ class ItemPatcher:
             # - a list that contains pointers to below area array
             # - an array with 16 elements per each area, that contains sorted internal room ids which contain minor items
             # - an array right after that contains the index where this room starts in the big item array
-            # - a big array of all items and their attributes. 
+            # - a big array of all items and their attributes.
             area_addr = MINOR_LOCS_TABLE_ADDR + (min_loc.area * 4)
             rooms_list_addr = rom.read_ptr(area_addr)
             room_entry_addr = self._binary_search_rooms_array(rooms_list_addr, min_loc.room)
             assert room_entry_addr != -1
             room_entry_index = rom.read_8(room_entry_addr + 16)
-            
+
             found_item = False
             item_index = -1
             item_addr = -1
@@ -108,14 +106,18 @@ class ItemPatcher:
                 item_addr = MINOR_LOCS_ARRAY + ((room_entry_index + item_index) * MINOR_LOC_SIZE)
                 read_area = rom.read_8(item_addr)
                 read_room = rom.read_8(item_addr + 1)
-                read_room_index = rom.read_8(item_addr + 2)
+                rom.read_8(item_addr + 2)
                 read_block_x = rom.read_8(item_addr + 3)
                 read_block_y = rom.read_8(item_addr + 4)
 
-                assert read_area == min_loc.area, f"area was '{read_area}', but was expected to be {min_loc.area}"
-                assert read_room == min_loc.room, f"room was '{read_room}', but was expected to be {min_loc.room}"
+                assert (
+                    read_area == min_loc.area
+                ), f"area was '{read_area}', but was expected to be {min_loc.area}"
+                assert (
+                    read_room == min_loc.room
+                ), f"room was '{read_room}', but was expected to be {min_loc.room}"
                 found_item = (read_block_x == min_loc.block_x) and (read_block_y == min_loc.block_y)
-            
+
             assert item_addr != -1
 
             if min_loc.new_item != ItemType.UNDEFINED:
