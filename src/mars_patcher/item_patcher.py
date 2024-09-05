@@ -56,7 +56,7 @@ class ItemPatcher:
         room_tank_count = 0
         total_metroids = 0
         for min_loc in minor_locs:
-            if min_loc.new_item.value == ItemType.INFANT_METROID:
+            if min_loc.new_item == ItemType.INFANT_METROID:
                 total_metroids += 1
 
             # update room tank count
@@ -119,8 +119,6 @@ class ItemPatcher:
             assert item_addr != -1
 
             if min_loc.new_item != ItemType.UNDEFINED:
-                if min_loc.new_item.value == ItemType.INFANT_METROID:
-                    total_metroids += 1
                 rom.write_8(item_addr + 5, min_loc.new_item.value)
                 if min_loc.item_sprite != ItemSprite.UNCHANGED:
                     rom.write_8(item_addr + 6, min_loc.item_sprite.value)
@@ -129,6 +127,8 @@ class ItemPatcher:
         for maj_loc in self.settings.major_locs:
             # write to majors table
             if maj_loc.new_item != ItemType.UNDEFINED:
+                if maj_loc.new_item == ItemType.INFANT_METROID:
+                    total_metroids += 1
                 addr = MAJOR_LOCS_ADDR + (maj_loc.major_src.value * MAJOR_LOC_SIZE)
                 rom.write_8(addr, maj_loc.new_item.value)
 
