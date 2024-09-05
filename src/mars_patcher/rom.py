@@ -1,7 +1,6 @@
 from enum import Enum
-from typing import TYPE_CHECKING, Union
-
 from os import PathLike
+from typing import Union
 
 BytesLike = Union[bytes, bytearray]
 

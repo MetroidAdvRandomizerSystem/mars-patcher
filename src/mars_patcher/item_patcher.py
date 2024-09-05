@@ -106,7 +106,7 @@ class ItemPatcher:
                 item_addr = MINOR_LOCS_ARRAY + ((room_entry_index + item_index) * MINOR_LOC_SIZE)
                 read_area = rom.read_8(item_addr)
                 read_room = rom.read_8(item_addr + 1)
-                rom.read_8(item_addr + 2)
+                _read_room_index = rom.read_8(item_addr + 2)
                 read_block_x = rom.read_8(item_addr + 3)
                 read_block_y = rom.read_8(item_addr + 4)
 
