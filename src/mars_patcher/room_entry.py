@@ -76,7 +76,8 @@ class BlockLayer:
         idx = (y * self.width + x) * 2
         if idx >= len(self.block_data):
             raise IndexError(
-                f"Block coordinate ({x}, {y}) is out of bounds! Room size: ({self.width}, {self.height})"
+                f"Block coordinate ({x}, {y}) is out of bounds!"
+                f"Room size: ({self.width}, {self.height})"
             )
         return self.block_data[idx] | self.block_data[idx + 1] << 8
 
@@ -84,7 +85,8 @@ class BlockLayer:
         idx = (y * self.width + x) * 2
         if idx >= len(self.block_data):
             raise IndexError(
-                f"Block coordinate ({x}, {y}) is out of bounds! Room size: ({self.width}, {self.height})"
+                f"Block coordinate ({x}, {y}) is out of bounds!"
+                f"Room size: ({self.width}, {self.height})"
             )
         self.block_data[idx] = value & 0xFF
         self.block_data[idx + 1] = value >> 8

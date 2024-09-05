@@ -89,8 +89,10 @@ class ItemPatcher:
             # write to minors array
             # Assembly has:
             # - a list that contains pointers to below area array
-            # - an array with 16 elements per each area, that contains sorted internal room ids which contain minor items
-            # - an array right after that contains the index where this room starts in the big item array
+            # - an array with 16 elements per each area, that contains
+            #   sorted internal room ids which, contain minor items
+            # - an array right after that contains the index where this room starts in
+            #   the big item array
             # - a big array of all items and their attributes.
             area_addr = MINOR_LOCS_TABLE_ADDR + (min_loc.area * 4)
             rooms_list_addr = rom.read_ptr(area_addr)

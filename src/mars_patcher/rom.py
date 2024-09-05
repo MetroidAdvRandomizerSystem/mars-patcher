@@ -32,13 +32,15 @@ class Region(Enum):
 
 class Rom:
     """
-    A class dealing with ROM operations, like loading and saving the ROM, or reading and writing bytes.
+    A class dealing with ROM operations, like loading and saving the ROM, or
+    reading and writing bytes.
 
     Attributes:
         game: An enum indicating the current game that is loaded.
         region: An enum indicating the region of the currently loaded game.
         data: A bytearray containing the data from a loaded game.
-        free_space_addr: An integer keeping track of the current known address where free space in the game is contained.
+        free_space_addr: An integer keeping track of the current known address where free space in
+                         the game is contained.
     """
 
     _title_to_game = {
@@ -136,10 +138,12 @@ class Rom:
     def read_ptr(self, addr: int) -> int:
         """
         Reads a pointer (four bytes) from the specified address, and returns the read address.
-        The return value is adjusted to be used right away, by subtracting the offset on where the ROM is loaded in the GBA.
+        The return value is adjusted to be used right away, by subtracting the offset on where
+        the ROM is loaded in the GBA.
 
         Raises:
-            ValueError: If the pointer that was read does not point to the region where the GBA loads ROMs.
+            ValueError: If the pointer that was read does not point to the region where
+                        the GBA loads ROMs.
         """
         val = self.read_32(addr)
         if val < ROM_OFFSET:
@@ -147,12 +151,18 @@ class Rom:
         return val - ROM_OFFSET
 
     def read_bytes(self, addr: int, size: int) -> bytearray:
-        """Reads a specified amount of bytes from a given address, and returns the read values as a bytearray."""
+        """
+        Reads a specified amount of bytes from a given address, and returns
+        the read values as a bytearray.
+        """
         end = addr + size
         return self.data[addr:end]
 
     def read_ascii(self, addr: int, size: int) -> str:
-        """Reads a specified amount of bytes from a given addres, and returns the read values interpreted as an ASCII string"""
+        """
+        Reads a specified amount of bytes from a given addres, and returns
+        the read values interpreted as an ASCII string
+        """
         return self.read_bytes(addr, size).decode("ascii")
 
     def write_8(self, addr: int, val: int) -> None:
@@ -174,7 +184,10 @@ class Rom:
         self.data[addr + 3] = val >> 24
 
     def write_ptr(self, addr: int, val: int) -> None:
-        """Writes a pointer to a specified address. The pointer needs to be less than the offset where the ROM is loaded in the GBA."""
+        """
+        Writes a pointer to a specified address. The pointer needs to be less than
+        the offset where the ROM is loaded in the GBA.
+        """
         assert val < ROM_OFFSET, f"Pointer should be less than {ROM_OFFSET:X} but is {val:X}"
         self.write_32(addr, val + ROM_OFFSET)
 
@@ -188,7 +201,8 @@ class Rom:
             data_addr: Where to write in the ROM data.
             vals: A bytes like object that should get written.
             val_addr: An index from where vals should begin to start writing. 0 by default.
-            size: How many bytes should be written to the ROM. If None is specified, then that means the full length of vals. None by default.
+            size: How many bytes should be written to the ROM. If None is specified,
+                  then that means the full length of vals. None by default.
         """
         if size is None:
             size = len(vals) - val_addr
@@ -202,7 +216,8 @@ class Rom:
 
     def reserve_free_space(self, size: int, align: int = 1) -> int:
         """
-        Returns an address that is able to fit in a specified size which is aligned by a certain amount.
+        Returns an address that is able to fit in a specified size which
+        is aligned by a certain amount.
         The default alignment is 1.
         """
         remain = self.free_space_addr % align

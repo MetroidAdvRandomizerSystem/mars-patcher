@@ -1,5 +1,8 @@
 class ReservedConstants:
-    """These are constants that are in the patches 'Reserced Space'; things that are intended to be modified by this patcher."""
+    """
+    These are constants that are in the patches 'Reserced Space';
+    things that are intended to be modified by this patcher.
+    """
 
     # These need to be kept in sync with the base patch
     # found somewhere around https://github.com/MetroidAdvRandomizerSystem/MARS-Fusion/blob/main/src/main.s#L45
