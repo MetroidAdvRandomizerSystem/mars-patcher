@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from types import TracebackType
+
 from mars_patcher.compress import comp_rle, decomp_rle
 from mars_patcher.constants.game_data import area_room_entry_ptrs
 from mars_patcher.rom import Rom
@@ -35,39 +39,33 @@ class RoomEntry:
     def default_spriteset(self) -> int:
         return self.rom.read_8(self.addr + 0x24)
 
-    def load_bg1(self) -> None:
-        self.bg1_data = BlockLayer(self.rom, self.bg1_addr())
+    def load_bg1(self) -> BlockLayer:
+        return BlockLayer(self.rom, self.bg1_ptr())
 
-    def set_bg1_block(self, value: int, x: int, y: int) -> None:
-        self.bg1_data.set_block_value(value, x, y)
+    def load_bg2(self) -> BlockLayer:
+        return BlockLayer(self.rom, self.bg2_ptr())
 
-    def write_bg1(self) -> None:
-        self.bg1_data.write(self.rom, self.bg1_ptr())
-
-    def load_bg2(self) -> None:
-        self.bg2_data = BlockLayer(self.rom, self.bg2_addr())
-
-    def set_bg2_block(self, value: int, x: int, y: int) -> None:
-        self.bg2_data.set_block_value(value, x, y)
-
-    def write_bg2(self) -> None:
-        self.bg2_data.write(self.rom, self.bg2_ptr())
-
-    def load_clip(self) -> None:
-        self.clip_data = BlockLayer(self.rom, self.clip_addr())
-
-    def get_clip_block(self, x: int, y: int) -> int:
-        return self.clip_data.get_block_value(x, y)
-
-    def set_clip_block(self, value: int, x: int, y: int) -> None:
-        self.clip_data.set_block_value(value, x, y)
-
-    def write_clip(self) -> None:
-        self.clip_data.write(self.rom, self.clip_ptr())
+    def load_clip(self) -> BlockLayer:
+        return BlockLayer(self.rom, self.clip_ptr())
 
 
 class BlockLayer:
-    def __init__(self, rom: Rom, addr: int):
+    def __enter__(self) -> BlockLayer:
+        # We don't need to do anything
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
+        self.write()
+
+    def __init__(self, rom: Rom, ptr: int):
+        addr = rom.read_ptr(ptr)
+        self.rom = rom
+        self.pointer = ptr
         self.width = rom.read_8(addr)
         self.height = rom.read_8(addr + 1)
         self.block_data, self.comp_len = decomp_rle(rom.data, addr + 2)
@@ -91,16 +89,16 @@ class BlockLayer:
         self.block_data[idx] = value & 0xFF
         self.block_data[idx + 1] = value >> 8
 
-    def write(self, rom: Rom, ptr: int) -> None:
+    def write(self) -> None:
         comp_data = comp_rle(self.block_data)
         comp_len = len(comp_data)
         if comp_len > self.comp_len:
             # repoint data
-            addr = rom.reserve_free_space(comp_len + 2)
-            rom.write_ptr(ptr, addr)
+            addr = self.rom.reserve_free_space(comp_len + 2)
+            self.rom.write_ptr(self.pointer, addr)
         else:
-            addr = rom.read_ptr(ptr)
-        rom.write_8(addr, self.width)
-        rom.write_8(addr + 1, self.height)
-        rom.write_bytes(addr + 2, comp_data)
+            addr = self.rom.read_ptr(self.pointer)
+        self.rom.write_8(addr, self.width)
+        self.rom.write_8(addr + 1, self.height)
+        self.rom.write_bytes(addr + 2, comp_data)
         self.comp_len = comp_len

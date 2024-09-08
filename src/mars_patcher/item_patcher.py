@@ -69,9 +69,8 @@ class ItemPatcher:
             # overwrite clipdata
             room = RoomEntry(rom, min_loc.area, min_loc.room)
             val = HIDDEN_TANK_CLIP[tank_slot] if min_loc.hidden else TANK_CLIP[tank_slot]
-            room.load_clip()
-            room.set_clip_block(val, min_loc.block_x, min_loc.block_y)
-            room.write_clip()
+            with room.load_clip() as clip:
+                clip.set_block_value(val, min_loc.block_x, min_loc.block_y)
             # overwrite BG1 if not hidden
             if not min_loc.hidden:
                 # get tilemap
@@ -82,9 +81,8 @@ class ItemPatcher:
                 tile = TANK_TILE[tank_slot]
                 idx = next(i for i in range(16) if rom.read_8(addr + i * 8) == tile)
                 val = TANK_BG1_START + idx
-                room.load_bg1()
-                room.set_bg1_block(val, min_loc.block_x, min_loc.block_y)
-                room.write_bg1()
+                with room.load_bg1() as bg1:
+                    bg1.set_block_value(val, min_loc.block_x, min_loc.block_y)
 
             # write to minors array
             # Assembly has:

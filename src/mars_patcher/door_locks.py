@@ -7,7 +7,7 @@ from mars_patcher.constants.game_data import (
     hatch_lock_events,
 )
 from mars_patcher.rom import Rom
-from mars_patcher.room_entry import RoomEntry
+from mars_patcher.room_entry import BlockLayer, RoomEntry
 
 
 class HatchLock(Enum):
@@ -63,6 +63,8 @@ def set_door_locks(rom: Rom, data: List[dict]) -> None:
     # go through all doors in game in order
     doors_ptrs = area_doors_ptrs(rom)
     loaded_rooms: dict[Tuple[int, int], RoomEntry] = {}
+    # (AreaID, RoomID): (BG1, Clipdata)
+    loaded_bg1_and_clip: dict[Tuple[int, int], Tuple[BlockLayer, BlockLayer]] = {}
     # (AreaID, RoomID): (CappedSlot, CaplessSlot)
     orig_room_hatch_slots: dict[Tuple[int, int], Tuple[int, int]] = {}
     new_room_hatch_slots: dict[Tuple[int, int], Tuple[int, int]] = {}
@@ -90,12 +92,18 @@ def set_door_locks(rom: Rom, data: List[dict]) -> None:
             room_entry = loaded_rooms.get(area_room)
             if room_entry is None:
                 room_entry = RoomEntry(rom, area, room)
-                room_entry.load_bg1()
-                room_entry.load_clip()
+                bg1 = room_entry.load_bg1()
+                clip = room_entry.load_clip()
                 loaded_rooms[area_room] = room_entry
+                loaded_bg1_and_clip[area_room] = (bg1, clip)
                 orig_room_hatch_slots[area_room] = (0, 5)
                 new_room_hatch_slots[area_room] = (0, 5)
                 hatch_slot_changes[area_room] = {}
+            else:
+                _tuple = loaded_bg1_and_clip.get(area_room)
+                if _tuple is not None:
+                    bg1, clip = _tuple
+
             # check x exit distance to get facing direction
             x_exit = rom.read_8(door_addr + 7)
             facing_right = x_exit < 0x80
@@ -105,7 +113,7 @@ def set_door_locks(rom: Rom, data: List[dict]) -> None:
             hatch_y = rom.read_8(door_addr + 4)
             # get original hatch slot number
             capped_slot, capless_slot = orig_room_hatch_slots[area_room]
-            orig_has_cap = room_entry.get_clip_block(hatch_x, hatch_y) != 0
+            orig_has_cap = clip.get_block_value(hatch_x, hatch_y) != 0
             if orig_has_cap:
                 # has cap
                 orig_hatch_slot = capped_slot
@@ -136,13 +144,13 @@ def set_door_locks(rom: Rom, data: List[dict]) -> None:
                 bg1_val += 1
             clip_val = CLIP_VALUES[lock][new_hatch_slot]
             for y in range(4):
-                room_entry.set_bg1_block(bg1_val, hatch_x, hatch_y + y)
-                room_entry.set_clip_block(clip_val, hatch_x, hatch_y + y)
+                bg1.set_block_value(bg1_val, hatch_x, hatch_y + y)
+                clip.set_block_value(clip_val, hatch_x, hatch_y + y)
                 bg1_val += 0x10
     # write BG1 and clipdata for each room
-    for room_entry in loaded_rooms.values():
-        room_entry.write_bg1()
-        room_entry.write_clip()
+    for bg1, clip in loaded_bg1_and_clip.values():
+        bg1.write()
+        clip.write()
     fix_hatch_lock_events(rom, hatch_slot_changes)
 
 

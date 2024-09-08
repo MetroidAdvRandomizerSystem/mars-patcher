@@ -16,7 +16,7 @@ from mars_patcher.constants.main_hub_numbers import (
 )
 from mars_patcher.data import get_data_path
 from mars_patcher.rom import Rom
-from mars_patcher.room_entry import RoomEntry
+from mars_patcher.room_entry import BlockLayer, RoomEntry
 
 # Area ID, Room ID, Is area connection
 ELEVATOR_TOPS = {
@@ -113,15 +113,14 @@ class Connections:
         addr = self.rom.read_ptr(self.area_doors_ptrs + area * 4) + door * 0xC
         room = self.rom.read_8(addr + 1)
         room_entry = RoomEntry(self.rom, area, room)
-        room_entry.load_bg1()
-        block = SHORTCUT_NUM_BLOCKS[left_area - 1]
-        room_entry.set_bg1_block(block, x, y)
-        room_entry.set_bg1_block(block + 0x10, x, y + 1)
-        block = SHORTCUT_NUM_BLOCKS[right_area - 1]
-        x += SHORTCUT_NUM_X_OFFSET
-        room_entry.set_bg1_block(block, x, y)
-        room_entry.set_bg1_block(block + 0x10, x, y + 1)
-        room_entry.write_bg1()
+        with room_entry.load_bg1() as bg1:
+            block = SHORTCUT_NUM_BLOCKS[left_area - 1]
+            bg1.set_block_value(block, x, y)
+            bg1.set_block_value(block + 0x10, x, y + 1)
+            block = SHORTCUT_NUM_BLOCKS[right_area - 1]
+            x += SHORTCUT_NUM_X_OFFSET
+            bg1.set_block_value(block, x, y)
+            bg1.set_block_value(block + 0x10, x, y + 1)
 
     def connect_elevators(self, src_dict: Dict, dst_dict: Dict, pairs: Dict[str, str]) -> None:
         for src_name, dst_name in pairs.items():
@@ -192,24 +191,22 @@ class Connections:
         # overwrite numbers on BG2
         # central room
         room_entry = RoomEntry(self.rom, 0, MAIN_HUB_CENTER_ROOM)
-        room_entry.load_bg2()
-        self.write_main_hub_small_nums(room_entry, MAIN_HUB_CENTER_SMALL_NUM_COORDS_1, ele_areas)
-        self.write_main_hub_small_nums(room_entry, MAIN_HUB_CENTER_SMALL_NUM_COORDS_2, ele_areas)
-        room_entry.write_bg2()
+        with room_entry.load_bg2() as bg2:
+            self._write_main_hub_small_nums(bg2, MAIN_HUB_CENTER_SMALL_NUM_COORDS_1, ele_areas)
+            self._write_main_hub_small_nums(bg2, MAIN_HUB_CENTER_SMALL_NUM_COORDS_2, ele_areas)
         # elevator rooms
         large_x, large_y = MAIN_HUB_ELE_ROOM_LARGE_NUM_COORD
         for i, room in enumerate(MAIN_HUB_ELE_ROOMS):
             coords = MAIN_HUB_ELE_ROOM_SMALL_NUM_COORDS[i]
             room_entry = RoomEntry(self.rom, 0, room)
-            room_entry.load_bg2()
-            self.write_main_hub_small_nums(room_entry, coords, ele_areas)
-            block = MAIN_HUB_LARGE_NUM_BLOCKS[ele_areas[i]]
-            room_entry.set_bg2_block(block, large_x, large_y)
-            room_entry.set_bg2_block(block + 0x10, large_x, large_y + 1)
-            room_entry.write_bg2()
+            with room_entry.load_bg2() as bg2:
+                self._write_main_hub_small_nums(bg2, coords, ele_areas)
+                block = MAIN_HUB_LARGE_NUM_BLOCKS[ele_areas[i]]
+                bg2.set_block_value(block, large_x, large_y)
+                bg2.set_block_value(block + 0x10, large_x, large_y + 1)
 
-    def write_main_hub_small_nums(
-        self, room_entry: RoomEntry, coords: Sequence[Tuple[int, int] | None], ele_areas: List[int]
+    def _write_main_hub_small_nums(
+        self, bg2: BlockLayer, coords: Sequence[Tuple[int, int] | None], ele_areas: List[int]
     ) -> None:
         for area, coord in enumerate(coords):
             if coord is None:
@@ -218,5 +215,5 @@ class Connections:
             if area % 2 == 0:
                 block += 2
             x, y = coord
-            room_entry.set_bg2_block(block, x, y)
-            room_entry.set_bg2_block(block + 1, x + 1, y)
+            bg2.set_block_value(block, x, y)
+            bg2.set_block_value(block + 1, x + 1, y)
