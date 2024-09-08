@@ -53,5 +53,5 @@ ENEMY_TYPES = {
     0xB4: ("Zebesian (pre-aqua)", EnemyType.GROUND),
     0xB5: ("Skultera (small)", EnemyType.FLYING),
     0xBD: ("Powamp", EnemyType.FLYING),
-    0xBE: ("Zozoro", EnemyType.CRAWLING)
+    0xBE: ("Zozoro", EnemyType.CRAWLING),
 }

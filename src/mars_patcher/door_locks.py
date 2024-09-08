@@ -27,7 +27,7 @@ HATCH_LOCK_ENUMS = {
     "Level2": HatchLock.LEVEL_2,
     "Level3": HatchLock.LEVEL_3,
     "Level4": HatchLock.LEVEL_4,
-    "Locked": HatchLock.LOCKED
+    "Locked": HatchLock.LOCKED,
 }
 
 BG1_VALUES = {
@@ -37,7 +37,7 @@ BG1_VALUES = {
     HatchLock.LEVEL_2: 0xA,
     HatchLock.LEVEL_3: 0xC,
     HatchLock.LEVEL_4: 0xE,
-    HatchLock.LOCKED: 0x819A
+    HatchLock.LOCKED: 0x819A,
 }
 
 CLIP_VALUES = {
@@ -51,7 +51,7 @@ CLIP_VALUES = {
 }
 
 EXCLUDED_DOORS = {
-    (0, 0xB4), # Restricted lab escape
+    (0, 0xB4),  # Restricted lab escape
 }
 
 
@@ -117,10 +117,7 @@ def set_door_locks(rom: Rom, data: List[dict]) -> None:
             orig_room_hatch_slots[area_room] = (capped_slot, capless_slot)
             # get new hatch slot number
             capped_slot, capless_slot = new_room_hatch_slots[area_room]
-            if (
-                (lock is None and orig_has_cap) or
-                (lock is not None and lock != HatchLock.OPEN)
-            ):
+            if (lock is None and orig_has_cap) or (lock is not None and lock != HatchLock.OPEN):
                 # has cap
                 new_hatch_slot = capped_slot
                 capped_slot += 1
@@ -160,8 +157,7 @@ def parse_door_lock_data(data: List[dict]) -> dict[Tuple[int, int], HatchLock]:
 
 
 def fix_hatch_lock_events(
-    rom: Rom,
-    hatch_slot_changes: dict[Tuple[int, int], dict[int, int]]
+    rom: Rom, hatch_slot_changes: dict[Tuple[int, int], dict[int, int]]
 ) -> None:
     hatch_locks_addr = hatch_lock_events(rom)
     count = hatch_lock_event_count(rom)
@@ -178,7 +174,7 @@ def fix_hatch_lock_events(
         remain = (1 << 6) - 1
         for prev_slot, new_slot in changes.items():
             if (1 << prev_slot) & hatch_flags != 0:
-                new_flags |= (1 << new_slot)
+                new_flags |= 1 << new_slot
             remain &= ~(1 << new_slot)
         new_flags |= hatch_flags & remain
         rom.write_8(addr + 3, new_flags)

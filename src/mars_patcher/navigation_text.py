@@ -40,7 +40,7 @@ class NavigationText:
         "German": Language.GERMAN,
         "French": Language.FRENCH,
         "Italian": Language.ITALIAN,
-        "Spanish": Language.SPANISH
+        "Spanish": Language.SPANISH,
     }
 
     NAV_ROOM_ENUMS = {
@@ -54,7 +54,7 @@ class NavigationText:
         "Sector5Entrance": NavRoom.SECTOR3_ENTRANCE,
         "Sector6Entrance": NavRoom.SECTOR6_ENTRANCE,
         "AuxiliaryPower": NavRoom.AUXILIARY_POWER,
-        "RestrictedLabs": NavRoom.RESTRICTED_LABS
+        "RestrictedLabs": NavRoom.RESTRICTED_LABS,
     }
 
     GAME_START_CHAR = "[GAME_START]"
@@ -82,9 +82,10 @@ class NavigationText:
                 cls.SHIP_TEXT_KEY: {
                     # make sure initial text string starts with [GAME_START]
                     cls.INFO_TEXT_ENUMS[k]: cls.GAME_START_CHAR + v
-                    if k == cls.INITIAL_TEXT_KEY and not v.startswith(cls.GAME_START_CHAR) else v
+                    if k == cls.INITIAL_TEXT_KEY and not v.startswith(cls.GAME_START_CHAR)
+                    else v
                     for k, v in lang_text[cls.SHIP_TEXT_KEY].items()
-                }
+                },
             }
         return cls(navigation_text)
 

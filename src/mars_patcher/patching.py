@@ -9,7 +9,6 @@ class BpsDecodeError(Enum):
 
 
 class BpsDecoder:
-
     def error(self, err: BpsDecodeError) -> None:
         if err == BpsDecodeError.INVALID_BPS:
             msg = "Invalid BPS file"
@@ -50,8 +49,10 @@ class BpsDecoder:
 
             source_checksum_actual = crc32(self.source)
             if source_size != len(source) or source_checksum_expected != source_checksum_actual:
-                if (len(source) == target_size and
-                    source_checksum_actual == target_checksum_expected):
+                if (
+                    len(source) == target_size
+                    and source_checksum_actual == target_checksum_expected
+                ):
                     self.error(BpsDecodeError.ALREADY_PATCHED)
                 self.error(BpsDecodeError.INVALID_SOURCE)
 
@@ -107,10 +108,10 @@ class BpsDecoder:
 
     def read_32(self, idx: int) -> int:
         return (
-            self.patch[idx] |
-            (self.patch[idx + 1] << 8) |
-            (self.patch[idx + 2] << 16) |
-            (self.patch[idx + 3] << 24)
+            self.patch[idx]
+            | (self.patch[idx + 1] << 8)
+            | (self.patch[idx + 2] << 16)
+            | (self.patch[idx + 3] << 24)
         )
 
     def decode_int(self) -> int:
@@ -133,7 +134,6 @@ class IpsDecodeError(Enum):
 
 
 class IpsDecoder:
-
     def error(self, err: IpsDecodeError, extra: str | None = None) -> None:
         if err == IpsDecodeError.INVALID_IPS:
             msg = "Invalid IPS file"
@@ -157,7 +157,7 @@ class IpsDecoder:
         idx = 5
         while idx + 2 < patch_len:
             # check EOF
-            if patch[idx:idx + 3] == b"EOF":
+            if patch[idx : idx + 3] == b"EOF":
                 return
 
             # get address and size
@@ -184,11 +184,12 @@ class IpsDecoder:
                     target[i] = rle_byte
             else:
                 if idx + size > patch_len:
-                    self.error(IpsDecodeError.ABRUPT_IPS_END,
-                               "entry cut off before end of data block")
+                    self.error(
+                        IpsDecodeError.ABRUPT_IPS_END, "entry cut off before end of data block"
+                    )
                 if addr + size > len(target):
                     self.error(IpsDecodeError.PAST_TARGET_END)
-                target[addr:addr + size] = patch[idx:idx + size]
+                target[addr : addr + size] = patch[idx : idx + size]
                 idx += size
 
         self.error(IpsDecodeError.MISSING_EOF)

@@ -21,7 +21,7 @@ class CreditsLine:
         "Blue": LineType.BLUE,
         "Red": LineType.RED,
         "White1": LineType.WHITE1,
-        "White2": LineType.WHITE2
+        "White2": LineType.WHITE2,
     }
 
     def __init__(
@@ -29,7 +29,7 @@ class CreditsLine:
         line_type: LineType,
         blank_lines: int = 0,
         text: str | None = None,
-        centered: bool = True
+        centered: bool = True,
     ):
         self.line_type = line_type
         self.blank_lines = blank_lines

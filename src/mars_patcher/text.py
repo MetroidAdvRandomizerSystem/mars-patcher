@@ -7,7 +7,7 @@ from mars_patcher.rom import Rom
 CHARS = {
     " ": 0x40,
     "!": 0x41,
-    "\"": 0x42,
+    '"': 0x42,
     "#": 0x43,
     "$": 0x44,
     "%": 0x45,
@@ -85,7 +85,7 @@ CHARS = {
     "w": 0xD7,
     "x": 0xD8,
     "y": 0xD9,
-    "z": 0xDA
+    "z": 0xDA,
 }
 
 
@@ -119,12 +119,12 @@ def parse_escape_expr(expr: str) -> int:
         if label == "COLOR":
             return 0x8100 | int(value, 16)
         else:
-            raise NotImplementedError(f"Unimplemented bracketed expression \"{expr}\"")
+            raise NotImplementedError(f'Unimplemented bracketed expression "{expr}"')
 
     if expr in ESCAPE_EXPRESSIONS:
         return ESCAPE_EXPRESSIONS[expr]
     else:
-        raise NotImplementedError(f"Unimplemented bracketed expression \"{expr}\"")
+        raise NotImplementedError(f'Unimplemented bracketed expression "{expr}"')
 
 
 def encode_text(rom: Rom, string: str, max_width: int) -> List[int]:

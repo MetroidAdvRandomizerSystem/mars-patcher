@@ -11,13 +11,13 @@ from mars_patcher.item_patcher import ItemPatcher, set_required_metroid_count, s
 from mars_patcher.level_edits import apply_level_edits
 from mars_patcher.locations import LocationSettings
 from mars_patcher.misc_patches import (
+    apply_unexplored_map,
+    change_missile_limit,
     disable_demos,
     disable_music,
     disable_sound_effects,
     skip_door_transitions,
     stereo_default,
-    change_missile_limit,
-    apply_unexplored_map,
 )
 from mars_patcher.navigation_text import NavigationText
 from mars_patcher.random_palettes import PaletteRandomizer, PaletteSettings
@@ -26,11 +26,12 @@ from mars_patcher.starting import set_starting_items, set_starting_location
 from mars_patcher.text import write_seed_hash
 
 
-def patch(input_path: str,
-          output_path: str,
-          patch_data_path: str,
-          status_update: Callable[[float, str], None]
-          ) -> None:
+def patch(
+    input_path: str,
+    output_path: str,
+    patch_data_path: str,
+    status_update: Callable[[float, str], None],
+) -> None:
     # load input rom
     rom = Rom(input_path)
 
@@ -121,7 +122,7 @@ def patch(input_path: str,
 
     if patch_data.get("DisableSoundEffects"):
         disable_sound_effects(rom)
-    
+
     if patch_data.get("MissileLimit"):
         change_missile_limit(rom, patch_data["MissileLimit"])
 

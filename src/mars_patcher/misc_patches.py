@@ -1,8 +1,8 @@
 import mars_patcher.constants.game_data as gd
+from mars_patcher.constants.reserved_space import ReservedConstants
 from mars_patcher.data import get_data_path
 from mars_patcher.patching import IpsDecoder
 from mars_patcher.rom import Rom
-from mars_patcher.constants.reserved_space import ReservedConstants
 
 
 def get_patch_path(rom: Rom, filename: str) -> str:

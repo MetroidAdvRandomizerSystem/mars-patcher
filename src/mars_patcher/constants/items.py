@@ -166,7 +166,7 @@ ITEM_ENUMS = {
     "EnergyTank": ItemType.ENERGY_TANK,
     "PowerBombTank": ItemType.POWER_BOMB_TANK,
     "IceTrap": ItemType.ICE_TRAP,
-    "InfantMetroid": ItemType.INFANT_METROID
+    "InfantMetroid": ItemType.INFANT_METROID,
 }
 
 ITEM_SPRITE_ENUMS = {
@@ -200,7 +200,7 @@ ITEM_SPRITE_ENUMS = {
     "Anonymous": ItemSprite.ANONYMOUS,
     "ShinyMissileTank": ItemSprite.SHINY_MISSILE_TANK,
     "ShinyPowerBombTank": ItemSprite.SHINY_POWER_BOMB_TANK,
-    "InfantMetroid": ItemSprite.INFANT_METROID
+    "InfantMetroid": ItemSprite.INFANT_METROID,
 }
 
 
