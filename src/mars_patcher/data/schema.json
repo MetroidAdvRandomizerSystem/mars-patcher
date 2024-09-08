@@ -449,6 +449,16 @@
             "description": "When enabled, starts you with a map where all unexplored items and non-visited tiles have a gray background. This is different from the downloaded map stations where there, the full tile is gray.",
             "default": false
         },
+        "PowerBombsWithoutBombs": {
+            "type": "boolean",
+            "description": "When enabled, lets you use Power Bombs without needing to collect Bomb Data.",
+            "default": false
+        },
+        "AntiSoftlockRoomEdits": {
+            "type": "boolean",
+            "description": "Changes room layouts when enabled to prevent some accidental softlocks.",
+            "default": false
+        },
         "LevelEdits": {
             "type": "object",
             "description": "Specifies room edits that should be done. These will be applied last.",

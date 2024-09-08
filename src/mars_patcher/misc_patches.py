@@ -10,6 +10,13 @@ def get_patch_path(rom: Rom, filename: str) -> str:
     return get_data_path("patches", dir, filename)
 
 
+def apply_patch_in_data_path(rom: Rom, patch_name: str) -> None:
+    path = get_patch_path(rom, patch_name)
+    with open(path, "rb") as f:
+        patch = f.read()
+    IpsDecoder().apply_patch(patch, rom.data)
+
+
 def disable_demos(rom: Rom) -> None:
     # TODO: move to patch
     # b 0x8087460
@@ -23,10 +30,7 @@ def skip_door_transitions(rom: Rom) -> None:
 
 
 def stereo_default(rom: Rom) -> None:
-    path = get_patch_path(rom, "stereo_default.ips")
-    with open(path, "rb") as f:
-        patch = f.read()
-    IpsDecoder().apply_patch(patch, rom.data)
+    apply_patch_in_data_path(rom, "stereo_default.ips")
 
 
 def disable_sounds(rom: Rom, start: int, end: int) -> None:
@@ -49,7 +53,12 @@ def change_missile_limit(rom: Rom, limit: int) -> None:
 
 
 def apply_unexplored_map(rom: Rom) -> None:
-    path = get_patch_path(rom, "unhidden_map.ips")
-    with open(path, "rb") as f:
-        patch = f.read()
-    IpsDecoder().apply_patch(patch, rom.data)
+    apply_patch_in_data_path(rom, "unhidden_map.ips")
+
+
+def apply_pbs_without_bombs(rom: Rom) -> None:
+    apply_patch_in_data_path(rom, "bombless_pbs.ips")
+
+
+def apply_anti_softlock_edits(rom: Rom) -> None:
+    apply_patch_in_data_path(rom, "anti_softlock.ips")

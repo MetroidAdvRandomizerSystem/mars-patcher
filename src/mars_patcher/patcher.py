@@ -11,6 +11,8 @@ from mars_patcher.item_patcher import ItemPatcher, set_required_metroid_count, s
 from mars_patcher.level_edits import apply_level_edits
 from mars_patcher.locations import LocationSettings
 from mars_patcher.misc_patches import (
+    apply_anti_softlock_edits,
+    apply_pbs_without_bombs,
     apply_unexplored_map,
     change_missile_limit,
     disable_demos,
@@ -126,8 +128,14 @@ def patch(
     if patch_data.get("MissileLimit"):
         change_missile_limit(rom, patch_data["MissileLimit"])
 
+    if patch_data.get("PowerBombsWithoutBombs"):
+        apply_pbs_without_bombs(rom)
+
     if patch_data.get("UnexploredMap"):
         apply_unexplored_map(rom)
+
+    if patch_data.get("AntiSoftlockRoomEdits"):
+        apply_anti_softlock_edits(rom)
 
     write_seed_hash(rom, patch_data["SeedHash"])
 
