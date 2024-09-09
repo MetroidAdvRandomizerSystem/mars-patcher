@@ -33,15 +33,23 @@ def stereo_default(rom: Rom) -> None:
     apply_patch_in_data_path(rom, "stereo_default.ips")
 
 
-def disable_sounds(rom: Rom, start: int, end: int) -> None:
+def disable_sounds(rom: Rom, start: int, end: int, exclude: set[int] = set()) -> None:
     sound_data_addr = gd.sound_data_entries(rom)
     for idx in range(start, end):
-        addr = sound_data_addr + idx * 8
-        rom.write_8(rom.read_ptr(addr), 0)
+        if idx not in exclude:
+            addr = sound_data_addr + idx * 8
+            rom.write_8(rom.read_ptr(addr), 0)
 
 
 def disable_music(rom: Rom) -> None:
-    disable_sounds(rom, 0, 100)
+    # exclude jingles
+    exclude = {
+        16,  # major obtained
+        17,  # loading save
+        20,  # minor obtained
+        59,  # event
+    }
+    disable_sounds(rom, 0, 100, exclude)
 
 
 def disable_sound_effects(rom: Rom) -> None:
