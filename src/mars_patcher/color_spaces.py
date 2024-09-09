@@ -60,12 +60,12 @@ class RgbColor:
         channels = [r, g, b]
         channels.sort()
 
-        # get value
+        # Get value
         c_min = channels[0]
         c_max = channels[2]
         v = c_max
 
-        # get hue
+        # Get hue
         c_range = c_max - c_min
         if c_range == 0:
             h = 0.0
@@ -76,11 +76,11 @@ class RgbColor:
                 h = 60 * ((b - r) / c_range + 2)
             elif c_max == b:
                 h = 60 * ((r - g) / c_range + 4)
-            # check if negative
+            # Check if negative
             if h < 0:
                 h += 360
 
-        # get saturation
+        # Get saturation
         if v == 0:
             s = 0.0
         else:
@@ -89,12 +89,12 @@ class RgbColor:
         return HsvColor(h, s, v)
 
     def oklab(self) -> "OklabColor":
-        # convert to linear RGB
+        # Convert to linear RGB
         rl = self.srgb_to_linear(self.r_fraction())
         gl = self.srgb_to_linear(self.g_fraction())
         bl = self.srgb_to_linear(self.b_fraction())
 
-        # convert to LMS
+        # Convert to LMS
         lg = 0.4122214708 * rl + 0.5363325363 * gl + 0.0514459929 * bl
         md = 0.2119034982 * rl + 0.6806995451 * gl + 0.1073969566 * bl
         st = 0.0883024619 * rl + 0.2817188376 * gl + 0.6299787005 * bl
@@ -229,7 +229,7 @@ class OklabColor:
         return hash(self.l_star) ^ hash(self.a_star) ^ hash(self.b_star)
 
     def rgb(self) -> RgbColor:
-        # convert to LMS
+        # Convert to LMS
         lg = self.l_star + 0.3963377774 * self.a_star + 0.2158037573 * self.b_star
         md = self.l_star - 0.1055613458 * self.a_star - 0.0638541728 * self.b_star
         st = self.l_star - 0.0894841775 * self.a_star - 1.2914855480 * self.b_star
@@ -238,12 +238,12 @@ class OklabColor:
         md = md**3
         st = st**3
 
-        # convert to linear RGB
+        # Convert to linear RGB
         rl = +4.0767416621 * lg - 3.3077115913 * md + 0.2309699292 * st
         gl = -1.2684380046 * lg + 2.6097574011 * md - 0.3413193965 * st
         bl = -0.0041960863 * lg - 0.7034186147 * md + 1.7076147010 * st
 
-        # convert to sRGB
+        # Convert to sRGB
         rf = self.linear_to_srgb(rl)
         gf = self.linear_to_srgb(gl)
         bf = self.linear_to_srgb(bl)
@@ -268,13 +268,13 @@ class OklabColor:
 
     def shift_hue(self, shift: float) -> "OklabColor":
         """Shifts hue by the provided amount, measured in radians."""
-        # get hue in range 0 to 2pi
+        # Get hue in range 0 to 2pi
         hue = self.hue() + math.pi
         hue = (hue + shift) % (2 * math.pi)
-        # put hue back in range -pi to pi
+        # Put hue back in range -pi to pi
         hue -= math.pi
 
-        # get new A and B values
+        # Get new A and B values
         chroma = self.chroma()
         a = chroma * math.cos(hue)
         b = chroma * math.sin(hue)

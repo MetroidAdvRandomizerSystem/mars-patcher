@@ -118,8 +118,8 @@ class PaletteRandomizer:
             self.randomize_samus(pal_types[PaletteType.SAMUS])
         if PaletteType.BEAMS in pal_types:
             self.randomize_beams(pal_types[PaletteType.BEAMS])
-        # fix any sprite/tileset palettes that should be the same
-        # TODO: check for palette fixes needed in fusion
+        # Fix any sprite/tileset palettes that should be the same
+        # TODO: Check for palette fixes needed in fusion
         if self.rom.is_zm():
             self.fix_zm_palettes()
 
@@ -150,31 +150,31 @@ class PaletteRandomizer:
         anim_pal_to_randomize = set(range(anim_pal_count))
 
         for _ in range(ts_count):
-            # get tileset palette address
+            # Get tileset palette address
             pal_ptr = ts_addr + 4
             pal_addr = rom.read_ptr(pal_ptr)
             ts_addr += 0x14
             if pal_addr in self.randomized_pals:
                 continue
-            # get excluded palette rows
+            # Get excluded palette rows
             excluded_rows = set()
             if rom.game == Game.MF:
                 row = MF_TILESET_ALT_PAL_ROWS.get(pal_addr)
                 if row is not None:
                     excluded_rows = {row}
-            # load palette and shift hue
+            # Load palette and shift hue
             pal = Palette(13, rom, pal_addr)
             shift = self.get_hue_shift(hue_range)
             self.shift_func(pal, shift, excluded_rows)
             pal.write(rom, pal_addr)
             self.randomized_pals.add(pal_addr)
-            # check animated palette
+            # Check animated palette
             anim_pal_id = TILESET_ANIM_PALS.get(pal_addr)
             if anim_pal_id is not None:
                 self.randomize_anim_palette(anim_pal_id, shift)
                 anim_pal_to_randomize.remove(anim_pal_id)
 
-        # go through remaining animated palettes
+        # Go through remaining animated palettes
         for anim_pal_id in anim_pal_to_randomize:
             shift = self.get_hue_shift(hue_range)
             self.randomize_anim_palette(anim_pal_id, shift)
@@ -198,7 +198,7 @@ class PaletteRandomizer:
         to_randomize = set(range(0x10, sp_count))
         to_randomize -= excluded
 
-        # go through sprites in groups
+        # Go through sprites in groups
         groups = ENEMY_GROUPS[rom.game]
         for _, sprite_ids in groups.items():
             shift = self.get_hue_shift(hue_range)
@@ -207,7 +207,7 @@ class PaletteRandomizer:
                 self.randomize_enemy(sprite_id, shift)
                 to_randomize.remove(sprite_id)
 
-        # go through remaining sprites
+        # Go through remaining sprites
         for sprite_id in to_randomize:
             self.randomize_enemy(sprite_id, shift)
 
@@ -220,7 +220,7 @@ class PaletteRandomizer:
             return
         if rom.is_mf():
             if sprite_id == 0x4D or sprite_id == 0xBE:
-                # ice beam ability and zozoros only have 1 row, not 2
+                # Ice beam ability and zozoros only have 1 row, not 2
                 rows = 1
             else:
                 vram_size_addr = gd.sprite_vram_sizes(rom)
@@ -248,25 +248,25 @@ class PaletteRandomizer:
             PaletteType.ENEMIES in self.settings.pal_types
             or PaletteType.TILESETS in self.settings.pal_types
         ):
-            # fix kraid's body
+            # Fix kraid's body
             sp_addr = self.get_sprite_addr(0x6F)
             ts_addr = self.get_tileset_addr(9)
             self.rom.copy_bytes(sp_addr, ts_addr + 0x100, 0x20)
 
         if PaletteType.TILESETS in self.settings.pal_types:
-            # fix kraid elevator statue
+            # Fix kraid elevator statue
             sp_addr = self.get_sprite_addr(0x95)
             ts_addr = self.get_tileset_addr(0x35)
             self.rom.copy_bytes(ts_addr + 0x20, sp_addr, 0x20)
 
-            # fix ridley elevator statue
+            # Fix ridley elevator statue
             ts_addr = self.get_tileset_addr(7)
             self.rom.copy_bytes(ts_addr + 0x20, sp_addr + 0x20, 0x20)
 
-            # fix tourian statues
+            # Fix tourian statues
             sp_addr = self.get_sprite_addr(0xA3)
             ts_addr = self.get_tileset_addr(0x41)
             self.rom.copy_bytes(ts_addr + 0x60, sp_addr, 0x20)
-            # fix cutscene
+            # Fix cutscene
             sp_addr = gd.tourian_statues_cutscene_palette(self.rom)
             self.rom.copy_bytes(ts_addr, sp_addr, 0xC0)

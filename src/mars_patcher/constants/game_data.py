@@ -2,7 +2,7 @@ from typing import List, Tuple
 
 from mars_patcher.rom import Game, Region, Rom
 
-# TODO: consider moving these to JSON
+# TODO: Consider moving these to JSON
 
 
 def area_room_entry_ptrs(rom: Rom) -> int:

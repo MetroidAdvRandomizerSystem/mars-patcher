@@ -1,8 +1,8 @@
-# graphics and tileset addresses for main hub tileset
+# Graphics and tileset addresses for main hub tileset
 MAIN_HUB_GFX_ADDR = 0x42011C
 MAIN_HUB_TILEMAP_ADDR = 0x45DCD0
 
-# room and door IDs
+# Room and door IDs
 MAIN_HUB_CENTER_ROOM = 0x18
 MAIN_HUB_ELE_ROOMS = [0x1C, 0x19, 0x1D, 0x1A, 0x1E, 0x1B]  # 1-6
 MAIN_HUB_ELE_DOORS = [0x43, 0x44, 0x45, 0x46, 0x47, 0x48]  # 1-6
@@ -11,7 +11,7 @@ MAIN_HUB_ELE_DOORS = [0x43, 0x44, 0x45, 0x46, 0x47, 0x48]  # 1-6
 MAIN_HUB_SMALL_NUM_BLOCK = 0x1B5
 MAIN_HUB_LARGE_NUM_BLOCKS = [0x118, 0x113, 0x114, 0x115, 0x133, 0x134, 0x135]  # 0-6
 
-# block coordinates of area numbers
+# Block coordinates of area numbers
 MAIN_HUB_CENTER_SMALL_NUM_COORDS_1 = [
     (0x12, 0x0F),  # 1
     (0x1D, 0x0F),  # 2

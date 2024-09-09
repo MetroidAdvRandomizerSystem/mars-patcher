@@ -6,27 +6,27 @@ from mars_patcher.constants.reserved_space import ReservedConstants
 from mars_patcher.rom import Rom
 from mars_patcher.room_entry import RoomEntry
 
-# keep in sync with base patch
+# Keep in sync with base patch
 STARTING_LOC_ADDR = ReservedConstants.STARTING_LOCATION_ADDR
 
 
 def set_starting_location(rom: Rom, data: Dict) -> None:
     area = data["Area"]
     room = data["Room"]
-    # don't do anything for area 0 room 0
+    # Don't do anything for area 0 room 0
     if area == 0 and room == 0:
         return
-    # find any door in the provided room
+    # Find any door in the provided room
     door = find_door_in_room(rom, area, room)
-    # check if save pad in room
+    # Check if save pad in room
     pos = find_save_pad_position(rom, area, room)
     if pos is not None:
         x_pos, y_pos = pos
     else:
-        # convert block coordinates to actual position
+        # Convert block coordinates to actual position
         x_pos = data["BlockX"] * 64 + 31
         y_pos = data["BlockY"] * 64 + 63
-    # write to rom
+    # Write to rom
     rom.write_8(STARTING_LOC_ADDR, area)
     rom.write_8(STARTING_LOC_ADDR + 1, room)
     rom.write_8(STARTING_LOC_ADDR + 2, door)
@@ -50,7 +50,7 @@ def find_door_in_room(rom: Rom, area: int, room: int) -> int:
 
 
 def find_save_pad_position(rom: Rom, area: int, room: int) -> Tuple[int, int] | None:
-    # check if room's spriteset has save pad
+    # Check if room's spriteset has save pad
     room_entry = RoomEntry(rom, area, room)
     spriteset = room_entry.default_spriteset()
     ss_addr = rom.read_ptr(spriteset_ptrs(rom) + spriteset * 4)
@@ -65,7 +65,7 @@ def find_save_pad_position(rom: Rom, area: int, room: int) -> Tuple[int, int] | 
         ss_addr += 2
     if ss_idx is None:
         return None
-    # find save pad in sprite layout list
+    # Find save pad in sprite layout list
     layout_addr = room_entry.default_sprite_layout_addr()
     for i in range(24):
         sp_y = rom.read_8(layout_addr)
@@ -78,7 +78,7 @@ def find_save_pad_position(rom: Rom, area: int, room: int) -> Tuple[int, int] | 
             y_pos = sp_y * 64 + 9
             return x_pos, y_pos
         layout_addr += 3
-    # no save pad found
+    # No save pad found
     return None
 
 
@@ -90,26 +90,26 @@ def set_starting_items(rom: Rom, data: Dict) -> None:
                 status |= flag
         return status
 
-    # get health/ammo amounts
+    # Get health/ammo amounts
     energy = data.get("Energy", 99)
     missiles = data.get("Missiles", 10)
     power_bombs = data.get("PowerBombs", 10)
-    # get ability status flags
+    # Get ability status flags
     abilities = data.get("Abilities", [])
     beam_status = get_ability_flags(BEAM_FLAGS)
     missile_bomb_status = get_ability_flags(MISSILE_BOMB_FLAGS)
     suit_misc_status = get_ability_flags(SUIT_MISC_FLAGS)
-    # get security level flags
+    # Get security level flags
     levels = data.get("SecurityLevels", [0])
     level_status = 0
     for level in levels:
         level_status |= 1 << level
-    # get downloaded map flags
+    # Get downloaded map flags
     maps = data.get("DownloadedMaps", range(7))
     map_status = 0
     for map in maps:
         map_status |= 1 << map
-    # write to rom
+    # Write to rom
     addr = starting_equipment(rom)
     rom.write_16(addr, energy)
     rom.write_16(addr + 2, energy)

@@ -34,10 +34,10 @@ def patch(
     patch_data_path: str,
     status_update: Callable[[float, str], None],
 ) -> None:
-    # load input rom
+    # Load input rom
     rom = Rom(input_path)
 
-    # load patch data file and validate
+    # Load patch data file and validate
     with open(patch_data_path) as f:
         patch_data = json.load(f)
 
@@ -45,7 +45,7 @@ def patch(
         schema = json.load(f)
     validate(patch_data, schema)
 
-    # randomize palettes - palettes are randomized first in case the item
+    # Randomize palettes - palettes are randomized first in case the item
     # patcher needs to copy tilesets
     if "Palettes" in patch_data:
         status_update(-1, "Randomizing palettes...")
@@ -53,62 +53,62 @@ def patch(
         pal_randomizer = PaletteRandomizer(rom, pal_settings)
         pal_randomizer.randomize()
 
-    # load locations and set assignments
+    # Load locations and set assignments
     status_update(-1, "Writing item assignments...")
     loc_settings = LocationSettings.initialize()
     loc_settings.set_assignments(patch_data["Locations"])
     item_patcher = ItemPatcher(rom, loc_settings)
     item_patcher.write_items()
 
-    # required metroid count
+    # Required metroid count
     set_required_metroid_count(rom, patch_data["RequiredMetroidCount"])
 
-    # starting location
+    # Starting location
     if "StartingLocation" in patch_data:
         status_update(-1, "Writing starting location...")
         set_starting_location(rom, patch_data["StartingLocation"])
 
-    # starting items
+    # Starting items
     if "StartingItems" in patch_data:
         status_update(-1, "Writing starting items...")
         set_starting_items(rom, patch_data["StartingItems"])
 
-    # tank increments
+    # Tank increments
     if "TankIncrements" in patch_data:
         status_update(-1, "Writing tank increments...")
         set_tank_increments(rom, patch_data["TankIncrements"])
 
-    # elevator connections
+    # Elevator connections
     conns = None
     if "ElevatorConnections" in patch_data:
         status_update(-1, "Writing elevator connections...")
         conns = Connections(rom)
         conns.set_elevator_connections(patch_data["ElevatorConnections"])
 
-    # sector shortcuts
+    # Sector shortcuts
     if "SectorShortcuts" in patch_data:
         status_update(-1, "Writing sector shortcuts...")
         if conns is None:
             conns = Connections(rom)
         conns.set_shortcut_connections(patch_data["SectorShortcuts"])
 
-    # door locks
+    # Door locks
     if "DoorLocks" in patch_data:
         status_update(-1, "Writing door locks...")
         set_door_locks(rom, patch_data["DoorLocks"])
 
-    # hints
+    # Hints
     if "NavigationText" in patch_data:
         status_update(-1, "Writing navigation text...")
         navigation_text = NavigationText.from_json(patch_data["NavigationText"])
         navigation_text.write(rom)
 
-    # credits
+    # Credits
     if "CreditsText" in patch_data:
         status_update(-1, "Writing credits text...")
         write_credits(rom, patch_data["CreditsText"])
 
-    # misc patches
+    # Misc patches
 
     if patch_data.get("DisableDemos"):
         disable_demos(rom)

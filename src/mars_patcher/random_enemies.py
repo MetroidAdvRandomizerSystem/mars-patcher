@@ -7,17 +7,17 @@ from mars_patcher.rom import Rom
 
 
 def randomize_enemies(rom: Rom) -> None:
-    # setup enemy types dictionary
+    # Setup enemy types dictionary
     enemy_types = {k: v[1] for k, v in ENEMY_TYPES.items()}
 
-    # get graphics info for each enemy
+    # Get graphics info for each enemy
     size_addr = sprite_vram_sizes(rom)
     gfx_rows = {}
     for en_id in enemy_types:
         size = rom.read_32(size_addr + (en_id - 0x10) * 4)
         gfx_rows[en_id] = size // 0x800
 
-    # get replacement pools
+    # Get replacement pools
     replacements: Dict[EnemyType, List[int]] = {t: [] for t in EnemyType}
     for en_id, en_type in enemy_types.items():
         replacements[en_type].append(en_id)
@@ -31,7 +31,7 @@ def randomize_enemies(rom: Rom) -> None:
             replacements[EnemyType.CEILING].append(en_id)
         # Ground, Ceiling, Wall, and Flying cannot replace others
 
-    # randomize spritesets
+    # Randomize spritesets
     ss_ptrs = spriteset_ptrs(rom)
     for i in range(spriteset_count(rom)):
         spriteset_addr = rom.read_ptr(ss_ptrs + i * 4)
@@ -44,14 +44,14 @@ def randomize_enemies(rom: Rom) -> None:
             if en_id not in enemy_types:
                 continue
 
-            # check if sprite shares graphics with another
+            # Check if sprite shares graphics with another
             gfx_row = rom.read_8(addr + 1)
             if gfx_row in used_gfx_rows:
                 new_id = used_gfx_rows[gfx_row]
                 rom.write_8(addr, new_id)
                 continue
 
-            # choose randomly and assign
+            # Choose randomly and assign
             en_type = enemy_types[en_id]
             candidates = replacements[en_type]
             random.shuffle(candidates)

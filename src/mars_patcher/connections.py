@@ -68,22 +68,22 @@ class Connections:
         self.area_conns_count = gd.area_connections_count(rom)
 
     def set_elevator_connections(self, data: Dict) -> None:
-        # repoint area connections data
+        # Repoint area connections data
         size = self.area_conns_count * 3
-        # reserve space for 8 more area connections
+        # Reserve space for 8 more area connections
         new_size = size + 8 * 3
         ac_addr = self.rom.reserve_free_space(new_size)
         self.rom.copy_bytes(self.area_conns_addr, ac_addr, size)
         self.rom.write_ptr(0x6945C, ac_addr)
         self.area_conns_addr = ac_addr
 
-        # connect tops to bottoms
+        # Connect tops to bottoms
         pairs = data["ElevatorTops"]
         self.connect_elevators(ELEVATOR_TOPS, ELEVATOR_BOTTOMS, pairs)
-        # connect bottoms to tops
+        # Connect bottoms to tops
         pairs = data["ElevatorBottoms"]
         self.connect_elevators(ELEVATOR_BOTTOMS, ELEVATOR_TOPS, pairs)
-        # update area number tiles in main hub rooms
+        # Update area number tiles in main hub rooms
         self.fix_main_hub_tiles()
 
     def set_shortcut_connections(self, data: dict) -> None:
@@ -93,7 +93,7 @@ class Connections:
             self.connect_shortcuts(i + 1, dst_area, False)
 
     def connect_shortcuts(self, area: int, dst_area: int, left: bool) -> None:
-        # connect doors and update area connection
+        # Connect doors and update area connection
         if left:
             src_list = SHORTCUT_LEFT_DOORS
             dst_list = SHORTCUT_RIGHT_DOORS
@@ -109,7 +109,7 @@ class Connections:
         self.connect_doors(area, door, dst_area, dst_door)
         self.connect_areas(area, door, dst_area, True)
 
-        # update area numbers on BG1
+        # Update area numbers on BG1
         addr = self.rom.read_ptr(self.area_doors_ptrs + area * 4) + door * 0xC
         room = self.rom.read_8(addr + 1)
         room_entry = RoomEntry(self.rom, area, room)
@@ -126,30 +126,30 @@ class Connections:
         for src_name, dst_name in pairs.items():
             src_area, src_door, in_list = src_dict[src_name]
             dst_area, dst_door, _ = dst_dict[dst_name]
-            # modify door entry
+            # Modify door entry
             self.connect_doors(src_area, src_door, dst_area, dst_door)
-            # modify area connection
+            # Modify area connection
             self.connect_areas(src_area, src_door, dst_area, in_list)
 
     def connect_doors(self, src_area: int, src_door: int, dst_area: int, dst_door: int) -> None:
         addr = self.rom.read_ptr(self.area_doors_ptrs + src_area * 4) + src_door * 0xC
-        # fix door type
+        # Fix door type
         props = self.rom.read_8(addr)
         door_type = DOOR_TYPE_AREA_CONN if src_area != dst_area else DOOR_TYPE_NO_HATCH
         self.rom.write_8(addr, props & 0xF0 | door_type)
-        # set destination door
+        # Set destination door
         self.rom.write_8(addr + 6, dst_door)
 
     def connect_areas(self, src_area: int, src_door: int, dst_area: int, in_list: bool) -> None:
         rom = self.rom
         same_area = src_area == dst_area
         if in_list:
-            # find existing area connection
+            # Find existing area connection
             for i in range(self.area_conns_count):
                 addr = self.area_conns_addr + i * 3
                 if rom.read_8(addr) == src_area and rom.read_8(addr + 1) == src_door:
                     if same_area:
-                        # make entry blank
+                        # Make entry blank
                         rom.write_8(addr, 0)
                         rom.write_8(addr + 1, 0)
                         rom.write_8(addr + 2, 0)
@@ -165,11 +165,11 @@ class Connections:
             self.area_conns_count += 1
 
     def fix_main_hub_tiles(self) -> None:
-        # get areas that the 6 elevators go to
+        # Get areas that the 6 elevators go to
         ele_areas = [0 for _ in MAIN_HUB_ELE_DOORS]
         for i in range(self.area_conns_count):
             addr = self.area_conns_addr + i * 3
-            # skip if not main deck
+            # Skip if not main deck
             if self.rom.read_8(addr) != 0:
                 continue
             door = self.rom.read_8(addr + 1)
@@ -178,7 +178,7 @@ class Connections:
                     ele_areas[j] = self.rom.read_8(addr + 2)
                     break
 
-        # write new graphics and tilemap
+        # Write new graphics and tilemap
         path = get_data_path("main_hub.gfx.lz")
         with open(path, "rb") as f:
             gfx = f.read()
@@ -188,13 +188,13 @@ class Connections:
             tilemap = f.read()
         self.rom.write_bytes(MAIN_HUB_TILEMAP_ADDR + 2, tilemap)
 
-        # overwrite numbers on BG2
-        # central room
+        # Overwrite numbers on BG2
+        # Central room
         room_entry = RoomEntry(self.rom, 0, MAIN_HUB_CENTER_ROOM)
         with room_entry.load_bg2() as bg2:
             self._write_main_hub_small_nums(bg2, MAIN_HUB_CENTER_SMALL_NUM_COORDS_1, ele_areas)
             self._write_main_hub_small_nums(bg2, MAIN_HUB_CENTER_SMALL_NUM_COORDS_2, ele_areas)
-        # elevator rooms
+        # Elevator rooms
         large_x, large_y = MAIN_HUB_ELE_ROOM_LARGE_NUM_COORD
         for i, room in enumerate(MAIN_HUB_ELE_ROOMS):
             coords = MAIN_HUB_ELE_ROOM_SMALL_NUM_COORDS[i]

@@ -34,7 +34,7 @@ MF_TILESET_ALT_PAL_ROWS = {
 }
 
 
-# animated palettes not included here are used for multiple tileset palettes
+# Animated palettes not included here are used for multiple tileset palettes
 TILESET_ANIM_PALS = {
     0x40769C: 0x01,  # Navigation room
     0x407A9C: 0x02,  # Save room

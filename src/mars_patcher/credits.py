@@ -47,10 +47,10 @@ class CreditsLine:
 
 def write_credits(rom: Rom, data: List[dict]) -> None:
     writer = CreditsWriter(rom)
-    # write custom credits
+    # Write custom credits
     lines = [CreditsLine.from_json(d) for d in data]
     writer.write_lines(lines)
-    # write fusion staff credits
+    # Write fusion staff credits
     lines = [CreditsLine(*line) for line in FUSION_STAFF_LINES]
     writer.write_lines(lines)
 

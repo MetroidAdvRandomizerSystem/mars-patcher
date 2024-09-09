@@ -7,7 +7,7 @@ def decomp_rle(input: bytes, idx: int) -> Tuple[bytearray, int]:
     """
     src_start = idx
     passes = bytearray()
-    # for each pass
+    # For each pass
     for p in range(2):
         if p == 1:
             half = len(passes)
@@ -29,7 +29,7 @@ def decomp_rle(input: bytes, idx: int) -> Tuple[bytearray, int]:
                 break
 
             if (amount & compare) != 0:
-                # compressed
+                # Compressed
                 amount %= compare
                 val = input[idx]
                 idx += 1
@@ -37,23 +37,23 @@ def decomp_rle(input: bytes, idx: int) -> Tuple[bytearray, int]:
                     passes.append(val)
                     amount -= 1
             else:
-                # uncompressed
+                # Uncompressed
                 while amount > 0:
                     passes.append(input[idx])
                     idx += 1
                     amount -= 1
 
-    # each pass must be equal length
+    # Each pass must be equal length
     if len(passes) != half * 2:
         raise ValueError()
 
-    # combine passes to get output
+    # Combine passes to get output
     output = bytearray()
     for i in range(half):
         output.append(passes[i])
         output.append(passes[half + i])
 
-    # return bytes and compressed size
+    # Return bytes and compressed size
     comp_size = idx - src_start
     return output, comp_size
 
@@ -63,7 +63,7 @@ def comp_rle(input: bytes) -> bytearray:
     Compresses data using RLE.
     """
 
-    # inner helper functions
+    # Inner helper functions
     def write_len(arr: bytearray, val: int, size: int) -> None:
         if size == 0:
             arr.append(val)
@@ -77,9 +77,9 @@ def comp_rle(input: bytes) -> bytearray:
         unique.clear()
 
     output = bytearray()
-    # do two passes for low and high bytes
+    # Do two passes for low and high bytes
     for p in range(2):
-        # get counts of consecutive values
+        # Get counts of consecutive values
         values = bytearray()
         counts = []
 
@@ -98,7 +98,7 @@ def comp_rle(input: bytes) -> bytearray:
                 count = 1
         counts.append(count)
 
-        # try each read length (1 or 2)
+        # Try each read length (1 or 2)
         shortest: bytearray | None = None
         for r in range(2):
             temp = bytearray()
@@ -107,35 +107,35 @@ def comp_rle(input: bytes) -> bytearray:
             max_run_len = flag - 1
             unique = bytearray()
 
-            # write number of bytes to read
+            # Write number of bytes to read
             temp.append(r + 1)
 
-            # for each value and its count
+            # For each value and its count
             for i in range(len(values)):
                 count = counts[i]
-                # if the value's count is long enough for a run
+                # If the value's count is long enough for a run
                 if count >= min_run_len:
-                    # if the value is preceded by unique values
+                    # If the value is preceded by unique values
                     if len(unique) > 0:
                         add_unique(temp, unique, r)
-                    # add run length and value (multiple times if over max run length)
+                    # Add run length and value (multiple times if over max run length)
                     while count > 0:
                         curr_len = min(count, max_run_len)
                         len_flag = curr_len + flag
                         write_len(temp, len_flag, r)
                         temp.append(values[i])
                         count -= curr_len
-                # if the value's count is too short for a run
+                # If the value's count is too short for a run
                 else:
-                    # if the total count would be too long for a run
+                    # If the total count would be too long for a run
                     if len(unique) + count > max_run_len:
                         add_unique(temp, unique, r)
                     for _ in range(count):
                         unique.append(values[i])
-            # check if there were unique values at the end
+            # Check if there were unique values at the end
             if len(unique) > 0:
                 add_unique(temp, unique, r)
-            # write ending zero(s)
+            # Write ending zero(s)
             temp.append(0)
             if r == 1:
                 temp.append(0)

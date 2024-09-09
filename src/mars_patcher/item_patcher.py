@@ -44,10 +44,10 @@ class ItemPatcher:
 
         return -1
 
-    # TODO: use separate classes for handling tilesets and backgrounds
+    # TODO: Use separate classes for handling tilesets and backgrounds
     def write_items(self) -> None:
         rom = self.rom
-        # handle minor locations
+        # Handle minor locations
         minor_locs = self.settings.minor_locs
         MINOR_LOCS_ARRAY = rom.read_ptr(MINOR_LOCS_ARRAY_ADDR)
         prev_area_room = (-1, -1)
@@ -57,7 +57,7 @@ class ItemPatcher:
             if min_loc.new_item == ItemType.INFANT_METROID:
                 total_metroids += 1
 
-            # update room tank count
+            # Update room tank count
             area_room = (min_loc.area, min_loc.room)
             if area_room == prev_area_room:
                 room_tank_count += 1
@@ -66,17 +66,17 @@ class ItemPatcher:
                 prev_area_room = area_room
             tank_slot = room_tank_count - 1
 
-            # overwrite clipdata
+            # Overwrite clipdata
             room = RoomEntry(rom, min_loc.area, min_loc.room)
             val = HIDDEN_TANK_CLIP[tank_slot] if min_loc.hidden else TANK_CLIP[tank_slot]
             with room.load_clip() as clip:
                 clip.set_block_value(val, min_loc.block_x, min_loc.block_y)
-            # overwrite BG1 if not hidden
+            # Overwrite BG1 if not hidden
             if not min_loc.hidden:
-                # get tilemap
+                # Get tilemap
                 tileset = Tileset(rom, room.tileset())
                 addr = tileset.rle_tilemap_addr()
-                # find tank in tilemap
+                # Find tank in tilemap
                 addr += 2 + (TANK_BG1_START * 8)
                 tile = TANK_TILE[tank_slot]
                 idx = next(i for i in range(16) if rom.read_8(addr + i * 8) == tile)
@@ -84,14 +84,14 @@ class ItemPatcher:
                 with room.load_bg1() as bg1:
                     bg1.set_block_value(val, min_loc.block_x, min_loc.block_y)
 
-            # write to minors array
+            # Write to minors array
             # Assembly has:
-            # - a list that contains pointers to below area array
-            # - an array with 16 elements per each area, that contains
+            # - A list that contains pointers to below area array
+            # - An array with 16 elements per each area, that contains
             #   sorted internal room ids which, contain minor items
-            # - an array right after that contains the index where this room starts in
+            # - An array right after that contains the index where this room starts in
             #   the big item array
-            # - a big array of all items and their attributes.
+            # - A big array of all items and their attributes.
             area_addr = MINOR_LOCS_TABLE_ADDR + (min_loc.area * 4)
             rooms_list_addr = rom.read_ptr(area_addr)
             room_entry_addr = self._binary_search_rooms_array(rooms_list_addr, min_loc.room)
@@ -125,9 +125,9 @@ class ItemPatcher:
                 if min_loc.item_sprite != ItemSprite.UNCHANGED:
                     rom.write_8(item_addr + 6, min_loc.item_sprite.value)
 
-        # handle major locations
+        # Handle major locations
         for maj_loc in self.settings.major_locs:
-            # write to majors table
+            # Write to majors table
             if maj_loc.new_item != ItemType.UNDEFINED:
                 if maj_loc.new_item == ItemType.INFANT_METROID:
                     total_metroids += 1
@@ -138,7 +138,7 @@ class ItemPatcher:
         rom.write_8(TOTAL_METROID_COUNT_ADDR, total_metroids)
 
 
-# TODO: move these?
+# TODO: Move these?
 def set_required_metroid_count(rom: Rom, count: int) -> None:
     rom.write_8(REQUIRED_METROID_COUNT_ADDR, count)
 

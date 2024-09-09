@@ -81,13 +81,13 @@ class Rom:
     }
 
     def __init__(self, path: str):
-        # read file
+        # Read file
         with open(path, "rb") as f:
             self.data = bytearray(f.read())
-        # check length
+        # Check length
         if len(self.data) != SIZE_8MB:
             raise ValueError("ROM should be 8MB")
-        # check title and code
+        # Check title and code
         title = self.read_ascii(0xA0, 0x10)
         if title not in self._title_to_game:
             raise ValueError("Not a valid GBA Metroid ROM")
@@ -99,12 +99,12 @@ class Rom:
         self.game = game
         self.region = region
 
-        # for now we only allow MF U
+        # For now we only allow MF U
         if self.game == Game.ZM:
             raise ValueError("Not compatible with Metroid Zero Mission")
         if self.region != Region.U:
             raise ValueError("Only compatible with the North American (U) version")
-        # set free space address
+        # Set free space address
         if self.is_mf():
             self.free_space_addr = 0x7E0000
         elif self.is_zm():

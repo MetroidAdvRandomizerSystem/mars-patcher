@@ -93,7 +93,7 @@ class BlockLayer:
         comp_data = comp_rle(self.block_data)
         comp_len = len(comp_data)
         if comp_len > self.comp_len:
-            # repoint data
+            # Repoint data
             addr = self.rom.reserve_free_space(comp_len + 2)
             self.rom.write_ptr(self.pointer, addr)
         else:

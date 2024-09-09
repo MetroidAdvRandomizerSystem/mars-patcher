@@ -204,7 +204,7 @@ ITEM_SPRITE_ENUMS = {
 }
 
 
-# TODO: consider creating "game_enums.py"
+# TODO: Consider creating "game_enums.py"
 BEAM_FLAGS = {"ChargeBeam": 1, "WideBeam": 2, "PlasmaBeam": 4, "WaveBeam": 8, "IceBeam": 0x10}
 MISSILE_BOMB_FLAGS = {
     "Missiles": 1,

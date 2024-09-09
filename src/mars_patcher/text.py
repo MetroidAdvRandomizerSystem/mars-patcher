@@ -191,17 +191,17 @@ def encode_text(rom: Rom, string: str, max_width: int) -> List[int]:
 def write_seed_hash(rom: Rom, seed_hash: str) -> None:
     lang_ptrs = file_screen_text_ptrs(rom)
     for lang in Language:
-        # get address of first text entry
+        # Get address of first text entry
         text_ptrs = rom.read_ptr(lang_ptrs + lang.value * 4)
         addr = rom.read_ptr(text_ptrs)
-        # find newline after "SAMUS DATA"
+        # Find newline after "SAMUS DATA"
         try:
             line_len = next(i for i in range(20) if rom.read_16(addr + i * 2) == NEWLINE)
         except StopIteration:
             raise ValueError("Invalid file screen text data")
         pad_left = (line_len - 8) // 2
         pad_right = line_len - 8 - pad_left
-        # overwrite with seed hash
+        # Overwrite with seed hash
         string = (" " * pad_left) + seed_hash + (" " * pad_right)
         for i, c in enumerate(string):
             rom.write_16(addr + i * 2, CHARS[c])

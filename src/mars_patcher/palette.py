@@ -44,15 +44,15 @@ class Palette:
                 continue
             offset = row * 16
             for i in range(16):
-                # skip black and white
+                # Skip black and white
                 rgb = self.colors[offset + i]
                 if rgb == black or rgb == white:
                     continue
-                # get HSV and shift hue
+                # Get HSV and shift hue
                 orig_luma = rgb.luma()
                 hsv = rgb.hsv()
                 hsv.hue = (hsv.hue + shift) % 360
-                # get new RGB and rescale luma
+                # Get new RGB and rescale luma
                 rgb = hsv.rgb()
                 luma_ratio = orig_luma / rgb.luma()
                 rgb.red = min(int(rgb.red * luma_ratio), 255)
@@ -65,7 +65,7 @@ class Palette:
         Shifts hue by the provided amount, measured in degrees.
         Uses Oklab color space.
         """
-        # convert shift to radians
+        # Convert shift to radians
         shift_rads = shift * (math.pi / 180)
         for row in range(self.rows()):
             if row in excluded_rows:

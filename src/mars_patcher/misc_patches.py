@@ -18,13 +18,13 @@ def apply_patch_in_data_path(rom: Rom, patch_name: str) -> None:
 
 
 def disable_demos(rom: Rom) -> None:
-    # TODO: move to patch
+    # TODO: Move to patch
     # b 0x8087460
     rom.write_16(0x87436, 0xE013)
 
 
 def skip_door_transitions(rom: Rom) -> None:
-    # TODO: move to patch
+    # TODO: Move to patch
     rom.write_32(0x69500, 0x3000BDE)
     rom.write_8(0x694E2, 0xC)
 
@@ -42,12 +42,12 @@ def disable_sounds(rom: Rom, start: int, end: int, exclude: set[int] = set()) ->
 
 
 def disable_music(rom: Rom) -> None:
-    # exclude jingles
+    # Exclude jingles
     exclude = {
-        16,  # major obtained
-        17,  # loading save
-        20,  # minor obtained
-        59,  # event
+        16,  # Major obtained
+        17,  # Loading save
+        20,  # Minor obtained
+        59,  # Event
     }
     disable_sounds(rom, 0, 100, exclude)
 

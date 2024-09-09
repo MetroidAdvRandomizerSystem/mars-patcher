@@ -109,20 +109,20 @@ class LocationSettings:
 
     def set_assignments(self, data: Dict) -> None:
         for maj_loc_entry in data[KEY_MAJOR_LOCS]:
-            # get source and item
+            # Get source and item
             source = SOURCE_ENUMS[maj_loc_entry[KEY_SOURCE]]
             item = ITEM_ENUMS[maj_loc_entry[KEY_ITEM]]
-            # find location with this source
+            # Find location with this source
             maj_loc = next(m for m in self.major_locs if m.major_src == source)
             maj_loc.new_item = item
 
         for min_loc_entry in data[KEY_MINOR_LOCS]:
-            # get area, room, block X, block Y
+            # Get area, room, block X, block Y
             area = min_loc_entry[KEY_AREA]
             room = min_loc_entry[KEY_ROOM]
             block_x = min_loc_entry[KEY_BLOCK_X]
             block_y = min_loc_entry[KEY_BLOCK_Y]
-            # find location with this source
+            # Find location with this source
             try:
                 min_loc = next(
                     m
@@ -136,7 +136,7 @@ class LocationSettings:
                 raise ValueError(
                     f"Invalid minor location: Area {area}, Room {room}, X {block_x}, Y {block_y}"
                 )
-            # set item and item sprite
+            # Set item and item sprite
             item = ITEM_ENUMS[min_loc_entry[KEY_ITEM]]
             min_loc.new_item = item
             if KEY_ITEM_SPRITE in min_loc_entry:

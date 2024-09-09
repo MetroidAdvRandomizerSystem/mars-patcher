@@ -43,7 +43,7 @@ LINE_TYPE_HEIGHTS = {
 TEXT_LINE_TYPES = {LineType.BLUE, LineType.RED, LineType.WHITE1, LineType.WHITE2}
 
 
-# shortened from 462 lines to 308 lines
+# Shortened from 462 lines to 308 lines
 FUSION_STAFF_LINES = [
     (LineType.WHITE2, 4, "ORIGINAL FUSION STAFF"),
     (LineType.BLUE, 1, "PRODUCER"),

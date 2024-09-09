@@ -6,7 +6,7 @@ from mars_patcher.constants.game_data import navigation_text_ptrs
 from mars_patcher.rom import Rom
 from mars_patcher.text import Language, encode_text
 
-# keep these in sync with base patch
+# Keep these in sync with base patch
 HINT_TEXT_ADDR = 0x7F0000
 HINT_TEXT_END = 0x7FF000
 
@@ -80,7 +80,7 @@ class NavigationText:
                     cls.NAV_ROOM_ENUMS[k]: v for k, v in lang_text[cls.NAV_TERMINALS_KEY].items()
                 },
                 cls.SHIP_TEXT_KEY: {
-                    # make sure initial text string starts with [GAME_START]
+                    # Make sure initial text string starts with [GAME_START]
                     cls.INFO_TEXT_ENUMS[k]: cls.GAME_START_CHAR + v
                     if k == cls.INITIAL_TEXT_KEY and not v.startswith(cls.GAME_START_CHAR)
                     else v

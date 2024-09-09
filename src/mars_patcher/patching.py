@@ -22,7 +22,7 @@ class BpsDecoder:
         self.patch = patch
         self.source = source
 
-        # header
+        # Header
         self.patch_idx = 0
         marker = bytes(self.read_8() for _ in range(4))
         if marker != b"BPS1":
@@ -30,10 +30,10 @@ class BpsDecoder:
         source_size = self.decode_int()
         target_size = self.decode_int()
         metadata_size = self.decode_int()
-        # ignore metadata
+        # Ignore metadata
         self.patch_idx += metadata_size
 
-        # check checksums
+        # Check checksums
         patch_size = len(self.patch)
         if patch_size < self.patch_idx + 12:
             self.error(BpsDecodeError.INVALID_BPS)
@@ -56,7 +56,7 @@ class BpsDecoder:
                     self.error(BpsDecodeError.ALREADY_PATCHED)
                 self.error(BpsDecodeError.INVALID_SOURCE)
 
-        # actions
+        # Actions
         output_offset = 0
         source_offset = 0
         target_offset = 0
@@ -68,17 +68,17 @@ class BpsDecoder:
                 self.error(BpsDecodeError.INVALID_BPS)
             action = num & 3
             if action == 0:
-                # source read
+                # Source read
                 for _ in range(length):
                     target.append(source[output_offset])
                     output_offset += 1
             elif action == 1:
-                # target read
+                # Target read
                 for _ in range(length):
                     target.append(self.read_8())
                     output_offset += 1
             elif action == 2:
-                # source copy
+                # Source copy
                 offset = self.decode_int()
                 source_offset += (-1 if offset & 1 else 1) * (offset >> 1)
                 for _ in range(length):
@@ -86,7 +86,7 @@ class BpsDecoder:
                     output_offset += 1
                     source_offset += 1
             elif action == 3:
-                # target copy
+                # Target copy
                 offset = self.decode_int()
                 target_offset += (-1 if offset & 1 else 1) * (offset >> 1)
                 for _ in range(length):
@@ -148,19 +148,19 @@ class IpsDecoder:
         raise ValueError(msg)
 
     def apply_patch(self, patch: bytes, target: bytearray) -> None:
-        # check signature
+        # Check signature
         patch_len = len(patch)
         if patch_len < 8 or patch[:5] != b"PATCH":
             self.error(IpsDecodeError.INVALID_IPS)
 
-        # records
+        # Records
         idx = 5
         while idx + 2 < patch_len:
-            # check EOF
+            # Check EOF
             if patch[idx : idx + 3] == b"EOF":
                 return
 
-            # get address and size
+            # Get address and size
             addr = (patch[idx] << 16) | (patch[idx + 1] << 8) | patch[idx + 2]
             idx += 3
             if idx + 1 >= patch_len:

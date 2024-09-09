@@ -56,11 +56,11 @@ EXCLUDED_DOORS = {
 
 
 # TODO:
-# - optimize by only loading rooms that contain doors to modify
-# - split into more than one function for readability
+# - Optimize by only loading rooms that contain doors to modify
+# - Split into more than one function for readability
 def set_door_locks(rom: Rom, data: List[dict]) -> None:
     door_locks = parse_door_lock_data(data)
-    # go through all doors in game in order
+    # Go through all doors in game in order
     doors_ptrs = area_doors_ptrs(rom)
     loaded_rooms: dict[Tuple[int, int], RoomEntry] = {}
     # (AreaID, RoomID): (BG1, Clipdata)
@@ -75,19 +75,19 @@ def set_door_locks(rom: Rom, data: List[dict]) -> None:
         for door in range(256):
             door_addr = area_addr + door * 0xC
             door_type = rom.read_8(door_addr)
-            # check if at end of list
+            # Check if at end of list
             if door_type == 0:
                 break
-            # skip doors that mage marks as deleted
+            # Skip doors that mage marks as deleted
             room = rom.read_8(door_addr + 1)
             if room == 0xFF:
                 continue
-            # skip excluded doors and doors that aren't lockable hatches
+            # Skip excluded doors and doors that aren't lockable hatches
             lock = door_locks.get((area, door))
             if (area, door) in EXCLUDED_DOORS or door_type & 0xF != 4:
                 assert lock is None, f"Area {area} door {door} cannot have its lock changed"
                 continue
-            # load room's BG1 and clipdata if not already loaded
+            # Load room's BG1 and clipdata if not already loaded
             area_room = (area, room)
             room_entry = loaded_rooms.get(area_room)
             if room_entry is None:
@@ -104,39 +104,39 @@ def set_door_locks(rom: Rom, data: List[dict]) -> None:
                 if _tuple is not None:
                     bg1, clip = _tuple
 
-            # check x exit distance to get facing direction
+            # Check x exit distance to get facing direction
             x_exit = rom.read_8(door_addr + 7)
             facing_right = x_exit < 0x80
             dx = 1 if facing_right else -1
-            # get hatch position
+            # Get hatch position
             hatch_x = rom.read_8(door_addr + 2) + dx
             hatch_y = rom.read_8(door_addr + 4)
-            # get original hatch slot number
+            # Get original hatch slot number
             capped_slot, capless_slot = orig_room_hatch_slots[area_room]
             orig_has_cap = clip.get_block_value(hatch_x, hatch_y) != 0
             if orig_has_cap:
-                # has cap
+                # Has cap
                 orig_hatch_slot = capped_slot
                 capped_slot += 1
             else:
-                # capless
+                # Capless
                 orig_hatch_slot = capless_slot
                 capless_slot -= 1
             orig_room_hatch_slots[area_room] = (capped_slot, capless_slot)
-            # get new hatch slot number
+            # Get new hatch slot number
             capped_slot, capless_slot = new_room_hatch_slots[area_room]
             if (lock is None and orig_has_cap) or (lock is not None and lock != HatchLock.OPEN):
-                # has cap
+                # Has cap
                 new_hatch_slot = capped_slot
                 capped_slot += 1
             else:
-                # capless
+                # Capless
                 new_hatch_slot = capless_slot
                 capless_slot -= 1
             new_room_hatch_slots[area_room] = (capped_slot, capless_slot)
             if new_hatch_slot != orig_hatch_slot:
                 hatch_slot_changes[area_room][orig_hatch_slot] = new_hatch_slot
-            # overwrite BG1 and clipdata
+            # Overwrite BG1 and clipdata
             if lock is None:
                 continue
             bg1_val = BG1_VALUES[lock]
@@ -147,7 +147,7 @@ def set_door_locks(rom: Rom, data: List[dict]) -> None:
                 bg1.set_block_value(bg1_val, hatch_x, hatch_y + y)
                 clip.set_block_value(clip_val, hatch_x, hatch_y + y)
                 bg1_val += 0x10
-    # write BG1 and clipdata for each room
+    # Write BG1 and clipdata for each room
     for bg1, clip in loaded_bg1_and_clip.values():
         bg1.write()
         clip.write()
@@ -174,7 +174,7 @@ def fix_hatch_lock_events(
         area = rom.read_8(addr + 1)
         room = rom.read_8(addr + 2) - 1
         changes = hatch_slot_changes.get((area, room))
-        # some rooms no longer have doors in rando
+        # Some rooms no longer have doors in rando
         if changes is None:
             continue
         hatch_flags = rom.read_8(addr + 3)
