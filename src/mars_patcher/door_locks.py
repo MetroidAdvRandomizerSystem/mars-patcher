@@ -6,6 +6,7 @@ from mars_patcher.constants.game_data import (
     hatch_lock_event_count,
     hatch_lock_events,
 )
+from mars_patcher.palette import Palette
 from mars_patcher.rom import Rom
 from mars_patcher.room_entry import BlockLayer, RoomEntry
 
@@ -152,6 +153,16 @@ def set_door_locks(rom: Rom, data: List[dict]) -> None:
         bg1.write()
         clip.write()
     fix_hatch_lock_events(rom, hatch_slot_changes)
+
+
+def remove_door_palette_on_minimap(rom: Rom) -> None:
+    addresses = [0x5657A8, 0x5657C8, 0x5657E8]
+    for palette_addr in addresses:
+        palette = Palette(1, rom, palette_addr)
+        for index in range(8, 16):
+            palette.colors[index] = palette.colors[2]
+        palette.colors[10] = palette.colors[1]
+        palette.write(rom, palette_addr)
 
 
 def parse_door_lock_data(data: List[dict]) -> dict[Tuple[int, int], HatchLock]:

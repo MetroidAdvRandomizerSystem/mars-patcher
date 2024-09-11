@@ -530,6 +530,11 @@
                     }
                 }
             }
+        },
+        "HideDoorsOnMinimap": {
+            "type": "boolean",
+            "description": "When enabled, hides doors on the minimap. THis is automatically enabled when the 'DoorLocks' field is provided.",
+            "default": false
         }
     },
     "required": ["SeedHash", "Locations", "RequiredMetroidCount"],
