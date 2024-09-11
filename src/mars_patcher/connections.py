@@ -115,12 +115,12 @@ class Connections:
         room_entry = RoomEntry(self.rom, area, room)
         with room_entry.load_bg1() as bg1:
             block = SHORTCUT_NUM_BLOCKS[left_area - 1]
-            bg1.set_block_value(block, x, y)
-            bg1.set_block_value(block + 0x10, x, y + 1)
+            bg1.set_block_value(x, y, block)
+            bg1.set_block_value(x, y + 1, block + 0x10)
             block = SHORTCUT_NUM_BLOCKS[right_area - 1]
             x += SHORTCUT_NUM_X_OFFSET
-            bg1.set_block_value(block, x, y)
-            bg1.set_block_value(block + 0x10, x, y + 1)
+            bg1.set_block_value(x, y, block)
+            bg1.set_block_value(x, y + 1, block + 0x10)
 
     def connect_elevators(self, src_dict: Dict, dst_dict: Dict, pairs: Dict[str, str]) -> None:
         for src_name, dst_name in pairs.items():
@@ -202,8 +202,8 @@ class Connections:
             with room_entry.load_bg2() as bg2:
                 self._write_main_hub_small_nums(bg2, coords, ele_areas)
                 block = MAIN_HUB_LARGE_NUM_BLOCKS[ele_areas[i]]
-                bg2.set_block_value(block, large_x, large_y)
-                bg2.set_block_value(block + 0x10, large_x, large_y + 1)
+                bg2.set_block_value(large_x, large_y, block)
+                bg2.set_block_value(large_x, large_y + 1, block + 0x10)
 
     def _write_main_hub_small_nums(
         self, bg2: BlockLayer, coords: Sequence[Tuple[int, int] | None], ele_areas: List[int]
@@ -215,5 +215,5 @@ class Connections:
             if area % 2 == 0:
                 block += 2
             x, y = coord
-            bg2.set_block_value(block, x, y)
-            bg2.set_block_value(block + 1, x + 1, y)
+            bg2.set_block_value(x, y, block)
+            bg2.set_block_value(x + 1, y, block + 1)

@@ -70,7 +70,7 @@ class ItemPatcher:
             room = RoomEntry(rom, min_loc.area, min_loc.room)
             val = HIDDEN_TANK_CLIP[tank_slot] if min_loc.hidden else TANK_CLIP[tank_slot]
             with room.load_clip() as clip:
-                clip.set_block_value(val, min_loc.block_x, min_loc.block_y)
+                clip.set_block_value(min_loc.block_x, min_loc.block_y, val)
             # Overwrite BG1 if not hidden
             if not min_loc.hidden:
                 # Get tilemap
@@ -82,7 +82,7 @@ class ItemPatcher:
                 idx = next(i for i in range(16) if rom.read_8(addr + i * 8) == tile)
                 val = TANK_BG1_START + idx
                 with room.load_bg1() as bg1:
-                    bg1.set_block_value(val, min_loc.block_x, min_loc.block_y)
+                    bg1.set_block_value(min_loc.block_x, min_loc.block_y, val)
 
             # Write to minors array
             # Assembly has:

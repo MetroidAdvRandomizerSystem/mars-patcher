@@ -79,7 +79,7 @@ class BlockLayer:
             )
         return self.block_data[idx] | self.block_data[idx + 1] << 8
 
-    def set_block_value(self, value: int, x: int, y: int) -> None:
+    def set_block_value(self, x: int, y: int, value: int) -> None:
         idx = (y * self.width + x) * 2
         if idx >= len(self.block_data):
             raise IndexError(

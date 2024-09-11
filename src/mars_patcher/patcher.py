@@ -10,6 +10,7 @@ from mars_patcher.door_locks import set_door_locks
 from mars_patcher.item_patcher import ItemPatcher, set_required_metroid_count, set_tank_increments
 from mars_patcher.level_edits import apply_level_edits
 from mars_patcher.locations import LocationSettings
+from mars_patcher.minimap import apply_minimap_edits
 from mars_patcher.misc_patches import (
     apply_anti_softlock_edits,
     apply_pbs_without_bombs,
@@ -141,6 +142,9 @@ def patch(
 
     if patch_data.get("LevelEdits"):
         apply_level_edits(rom, patch_data["LevelEdits"])
+
+    if patch_data.get("MinimapEdits"):
+        apply_minimap_edits(rom, patch_data["MinimapEdits"])
 
     rom.save(output_path)
     status_update(-1, f"Output written to {output_path}")

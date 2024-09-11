@@ -23,4 +23,4 @@ def apply_level_edits(rom: Rom, edit_dict: dict) -> None:
                 # Load layer, do every edit that's provided and write back.
                 with load() as layer:
                     for change in changes:
-                        layer.set_block_value(change["Value"], change["X"], change["Y"])
+                        layer.set_block_value(change["X"], change["Y"], change["Value"])

@@ -144,8 +144,8 @@ def set_door_locks(rom: Rom, data: List[dict]) -> None:
                 bg1_val += 1
             clip_val = CLIP_VALUES[lock][new_hatch_slot]
             for y in range(4):
-                bg1.set_block_value(bg1_val, hatch_x, hatch_y + y)
-                clip.set_block_value(clip_val, hatch_x, hatch_y + y)
+                bg1.set_block_value(hatch_x, hatch_y + y, bg1_val)
+                clip.set_block_value(hatch_x, hatch_y + y, clip_val)
                 bg1_val += 0x10
     # Write BG1 and clipdata for each room
     for bg1, clip in loaded_bg1_and_clip.values():

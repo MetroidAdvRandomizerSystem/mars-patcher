@@ -472,3 +472,26 @@ def sound_count(rom: Rom) -> int:
     elif rom.game == Game.ZM:
         return 0x2C4
     raise ValueError(rom.game)
+
+
+def minimap_ptrs(rom: Rom) -> int:
+    """Returns the address of the minimap data pointers."""
+    if rom.game == Game.MF:
+        if rom.region == Region.U:
+            return 0x79BE5C
+        elif rom.region == Region.E:
+            return 0x79C690
+        elif rom.region == Region.J:
+            return 0x7EE50C
+        elif rom.region == Region.C:
+            return 0x77DB60
+    elif rom.game == Game.ZM:
+        if rom.region == Region.U:
+            return 0x7601EC
+        elif rom.region == Region.E:
+            return 0x77408C
+        elif rom.region == Region.J:
+            return 0x7602FC
+        elif rom.region == Region.C:
+            return 0x79F3EC
+    raise ValueError(rom.game, rom.region)

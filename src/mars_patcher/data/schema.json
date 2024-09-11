@@ -488,8 +488,49 @@
                     }
                 }
             }
+        },
+        "MinimapEdits": {
+            "type": "object",
+            "description": "Specifies minimap edits that should be done.",
+            "propertyNames": {
+                "description": "Specifies the Area ID.",
+                "$ref": "#/$defs/MinimapIDKey"
+            },
+            "additionalProperties": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "X": {
+                            "$ref": "#/$defs/TypeU5",
+                            "description": "The X position in the minimap that should get edited."
+                        },
+                        "Y": {
+                            "$ref": "#/$defs/TypeU5",
+                            "description": "The Y position in the minimap that should get edited."
+                        },
+                        "Tile": {
+                            "$ref": "#/$defs/TypeU10",
+                            "description": "The tile value that should be used to edit the minimap."
+                        },
+                        "Palette": {
+                            "$ref": "#/$defs/TypeU4",
+                            "description": "The palette row to use for the tile."
+                        },
+                        "HFlip": {
+                            "type": "boolean",
+                            "default": false,
+                            "description": "Whether the tile should be horizontally flipped or not."
+                        },
+                        "VFlip": {
+                            "type": "boolean",
+                            "default": false,
+                            "description": "Whether the tile should be vertically flipped or not."
+                        }
+                    }
+                }
+            }
         }
-        
     },
     "required": ["SeedHash", "Locations", "RequiredMetroidCount"],
     "$defs": {
@@ -498,15 +539,25 @@
             "minimum": 0,
             "maximum": 2147483647
         },
+        "TypeU4": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 15
+        },
+        "TypeU5": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 31
+        },
         "TypeU8": {
             "type": "integer",
             "minimum": 0,
             "maximum": 255
         },
-        "TypeU16": {
+        "TypeU10": {
             "type": "integer",
             "minimum": 0,
-            "maximum": 65535 
+            "maximum": 1023
         },
         "AreaID": {
             "type": "integer",
@@ -516,6 +567,10 @@
         "AreaIDKey": {
             "type": "string",
             "enum": ["0", "1", "2", "3", "4", "5", "6"]
+        },
+        "MinimapIDKey": {
+            "type": "string",
+            "enum": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
         },
         "SectorID": {
             "type": "integer",
@@ -718,8 +773,8 @@
                         "description": "The Y position in the room that should get edited."
                     },
                     "Value": {
-                        "$ref": "#/$defs/TypeU16",
-                        "description": "That value that should be used to edit the room. For backgrounds, this is calculated via `((Row-1) * ColumnsInTileset) + (Column-1)`."
+                        "$ref": "#/$defs/TypeU10",
+                        "description": "The value that should be used to edit the room. For backgrounds, this is calculated via `((Row-1) * ColumnsInTileset) + (Column-1)`."
                     }
                 }
             }   
