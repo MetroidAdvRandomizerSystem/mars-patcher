@@ -126,7 +126,7 @@ def patch(
     if patch_data.get("DisableSoundEffects"):
         disable_sound_effects(rom)
 
-    if patch_data.get("MissileLimit"):
+    if "MissileLimit" in patch_data:
         change_missile_limit(rom, patch_data["MissileLimit"])
 
     if patch_data.get("PowerBombsWithoutBombs"):
@@ -143,10 +143,10 @@ def patch(
     if "DoorLocks" in patch_data or "HideDoorsOnMinimap" in patch_data:
         remove_door_colors_on_minimap(rom)
 
-    if patch_data.get("LevelEdits"):
+    if "LevelEdits" in patch_data:
         apply_level_edits(rom, patch_data["LevelEdits"])
 
-    if patch_data.get("MinimapEdits"):
+    if "MinimapEdits" in patch_data:
         apply_minimap_edits(rom, patch_data["MinimapEdits"])
 
     rom.save(output_path)
