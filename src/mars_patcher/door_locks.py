@@ -5,7 +5,10 @@ from mars_patcher.constants.game_data import (
     area_doors_ptrs,
     hatch_lock_event_count,
     hatch_lock_events,
+    minimap_count,
 )
+from mars_patcher.constants.minimap_tiles import COLORED_DOOR_TILES, NORMAL_DOOR_TILES
+from mars_patcher.minimap import MINIMAP_DIM, Minimap
 from mars_patcher.rom import Rom
 from mars_patcher.room_entry import BlockLayer, RoomEntry
 
@@ -152,6 +155,18 @@ def set_door_locks(rom: Rom, data: List[dict]) -> None:
         bg1.write()
         clip.write()
     fix_hatch_lock_events(rom, hatch_slot_changes)
+
+
+def remove_door_colors_on_minimap(rom: Rom) -> None:
+    for id in range(minimap_count(rom)):
+        with Minimap(rom, id) as minimap:
+            for y in range(MINIMAP_DIM):
+                for x in range(MINIMAP_DIM):
+                    tile, pal, h_flip, v_flip = minimap.get_tile_value(x, y)
+                    tile_type = COLORED_DOOR_TILES.get(tile)
+                    if tile_type is not None:
+                        tile = NORMAL_DOOR_TILES[tile_type]
+                        minimap.set_tile_value(x, y, tile, pal, h_flip, v_flip)
 
 
 def parse_door_lock_data(data: List[dict]) -> dict[Tuple[int, int], HatchLock]:

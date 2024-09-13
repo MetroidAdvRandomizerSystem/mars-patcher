@@ -495,3 +495,12 @@ def minimap_ptrs(rom: Rom) -> int:
         elif rom.region == Region.C:
             return 0x79F3EC
     raise ValueError(rom.game, rom.region)
+
+
+def minimap_count(rom: Rom) -> int:
+    """Returns the number of minimaps in the game."""
+    if rom.game == Game.MF:
+        return 11
+    elif rom.game == Game.ZM:
+        return 11
+    raise ValueError(rom.game)

@@ -6,7 +6,7 @@ from mars_patcher.compress import comp_lz77, decomp_lz77
 from mars_patcher.constants.game_data import minimap_ptrs
 from mars_patcher.rom import Rom
 
-MINIMAP_WIDTH = 32
+MINIMAP_DIM = 32
 
 
 class Minimap:
@@ -30,23 +30,28 @@ class Minimap:
     ) -> None:
         self.write()
 
-    def get_tile_value(self, x: int, y: int) -> int:
-        idx = (y * MINIMAP_WIDTH + x) * 2
+    def get_tile_value(self, x: int, y: int) -> tuple[int, int, bool, bool]:
+        idx = (y * MINIMAP_DIM + x) * 2
         if idx >= len(self.tile_data):
             raise IndexError(f"Tile coordinate ({x}, {y}) is not within minimap")
-        return self.tile_data[idx] | self.tile_data[idx + 1] << 8
+        value = self.tile_data[idx] | self.tile_data[idx + 1] << 8
+        tile = value & (0x3FF)
+        palette = value >> 12
+        h_flip = value & 0x400 != 0
+        v_flip = value & 0x800 != 0
+        return tile, palette, h_flip, v_flip
 
     def set_tile_value(
         self, x: int, y: int, tile: int, palette: int, h_flip: bool = False, v_flip: bool = False
     ) -> None:
-        idx = (y * MINIMAP_WIDTH + x) * 2
+        idx = (y * MINIMAP_DIM + x) * 2
         if idx >= len(self.tile_data):
             raise IndexError(f"Tile coordinate ({x}, {y}) is not within minimap")
         value = tile | (palette << 12)
         if h_flip:
-            value |= 1 << 10
+            value |= 0x400
         if v_flip:
-            value |= 1 << 11
+            value |= 0x800
         self.tile_data[idx] = value & 0xFF
         self.tile_data[idx + 1] = value >> 8
 

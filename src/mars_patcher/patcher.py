@@ -6,7 +6,7 @@ from jsonschema import validate
 from mars_patcher.connections import Connections
 from mars_patcher.credits import write_credits
 from mars_patcher.data import get_data_path
-from mars_patcher.door_locks import set_door_locks
+from mars_patcher.door_locks import remove_door_colors_on_minimap, set_door_locks
 from mars_patcher.item_patcher import ItemPatcher, set_required_metroid_count, set_tank_increments
 from mars_patcher.level_edits import apply_level_edits
 from mars_patcher.locations import LocationSettings
@@ -139,6 +139,9 @@ def patch(
         apply_anti_softlock_edits(rom)
 
     write_seed_hash(rom, patch_data["SeedHash"])
+
+    if "DoorLocks" in patch_data or "HideDoorsOnMinimap" in patch_data:
+        remove_door_colors_on_minimap(rom)
 
     if patch_data.get("LevelEdits"):
         apply_level_edits(rom, patch_data["LevelEdits"])
