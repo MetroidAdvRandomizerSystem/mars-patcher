@@ -185,7 +185,7 @@ def fix_hatch_lock_events(
     hatch_locks_addr = hatch_lock_events(rom)
     count = hatch_lock_event_count(rom)
     for i in range(count):
-        addr = hatch_locks_addr + i * 4
+        addr = hatch_locks_addr + i * 5
         area = rom.read_8(addr + 1)
         room = rom.read_8(addr + 2) - 1
         changes = hatch_slot_changes.get((area, room))

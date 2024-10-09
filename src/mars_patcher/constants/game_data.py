@@ -137,7 +137,8 @@ def hatch_lock_events(rom: Rom) -> int:
 def hatch_lock_event_count(rom: Rom) -> int:
     """Returns the number of hatch lock events in the game."""
     if rom.game == Game.MF:
-        return 0x4B
+        # Non-vanilla (original: 0x4B)
+        return 0xF
     raise ValueError(rom.game)
 
 
