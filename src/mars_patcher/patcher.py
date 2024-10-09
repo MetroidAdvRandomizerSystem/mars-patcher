@@ -46,6 +46,9 @@ def patch(
         schema = json.load(f)
     validate(patch_data, schema)
 
+    if patch_data.get("AntiSoftlockRoomEdits"):
+        apply_anti_softlock_edits(rom)
+
     # Randomize palettes - palettes are randomized first in case the item
     # patcher needs to copy tilesets
     if "Palettes" in patch_data:
@@ -135,11 +138,6 @@ def patch(
     if patch_data.get("UnexploredMap"):
         apply_unexplored_map(rom)
 
-    if patch_data.get("AntiSoftlockRoomEdits"):
-        apply_anti_softlock_edits(rom)
-
-    write_seed_hash(rom, patch_data["SeedHash"])
-
     if "DoorLocks" in patch_data or "HideDoorsOnMinimap" in patch_data:
         remove_door_colors_on_minimap(rom)
 
@@ -148,6 +146,8 @@ def patch(
 
     if "MinimapEdits" in patch_data:
         apply_minimap_edits(rom, patch_data["MinimapEdits"])
+
+    write_seed_hash(rom, patch_data["SeedHash"])
 
     rom.save(output_path)
     status_update(-1, f"Output written to {output_path}")
