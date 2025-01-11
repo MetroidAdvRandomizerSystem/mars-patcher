@@ -214,15 +214,14 @@ class Rom:
         """Copies a specified amount of bytes from the source address to the destination address."""
         self.write_bytes(dst_addr, self.data, src_addr, size)
 
-    def reserve_free_space(self, size: int, align: int = 1) -> int:
+    def reserve_free_space(self, size: int) -> int:
         """
-        Returns an address that is able to fit in a specified size which
-        is aligned by a certain amount.
-        The default alignment is 1.
+        Returns an address that is able to fit in a specified size.
+        Alignment is always 4.
         """
-        remain = self.free_space_addr % align
+        remain = self.free_space_addr % 4
         if remain != 0:
-            self.free_space_addr += align - remain
+            self.free_space_addr += 4 - remain
         addr = self.free_space_addr
         self.free_space_addr += size
         return addr

@@ -60,7 +60,7 @@ class Minimap:
         comp_len = len(comp_data)
         if comp_len > self.comp_len:
             # Repoint data
-            addr = self.rom.reserve_free_space(comp_len + 2)
+            addr = self.rom.reserve_free_space(comp_len)
             self.rom.write_ptr(self.pointer, addr)
         else:
             addr = self.rom.read_ptr(self.pointer)
