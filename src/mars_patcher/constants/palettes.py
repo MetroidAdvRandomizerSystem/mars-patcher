@@ -73,6 +73,8 @@ TILESET_ANIM_PALS = {
 EXCLUDED_ENEMIES = {
     Game.MF: {
         0x11,  # SA-X (elevator)
+        0x1D,  # Area banner
+        0x21,  # Message box
         0x8C,  # SA-X (TRO 1)
         0x8D,  # SA-X (NOC)
         0xA0,  # SA-X (ARC)

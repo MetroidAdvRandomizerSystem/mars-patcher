@@ -209,6 +209,7 @@ class PaletteRandomizer:
 
         # Go through remaining sprites
         for sprite_id in to_randomize:
+            shift = self.get_hue_shift(hue_range)
             self.randomize_enemy(sprite_id, shift)
 
     def randomize_enemy(self, sprite_id: int, shift: int) -> None:
