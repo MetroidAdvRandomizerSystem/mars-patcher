@@ -53,6 +53,11 @@ CLIP_VALUES = {
     HatchLock.LOCKED: [0x10, 0x10, 0x10, 0x10, 0x10, 0x10],
 }
 
+CLIP_TO_HATCH_LOCK: dict[int, HatchLock] = {}
+for lock, vals in CLIP_VALUES.items():
+    for val in vals:
+        CLIP_TO_HATCH_LOCK[val] = lock
+
 EXCLUDED_DOORS = {
     (0, 0xB4),  # Restricted lab escape
 }
@@ -116,7 +121,8 @@ def set_door_locks(rom: Rom, data: List[dict]) -> None:
             hatch_y = rom.read_8(door_addr + 4)
             # Get original hatch slot number
             capped_slot, capless_slot = orig_room_hatch_slots[area_room]
-            orig_has_cap = clip.get_block_value(hatch_x, hatch_y) != 0
+            clip_val = clip.get_block_value(hatch_x, hatch_y)
+            orig_has_cap = clip_val != 0
             if orig_has_cap:
                 # Has cap
                 orig_hatch_slot = capped_slot
@@ -141,7 +147,10 @@ def set_door_locks(rom: Rom, data: List[dict]) -> None:
                 hatch_slot_changes[area_room][orig_hatch_slot] = new_hatch_slot
             # Overwrite BG1 and clipdata
             if lock is None:
-                continue
+                # Even if a hatch's lock hasn't changed, its slot may have changed
+                lock = CLIP_TO_HATCH_LOCK.get(clip_val)
+                if lock is None:
+                    continue
             bg1_val = BG1_VALUES[lock]
             if facing_right:
                 bg1_val += 1
