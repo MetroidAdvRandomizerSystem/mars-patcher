@@ -151,3 +151,11 @@ def patch(
 
     rom.save(output_path)
     status_update(-1, f"Output written to {output_path}")
+
+    # Remove once in public beta
+    print("------")
+    print("Report all issues to the Randovania Discord Server (https://discord.gg/M23gCxj6fw)")
+    print(
+        "or alternatively this project's issue page (https://github.com/MetroidAdvRandomizerSystem/mars-patcher/issues)"
+    )
+    print("Thank you")
