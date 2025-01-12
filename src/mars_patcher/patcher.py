@@ -138,7 +138,7 @@ def patch(
     if patch_data.get("UnexploredMap"):
         apply_unexplored_map(rom)
 
-    if "DoorLocks" in patch_data or "HideDoorsOnMinimap" in patch_data:
+    if patch_data.get("DoorLocks") or "HideDoorsOnMinimap" in patch_data:
         remove_door_colors_on_minimap(rom)
 
     if "LevelEdits" in patch_data:
