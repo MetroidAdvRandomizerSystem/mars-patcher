@@ -108,12 +108,12 @@ class ItemPatcher:
                 read_block_x = rom.read_8(item_addr + 3)
                 read_block_y = rom.read_8(item_addr + 4)
 
-                assert (
-                    read_area == min_loc.area
-                ), f"area was '{read_area}', but was expected to be {min_loc.area}"
-                assert (
-                    read_room == min_loc.room
-                ), f"room was '{read_room}', but was expected to be {min_loc.room}"
+                assert read_area == min_loc.area, (
+                    f"area was '{read_area}', but was expected to be {min_loc.area}"
+                )
+                assert read_room == min_loc.room, (
+                    f"room was '{read_room}', but was expected to be {min_loc.room}"
+                )
                 found_item = (read_block_x == min_loc.block_x) and (read_block_y == min_loc.block_y)
 
             assert item_addr != -1
