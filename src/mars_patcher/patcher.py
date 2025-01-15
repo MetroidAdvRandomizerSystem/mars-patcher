@@ -56,13 +56,13 @@ def patch(
     # Randomize palettes - palettes are randomized first in case the item
     # patcher needs to copy tilesets
     if "Palettes" in patch_data:
-        status_update(-1, "Randomizing palettes...")
+        status_update("Randomizing palettes...", -1)
         pal_settings = PaletteSettings.from_json(patch_data["Palettes"])
         pal_randomizer = PaletteRandomizer(rom, pal_settings)
         pal_randomizer.randomize()
 
     # Load locations and set assignments
-    status_update(-1, "Writing item assignments...")
+    status_update("Writing item assignments...", -1)
     loc_settings = LocationSettings.initialize()
     loc_settings.set_assignments(patch_data["Locations"])
     item_patcher = ItemPatcher(rom, loc_settings)
@@ -73,47 +73,47 @@ def patch(
 
     # Starting location
     if "StartingLocation" in patch_data:
-        status_update(-1, "Writing starting location...")
+        status_update("Writing starting location...", -1)
         set_starting_location(rom, patch_data["StartingLocation"])
 
     # Starting items
     if "StartingItems" in patch_data:
-        status_update(-1, "Writing starting items...")
+        status_update("Writing starting items...", -1)
         set_starting_items(rom, patch_data["StartingItems"])
 
     # Tank increments
     if "TankIncrements" in patch_data:
-        status_update(-1, "Writing tank increments...")
+        status_update("Writing tank increments...", -1)
         set_tank_increments(rom, patch_data["TankIncrements"])
 
     # Elevator connections
     conns = None
     if "ElevatorConnections" in patch_data:
-        status_update(-1, "Writing elevator connections...")
+        status_update("Writing elevator connections...", -1)
         conns = Connections(rom)
         conns.set_elevator_connections(patch_data["ElevatorConnections"])
 
     # Sector shortcuts
     if "SectorShortcuts" in patch_data:
-        status_update(-1, "Writing sector shortcuts...")
+        status_update("Writing sector shortcuts...", -1)
         if conns is None:
             conns = Connections(rom)
         conns.set_shortcut_connections(patch_data["SectorShortcuts"])
 
     # Door locks
     if "DoorLocks" in patch_data:
-        status_update(-1, "Writing door locks...")
+        status_update("Writing door locks...", -1)
         set_door_locks(rom, patch_data["DoorLocks"])
 
     # Hints
     if "NavigationText" in patch_data:
-        status_update(-1, "Writing navigation text...")
+        status_update("Writing navigation text...", -1)
         navigation_text = NavigationText.from_json(patch_data["NavigationText"])
         navigation_text.write(rom)
 
     # Credits
     if "CreditsText" in patch_data:
-        status_update(-1, "Writing credits text...")
+        status_update("Writing credits text...", -1)
         write_credits(rom, patch_data["CreditsText"])
 
     # Misc patches
@@ -154,7 +154,7 @@ def patch(
     write_seed_hash(rom, patch_data["SeedHash"])
 
     rom.save(output_path)
-    status_update(-1, f"Output written to {output_path}")
+    status_update(f"Output written to {output_path}", -1)
 
     # Remove once in public beta
     print("------")
