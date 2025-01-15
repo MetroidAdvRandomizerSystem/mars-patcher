@@ -31,7 +31,7 @@ from mars_patcher.text import write_seed_hash
 
 def validate_patch_data(patch_data: dict) -> None:
     """
-    Validates whether the specified patch_data satisifies the schema for it.
+    Validates whether the specified patch_data satisfies the schema for it.
 
     Raises:
         ValidationError: If the patch data does not satisfy the schema.
@@ -47,6 +47,19 @@ def patch(
     patch_data: dict,
     status_update: Callable[[str, float], None],
 ) -> None:
+    """
+    Creates a new randomized Fusion game, based off of an input path, an output path,
+    a dictionary defining how the game should be randomized, and a status update function.
+
+    Args:
+        input_path: The path to an unmodified Metroid Fusion (U) ROM.
+        output_path: The path where the randomized Fusion ROM should be saved to.
+        patch_data: A dictionary defining how the game should be randomized.
+            This function assumes that it satisfies the needed schema. To validate it, use
+            validate_patch_data().
+        status_update: A function taking in a message (str) and a progress value (float).
+    """
+
     # Load input rom
     rom = Rom(input_path)
 
