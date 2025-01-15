@@ -55,7 +55,7 @@ namespaces = false
 
 [tool.ruff]
 line-length = 100
-lint.select = ["E", "F", "W", "I", "UP"]
+lint.select = ["E", "F", "W", "I", "TC", "UP"]
 src = ["src"]
 
 [tool.mypy]

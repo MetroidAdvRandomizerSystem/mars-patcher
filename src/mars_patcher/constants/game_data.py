@@ -1,9 +1,4 @@
-from typing import TYPE_CHECKING
-
-from mars_patcher.rom import Game, Region
-
-if TYPE_CHECKING:
-    from mars_patcher.rom import Rom
+from mars_patcher.rom import Game, Region, Rom
 
 # TODO: Consider moving these to JSON
 

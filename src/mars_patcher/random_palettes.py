@@ -1,6 +1,5 @@
 import random
 from enum import Enum
-from typing import Dict, List, Set, Tuple
 
 import mars_patcher.constants.game_data as gd
 from mars_patcher.constants.palettes import (
@@ -38,7 +37,7 @@ class PaletteSettings:
     def __init__(
         self,
         seed: int,
-        pal_types: Dict[PaletteType, Tuple[int, int]],
+        pal_types: dict[PaletteType, tuple[int, int]],
         color_space: ColorSpace,
         symmetric: bool,
     ):
@@ -48,7 +47,7 @@ class PaletteSettings:
         self.symmetric = symmetric
 
     @classmethod
-    def from_json(cls, data: Dict) -> "PaletteSettings":
+    def from_json(cls, data: dict) -> "PaletteSettings":
         seed = data.get("Seed", random.randint(0, 2**31 - 1))
         random.seed(seed)
         pal_types = {}
@@ -64,7 +63,7 @@ class PaletteSettings:
         return cls(seed, pal_types, color_space, symmetric)
 
     @classmethod
-    def get_hue_range(cls, data: Dict) -> Tuple[int, int]:
+    def get_hue_range(cls, data: dict) -> tuple[int, int]:
         hue_min = data.get("HueMin")
         hue_max = data.get("HueMax")
         if hue_min is None or hue_max is None:
@@ -92,14 +91,14 @@ class PaletteRandomizer:
             self.shift_func = self.shift_palette_oklab
 
     @staticmethod
-    def shift_palette_hsv(pal: Palette, shift: int, excluded_rows: Set[int] = set()) -> None:
+    def shift_palette_hsv(pal: Palette, shift: int, excluded_rows: set[int] = set()) -> None:
         pal.shift_hue_hsv(shift, excluded_rows)
 
     @staticmethod
-    def shift_palette_oklab(pal: Palette, shift: int, excluded_rows: Set[int] = set()) -> None:
+    def shift_palette_oklab(pal: Palette, shift: int, excluded_rows: set[int] = set()) -> None:
         pal.shift_hue_oklab(shift, excluded_rows)
 
-    def get_hue_shift(self, hue_range: Tuple[int, int]) -> int:
+    def get_hue_shift(self, hue_range: tuple[int, int]) -> int:
         """Returns a hue shift in a random direction between hue_min and hue_max."""
         shift = random.randint(hue_range[0], hue_range[1])
         if self.settings.symmetric and random.random() < 0.5:
@@ -108,7 +107,7 @@ class PaletteRandomizer:
 
     def randomize(self) -> None:
         random.seed(self.settings.seed)
-        self.randomized_pals: Set[int] = set()
+        self.randomized_pals: set[int] = set()
         pal_types = self.settings.pal_types
         if PaletteType.TILESETS in pal_types:
             self.randomize_tilesets(pal_types[PaletteType.TILESETS])
@@ -123,7 +122,7 @@ class PaletteRandomizer:
         if self.rom.is_zm():
             self.fix_zm_palettes()
 
-    def shift_palettes(self, pals: List[Tuple[int, int]], shift: int) -> None:
+    def shift_palettes(self, pals: list[tuple[int, int]], shift: int) -> None:
         for addr, rows in pals:
             if addr in self.randomized_pals:
                 continue
@@ -132,17 +131,17 @@ class PaletteRandomizer:
             pal.write(self.rom, addr)
             self.randomized_pals.add(addr)
 
-    def randomize_samus(self, hue_range: Tuple[int, int]) -> None:
+    def randomize_samus(self, hue_range: tuple[int, int]) -> None:
         shift = self.get_hue_shift(hue_range)
         self.shift_palettes(gd.samus_palettes(self.rom), shift)
         self.shift_palettes(gd.helmet_cursor_palettes(self.rom), shift)
         self.shift_palettes(gd.sax_palettes(self.rom), shift)
 
-    def randomize_beams(self, hue_range: Tuple[int, int]) -> None:
+    def randomize_beams(self, hue_range: tuple[int, int]) -> None:
         shift = self.get_hue_shift(hue_range)
         self.shift_palettes(gd.beam_palettes(self.rom), shift)
 
-    def randomize_tilesets(self, hue_range: Tuple[int, int]) -> None:
+    def randomize_tilesets(self, hue_range: tuple[int, int]) -> None:
         rom = self.rom
         ts_addr = gd.tileset_entries(rom)
         ts_count = gd.tileset_count(rom)
@@ -191,7 +190,7 @@ class PaletteRandomizer:
         pal.write(rom, pal_addr)
         self.randomized_pals.add(pal_addr)
 
-    def randomize_enemies(self, hue_range: Tuple[int, int]) -> None:
+    def randomize_enemies(self, hue_range: tuple[int, int]) -> None:
         rom = self.rom
         excluded = EXCLUDED_ENEMIES[rom.game]
         sp_count = gd.sprite_count(rom)

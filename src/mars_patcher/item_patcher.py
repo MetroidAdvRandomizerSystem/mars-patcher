@@ -1,5 +1,3 @@
-from typing import Dict
-
 from mars_patcher.constants.reserved_space import ReservedConstants
 from mars_patcher.locations import ItemSprite, ItemType, LocationSettings
 from mars_patcher.rom import Rom
@@ -143,7 +141,7 @@ def set_required_metroid_count(rom: Rom, count: int) -> None:
     rom.write_8(REQUIRED_METROID_COUNT_ADDR, count)
 
 
-def set_tank_increments(rom: Rom, data: Dict) -> None:
+def set_tank_increments(rom: Rom, data: dict) -> None:
     rom.write_16(TANK_INC_ADDR, data["MissileTank"])
     rom.write_16(TANK_INC_ADDR + 2, data["EnergyTank"])
     rom.write_16(TANK_INC_ADDR + 4, data["PowerBombTank"])

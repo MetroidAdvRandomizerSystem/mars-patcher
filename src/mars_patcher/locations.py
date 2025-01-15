@@ -1,5 +1,4 @@
 import json
-from typing import Dict, List
 
 from mars_patcher.constants.items import (
     ITEM_ENUMS,
@@ -74,7 +73,7 @@ class MinorLocation(Location):
 
 
 class LocationSettings:
-    def __init__(self, major_locs: List[MajorLocation], minor_locs: List[MinorLocation]):
+    def __init__(self, major_locs: list[MajorLocation], minor_locs: list[MinorLocation]):
         self.major_locs = major_locs
         self.minor_locs = minor_locs
 
@@ -107,7 +106,7 @@ class LocationSettings:
 
         return LocationSettings(major_locs, minor_locs)
 
-    def set_assignments(self, data: Dict) -> None:
+    def set_assignments(self, data: dict) -> None:
         for maj_loc_entry in data[KEY_MAJOR_LOCS]:
             # Get source and item
             source = SOURCE_ENUMS[maj_loc_entry[KEY_SOURCE]]

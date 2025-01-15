@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List
 
 from mars_patcher.constants.game_data import character_widths, file_screen_text_ptrs
 from mars_patcher.rom import Rom
@@ -127,7 +126,7 @@ def parse_escape_expr(expr: str) -> int:
         raise NotImplementedError(f'Unimplemented bracketed expression "{expr}"')
 
 
-def encode_text(rom: Rom, string: str, max_width: int) -> List[int]:
+def encode_text(rom: Rom, string: str, max_width: int) -> list[int]:
     char_widths = character_widths(rom)
     text = []
     line_width = 0
@@ -135,7 +134,7 @@ def encode_text(rom: Rom, string: str, max_width: int) -> List[int]:
 
     prev_break = None
     width_since_break = 0
-    escape_expr: List[str] | None = None
+    escape_expr: list[str] | None = None
 
     for char in string:
         if escape_expr is None and char == "[":

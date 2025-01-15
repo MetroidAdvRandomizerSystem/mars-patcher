@@ -1,5 +1,3 @@
-from typing import List
-
 from mars_patcher.constants.credits_lines import (
     FUSION_STAFF_LINES,
     LINE_TYPE_HEIGHTS,
@@ -45,7 +43,7 @@ class CreditsLine:
         return CreditsLine(line_type, blank_lines, text, centered)
 
 
-def write_credits(rom: Rom, data: List[dict]) -> None:
+def write_credits(rom: Rom, data: list[dict]) -> None:
     writer = CreditsWriter(rom)
     # Write custom credits
     lines = [CreditsLine.from_json(d) for d in data]
@@ -61,7 +59,7 @@ class CreditsWriter:
         self.addr = CREDITS_ADDR
         self.num_lines = 0
 
-    def write_lines(self, lines: List[CreditsLine]) -> None:
+    def write_lines(self, lines: list[CreditsLine]) -> None:
         for line in lines:
             lt_val = LINE_TYPE_VALS[line.line_type]
             line_bytes = bytearray([lt_val, line.blank_lines])
