@@ -1,12 +1,10 @@
-from typing import Tuple
-
 MIN_MATCH_SIZE = 3
 MIN_WINDOW_SIZE = 1
 MAX_MATCH_SIZE = (1 << 4) - 1 + MIN_MATCH_SIZE
 MAX_WINDOW_SIZE = (1 << 12) - 1 + MIN_WINDOW_SIZE
 
 
-def decomp_rle(input: bytes, idx: int) -> Tuple[bytearray, int]:
+def decomp_rle(input: bytes, idx: int) -> tuple[bytearray, int]:
     """
     Decompresses RLE data and returns it with the size of the compressed data.
     """
@@ -152,7 +150,7 @@ def comp_rle(input: bytes) -> bytearray:
     return output
 
 
-def decomp_lz77(input: bytes, idx: int) -> Tuple[bytearray, int]:
+def decomp_lz77(input: bytes, idx: int) -> tuple[bytearray, int]:
     """Decompresses LZ77 data and returns it with the size of the compressed data."""
     # Check for 0x10 flag
     if input[idx] != 0x10:
