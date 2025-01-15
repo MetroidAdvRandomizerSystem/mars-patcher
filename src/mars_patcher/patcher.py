@@ -29,22 +29,26 @@ from mars_patcher.starting import set_starting_items, set_starting_location
 from mars_patcher.text import write_seed_hash
 
 
-def patch(
-    input_path: str,
-    output_path: str,
-    patch_data_path: str,
-    status_update: Callable[[float, str], None],
-) -> None:
-    # Load input rom
-    rom = Rom(input_path)
+def validate_patch_data(patch_data: dict) -> None:
+    """
+    Validates whether the specified patch_data satisifies the schema for it.
 
-    # Load patch data file and validate
-    with open(patch_data_path) as f:
-        patch_data = json.load(f)
-
+    Raises:
+        ValidationError: If the patch data does not satisfy the schema.
+    """
     with open(get_data_path("schema.json")) as f:
         schema = json.load(f)
     validate(patch_data, schema)
+
+
+def patch(
+    input_path: str,
+    output_path: str,
+    patch_data: dict,
+    status_update: Callable[[str, float], None],
+) -> None:
+    # Load input rom
+    rom = Rom(input_path)
 
     if patch_data.get("AntiSoftlockRoomEdits"):
         apply_anti_softlock_edits(rom)
