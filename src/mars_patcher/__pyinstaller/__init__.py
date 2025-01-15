@@ -1,5 +1,4 @@
 import os
-from typing import List
 
 # Functions
 # =========
@@ -15,5 +14,5 @@ from typing import List
 # directory, which is the location of these hooks.
 
 
-def get_hook_dirs() -> List[str]:
+def get_hook_dirs() -> list[str]:
     return [os.path.dirname(__file__)]

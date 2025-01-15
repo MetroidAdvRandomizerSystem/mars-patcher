@@ -1,6 +1,9 @@
-from typing import List, Tuple
+from typing import TYPE_CHECKING
 
-from mars_patcher.rom import Game, Region, Rom
+from mars_patcher.rom import Game, Region
+
+if TYPE_CHECKING:
+    from mars_patcher.rom import Rom
 
 # TODO: Consider moving these to JSON
 
@@ -293,7 +296,7 @@ def spriteset_count(rom: Rom) -> int:
     raise ValueError(rom.game)
 
 
-def samus_palettes(rom: Rom) -> List[Tuple[int, int]]:
+def samus_palettes(rom: Rom) -> list[tuple[int, int]]:
     """Returns a list of (address, row count) pairs for all of Samus's palettes."""
     if rom.game == Game.MF:
         if rom.region == Region.U:
@@ -316,7 +319,7 @@ def samus_palettes(rom: Rom) -> List[Tuple[int, int]]:
     raise ValueError(rom.game, rom.region)
 
 
-def helmet_cursor_palettes(rom: Rom) -> List[Tuple[int, int]]:
+def helmet_cursor_palettes(rom: Rom) -> list[tuple[int, int]]:
     """
     Returns a list of (address, row count) pairs for Samus's helmet as a cursor
     (file select and game over)
@@ -342,7 +345,7 @@ def helmet_cursor_palettes(rom: Rom) -> List[Tuple[int, int]]:
     raise ValueError(rom.game, rom.region)
 
 
-def beam_palettes(rom: Rom) -> List[Tuple[int, int]]:
+def beam_palettes(rom: Rom) -> list[tuple[int, int]]:
     """Returns a list of (address, row count) pairs for beam palettes."""
     if rom.game == Game.MF:
         if rom.region == Region.U:
@@ -365,7 +368,7 @@ def beam_palettes(rom: Rom) -> List[Tuple[int, int]]:
     raise ValueError(rom.game, rom.region)
 
 
-def sax_palettes(rom: Rom) -> List[Tuple[int, int]]:
+def sax_palettes(rom: Rom) -> list[tuple[int, int]]:
     """Returns a list of (address, row count) pairs for all of the SA-X's palettes."""
     if rom.game == Game.MF:
         # Normal, Lab, Monster, Extra

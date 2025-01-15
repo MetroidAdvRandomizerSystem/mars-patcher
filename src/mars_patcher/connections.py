@@ -1,4 +1,4 @@
-from typing import Dict, List, Sequence, Tuple
+from collections.abc import Sequence
 
 import mars_patcher.constants.game_data as gd
 from mars_patcher.constants.main_hub_numbers import (
@@ -68,7 +68,7 @@ class Connections:
         self.area_conns_addr = gd.area_connections(rom)
         self.area_conns_count = gd.area_connections_count(rom)
 
-    def set_elevator_connections(self, data: Dict) -> None:
+    def set_elevator_connections(self, data: dict) -> None:
         # Repoint area connections data
         size = self.area_conns_count * 3
         # Reserve space for 8 more area connections
@@ -127,7 +127,7 @@ class Connections:
             bg1.set_block_value(x, y, block)
             bg1.set_block_value(x, y + 1, block + 0x10)
 
-    def connect_elevators(self, src_dict: Dict, dst_dict: Dict, pairs: Dict[str, str]) -> None:
+    def connect_elevators(self, src_dict: dict, dst_dict: dict, pairs: dict[str, str]) -> None:
         for src_name, dst_name in pairs.items():
             src_area, src_door, in_list = src_dict[src_name]
             dst_area, dst_door, _ = dst_dict[dst_name]
@@ -211,7 +211,7 @@ class Connections:
                 bg2.set_block_value(large_x, large_y + 1, block + 0x10)
 
     def _write_main_hub_small_nums(
-        self, bg2: BlockLayer, coords: Sequence[Tuple[int, int] | None], ele_areas: List[int]
+        self, bg2: BlockLayer, coords: Sequence[tuple[int, int] | None], ele_areas: list[int]
     ) -> None:
         for area, coord in enumerate(coords):
             if coord is None:
