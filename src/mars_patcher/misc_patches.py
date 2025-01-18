@@ -79,8 +79,14 @@ def apply_hint_security(rom: Rom) -> None:
     rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x7, 0x3)  # S4 unlocked by l3
     rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x5, 0x4)  # S5 unlocked by l4
     rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x9, 0x4)  # S6 unlocked by l4
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR+0xA, 0xFF) # auxiliary always unlocked
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR+0xB, 0xFF) # restricted always unlocked
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR+0x1, 0x5) # main deck 1 always locked
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR+0x2, 0x5) # main deck 2 always locked
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR+0x3, 0x5) # operations deck always locked
+    rom.write_8(
+        ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0xA, 0xFF
+    )  # auxiliary always unlocked
+    rom.write_8(
+        ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0xB, 0xFF
+    )  # restricted always unlocked
+    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x1, 0x5)  # main deck 1 always locked
+    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x2, 0x5)  # main deck 2 always locked
+    rom.write_8(
+        ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x3, 0x5
+    )  # operations deck always locked
