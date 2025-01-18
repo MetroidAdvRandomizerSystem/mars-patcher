@@ -71,13 +71,14 @@ def apply_pbs_without_bombs(rom: Rom) -> None:
 def apply_anti_softlock_edits(rom: Rom) -> None:
     apply_patch_in_data_path(rom, "anti_softlock.ips")
 
+
 def apply_hint_security(rom: Rom) -> None:
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR+0x4, 0x2) #S1 unlocked by l2
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR+0x6, 0x2) #S2 unlocked by l2
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR+0x8, 0x3) #S3 unlocked by l3
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR+0x7, 0x3) #S4 unlocked by l3
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR+0x5, 0x4) #S5 unlocked by l4
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR+0x9, 0x4) #S6 unlocked by l4
+    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x4, 0x2)  # S1 unlocked by l2
+    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x6, 0x2)  # S2 unlocked by l2
+    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x8, 0x3)  # S3 unlocked by l3
+    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x7, 0x3)  # S4 unlocked by l3
+    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x5, 0x4)  # S5 unlocked by l4
+    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x9, 0x4)  # S6 unlocked by l4
     rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR+0xA, 0xFF) # auxiliary always unlocked
     rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR+0xB, 0xFF) # restricted always unlocked
     rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR+0x1, 0x5) # main deck 1 always locked
