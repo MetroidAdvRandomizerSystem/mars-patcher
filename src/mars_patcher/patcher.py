@@ -13,6 +13,7 @@ from mars_patcher.locations import LocationSettings
 from mars_patcher.minimap import apply_minimap_edits
 from mars_patcher.misc_patches import (
     apply_anti_softlock_edits,
+    apply_hint_security,
     apply_pbs_without_bombs,
     apply_unexplored_map,
     change_missile_limit,
@@ -146,6 +147,8 @@ def patch(
 
     if "MinimapEdits" in patch_data:
         apply_minimap_edits(rom, patch_data["MinimapEdits"])
+
+    apply_hint_security(rom)
 
     write_seed_hash(rom, patch_data["SeedHash"])
 
