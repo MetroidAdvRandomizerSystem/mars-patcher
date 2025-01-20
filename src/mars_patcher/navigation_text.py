@@ -36,6 +36,7 @@ class ShipText(Enum):
     INITIAL_TEXT = 0
     CONFIRM_TEXT = 1
 
+
 class LockType(Enum):
     OPEN = 0xFF
     LOCKED = 0x05
@@ -44,6 +45,7 @@ class LockType(Enum):
     GREEN = 0x02
     YELLOW = 0x03
     RED = 0x04
+
 
 class NavigationText:
     LANG_ENUMS = {
