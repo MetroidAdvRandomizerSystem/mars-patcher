@@ -1,6 +1,9 @@
+from enum import Enum
+
 import mars_patcher.constants.game_data as gd
 from mars_patcher.constants.reserved_space import ReservedConstants
 from mars_patcher.data import get_data_path
+from mars_patcher.navigation_text import NavigationText
 from mars_patcher.patching import IpsDecoder
 from mars_patcher.rom import Rom
 
@@ -72,17 +75,22 @@ def apply_anti_softlock_edits(rom: Rom) -> None:
     apply_patch_in_data_path(rom, "anti_softlock.ips")
 
 
-def apply_hint_security(rom: Rom) -> None:
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x4, 0x2)  # S1 unlocked by l2
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x6, 0x2)  # S2 unlocked by l2
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x8, 0x3)  # S3 unlocked by l3
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x7, 0x3)  # S4 unlocked by l3
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x5, 0x4)  # S5 unlocked by l4
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x9, 0x4)  # S6 unlocked by l4
-    # unlock auxiliary and restricted navigation rooms
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0xA, 0xFF)
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0xB, 0xFF)
-    # lock main deck
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x1, 0x5)
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x2, 0x5)
-    rom.write_8(ReservedConstants.HINT_SECURITY_LEVELS_ADDR + 0x3, 0x5)
+def apply_hint_security(rom: Rom, locks: dict) -> None:
+    """
+    Applies an optional security level requirement to use Navigation Stations
+    Defaults to OPEN if not provided in patch data JSON
+    """
+    class LockType(Enum):
+        OPEN = 0xFF
+        LOCKED = 0x05
+        GREY = 0x00
+        BLUE = 0x01
+        GREEN = 0x02
+        YELLOW = 0x03
+        RED = 0x04
+
+    for location, offset in NavigationText.NAV_ROOM_ENUMS.items():
+        rom.write_8(
+            ReservedConstants.HINT_SECURITY_LEVELS_ADDR + offset.value,
+            LockType[locks.get(location, "OPEN")].value
+        )

@@ -148,7 +148,7 @@ def patch(
     if "MinimapEdits" in patch_data:
         apply_minimap_edits(rom, patch_data["MinimapEdits"])
 
-    apply_hint_security(rom)
+    apply_hint_security(rom, patch_data["NavStationLocks"])
 
     write_seed_hash(rom, patch_data["SeedHash"])
 

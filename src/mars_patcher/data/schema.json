@@ -414,6 +414,45 @@
                 "required": ["LineType"]
             }
         },
+        "NavStationLocks": {
+            "type":"object",
+            "description": "Sets the required Security Levels for accessing Navigation Terminals.",
+            "properties": {
+                "MainDeckWest": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "MainDeckEast": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "OperationsDeck": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "RestrictedLabs": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "AuxiliaryPower": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "Sector1Entrance": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "Sector2Entrance": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "Sector3Entrance": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "Sector4Entrance": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "Sector5Entrance": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "Sector6Entrance": {
+                    "$ref": "#/$defs/HintLocks"
+                }
+            }
+        },
         "DisableDemos": {
             "type": "boolean",
             "description": "Disables title screen demos when true.",
@@ -783,6 +822,11 @@
                     }
                 }
             }   
+        },
+        "HintLocks": {
+            "type": "string",
+            "enum": ["OPEN", "LOCKED", "GREY", "BLUE", "GREEN", "YELLOW", "RED"],
+            "default": "OPEN"
         }
     }
 }
