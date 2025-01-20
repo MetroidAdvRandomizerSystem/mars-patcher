@@ -37,7 +37,7 @@ class ShipText(Enum):
     CONFIRM_TEXT = 1
 
 
-class LockType(Enum):
+class NavStationLockType(Enum):
     OPEN = 0xFF
     LOCKED = 0x05
     GREY = 0x00
@@ -140,5 +140,5 @@ class NavigationText:
         for location, offset in NavigationText.NAV_ROOM_ENUMS.items():
             rom.write_8(
                 ReservedConstants.HINT_SECURITY_LEVELS_ADDR + offset.value,
-                LockType[locks.get(location, "OPEN")].value,
+                NavStationLockType[locks.get(location, "OPEN")].value,
             )
