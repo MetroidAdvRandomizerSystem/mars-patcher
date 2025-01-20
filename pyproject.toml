@@ -11,12 +11,12 @@ authors = [
 description = "An open source randomizer patcher for Metroid Fusion."
 readme = "README.md"
 license = {file = "LICENSE"}
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Development Status :: 3 - Alpha",
-    "Programming Language :: Python :: 3.7"
+    "Programming Language :: Python :: 3.9"
 
 ]
 dependencies = [
@@ -55,7 +55,7 @@ namespaces = false
 
 [tool.ruff]
 line-length = 100
-lint.select = ["E", "F", "W", "I", "UP"]
+lint.select = ["E", "F", "W", "I", "TC", "UP"]
 src = ["src"]
 
 [tool.mypy]

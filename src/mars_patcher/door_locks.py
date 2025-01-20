@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List, Tuple
 
 from mars_patcher.constants.game_data import (
     area_doors_ptrs,
@@ -66,18 +65,18 @@ EXCLUDED_DOORS = {
 # TODO:
 # - Optimize by only loading rooms that contain doors to modify
 # - Split into more than one function for readability
-def set_door_locks(rom: Rom, data: List[dict]) -> None:
+def set_door_locks(rom: Rom, data: list[dict]) -> None:
     door_locks = parse_door_lock_data(data)
     # Go through all doors in game in order
     doors_ptrs = area_doors_ptrs(rom)
-    loaded_rooms: dict[Tuple[int, int], RoomEntry] = {}
+    loaded_rooms: dict[tuple[int, int], RoomEntry] = {}
     # (AreaID, RoomID): (BG1, Clipdata)
-    loaded_bg1_and_clip: dict[Tuple[int, int], Tuple[BlockLayer, BlockLayer]] = {}
+    loaded_bg1_and_clip: dict[tuple[int, int], tuple[BlockLayer, BlockLayer]] = {}
     # (AreaID, RoomID): (CappedSlot, CaplessSlot)
-    orig_room_hatch_slots: dict[Tuple[int, int], Tuple[int, int]] = {}
-    new_room_hatch_slots: dict[Tuple[int, int], Tuple[int, int]] = {}
+    orig_room_hatch_slots: dict[tuple[int, int], tuple[int, int]] = {}
+    new_room_hatch_slots: dict[tuple[int, int], tuple[int, int]] = {}
     # (AreaID, RoomID): {OrigSlot: NewSlot}
-    hatch_slot_changes: dict[Tuple[int, int], dict[int, int]] = {}
+    hatch_slot_changes: dict[tuple[int, int], dict[int, int]] = {}
     for area in range(7):
         area_addr = rom.read_ptr(doors_ptrs + area * 4)
         for door in range(256):
@@ -178,9 +177,9 @@ def remove_door_colors_on_minimap(rom: Rom) -> None:
                         minimap.set_tile_value(x, y, tile, pal, h_flip, v_flip)
 
 
-def parse_door_lock_data(data: List[dict]) -> dict[Tuple[int, int], HatchLock]:
+def parse_door_lock_data(data: list[dict]) -> dict[tuple[int, int], HatchLock]:
     """Returns a dictionary of `(AreaID, RoomID): HatchLock` from the input data."""
-    door_locks: dict[Tuple[int, int], HatchLock] = {}
+    door_locks: dict[tuple[int, int], HatchLock] = {}
     for entry in data:
         area_door = (entry["Area"], entry["Door"])
         lock = HATCH_LOCK_ENUMS[entry["LockType"]]
@@ -189,7 +188,7 @@ def parse_door_lock_data(data: List[dict]) -> dict[Tuple[int, int], HatchLock]:
 
 
 def fix_hatch_lock_events(
-    rom: Rom, hatch_slot_changes: dict[Tuple[int, int], dict[int, int]]
+    rom: Rom, hatch_slot_changes: dict[tuple[int, int], dict[int, int]]
 ) -> None:
     hatch_locks_addr = hatch_lock_events(rom)
     count = hatch_lock_event_count(rom)

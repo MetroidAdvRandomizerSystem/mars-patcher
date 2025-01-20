@@ -1,5 +1,4 @@
 import random
-from typing import Dict, List
 
 from mars_patcher.constants.enemies import ENEMY_TYPES, EnemyType
 from mars_patcher.constants.game_data import sprite_vram_sizes, spriteset_count, spriteset_ptrs
@@ -18,7 +17,7 @@ def randomize_enemies(rom: Rom) -> None:
         gfx_rows[en_id] = size // 0x800
 
     # Get replacement pools
-    replacements: Dict[EnemyType, List[int]] = {t: [] for t in EnemyType}
+    replacements: dict[EnemyType, list[int]] = {t: [] for t in EnemyType}
     for en_id, en_type in enemy_types.items():
         replacements[en_type].append(en_id)
         if en_type == EnemyType.CRAWLING:
@@ -35,7 +34,7 @@ def randomize_enemies(rom: Rom) -> None:
     ss_ptrs = spriteset_ptrs(rom)
     for i in range(spriteset_count(rom)):
         spriteset_addr = rom.read_ptr(ss_ptrs + i * 4)
-        used_gfx_rows: Dict[int, int] = {}
+        used_gfx_rows: dict[int, int] = {}
         for j in range(0xF):
             addr = spriteset_addr + j * 2
             en_id = rom.read_8(addr)

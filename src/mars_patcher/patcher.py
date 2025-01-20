@@ -29,22 +29,39 @@ from mars_patcher.starting import set_starting_items, set_starting_location
 from mars_patcher.text import write_seed_hash
 
 
-def patch(
-    input_path: str,
-    output_path: str,
-    patch_data_path: str,
-    status_update: Callable[[float, str], None],
-) -> None:
-    # Load input rom
-    rom = Rom(input_path)
+def validate_patch_data(patch_data: dict) -> None:
+    """
+    Validates whether the specified patch_data satisfies the schema for it.
 
-    # Load patch data file and validate
-    with open(patch_data_path) as f:
-        patch_data = json.load(f)
-
+    Raises:
+        ValidationError: If the patch data does not satisfy the schema.
+    """
     with open(get_data_path("schema.json")) as f:
         schema = json.load(f)
     validate(patch_data, schema)
+
+
+def patch(
+    input_path: str,
+    output_path: str,
+    patch_data: dict,
+    status_update: Callable[[str, float], None],
+) -> None:
+    """
+    Creates a new randomized Fusion game, based off of an input path, an output path,
+    a dictionary defining how the game should be randomized, and a status update function.
+
+    Args:
+        input_path: The path to an unmodified Metroid Fusion (U) ROM.
+        output_path: The path where the randomized Fusion ROM should be saved to.
+        patch_data: A dictionary defining how the game should be randomized.
+            This function assumes that it satisfies the needed schema. To validate it, use
+            validate_patch_data().
+        status_update: A function taking in a message (str) and a progress value (float).
+    """
+
+    # Load input rom
+    rom = Rom(input_path)
 
     if patch_data.get("AntiSoftlockRoomEdits"):
         apply_anti_softlock_edits(rom)
@@ -52,13 +69,13 @@ def patch(
     # Randomize palettes - palettes are randomized first in case the item
     # patcher needs to copy tilesets
     if "Palettes" in patch_data:
-        status_update(-1, "Randomizing palettes...")
+        status_update("Randomizing palettes...", -1)
         pal_settings = PaletteSettings.from_json(patch_data["Palettes"])
         pal_randomizer = PaletteRandomizer(rom, pal_settings)
         pal_randomizer.randomize()
 
     # Load locations and set assignments
-    status_update(-1, "Writing item assignments...")
+    status_update("Writing item assignments...", -1)
     loc_settings = LocationSettings.initialize()
     loc_settings.set_assignments(patch_data["Locations"])
     item_patcher = ItemPatcher(rom, loc_settings)
@@ -69,48 +86,48 @@ def patch(
 
     # Starting location
     if "StartingLocation" in patch_data:
-        status_update(-1, "Writing starting location...")
+        status_update("Writing starting location...", -1)
         set_starting_location(rom, patch_data["StartingLocation"])
 
     # Starting items
     if "StartingItems" in patch_data:
-        status_update(-1, "Writing starting items...")
+        status_update("Writing starting items...", -1)
         set_starting_items(rom, patch_data["StartingItems"])
 
     # Tank increments
     if "TankIncrements" in patch_data:
-        status_update(-1, "Writing tank increments...")
+        status_update("Writing tank increments...", -1)
         set_tank_increments(rom, patch_data["TankIncrements"])
 
     # Elevator connections
     conns = None
     if "ElevatorConnections" in patch_data:
-        status_update(-1, "Writing elevator connections...")
+        status_update("Writing elevator connections...", -1)
         conns = Connections(rom)
         conns.set_elevator_connections(patch_data["ElevatorConnections"])
 
     # Sector shortcuts
     if "SectorShortcuts" in patch_data:
-        status_update(-1, "Writing sector shortcuts...")
+        status_update("Writing sector shortcuts...", -1)
         if conns is None:
             conns = Connections(rom)
         conns.set_shortcut_connections(patch_data["SectorShortcuts"])
 
     # Door locks
     if "DoorLocks" in patch_data:
-        status_update(-1, "Writing door locks...")
+        status_update("Writing door locks...", -1)
         set_door_locks(rom, patch_data["DoorLocks"])
 
     # Hints
     if "NavigationText" in patch_data:
-        status_update(-1, "Writing navigation text...")
+        status_update("Writing navigation text...", -1)
         navigation_text = NavigationText.from_json(patch_data["NavigationText"])
         navigation_text.write(rom)
         NavigationText.apply_hint_security(rom, patch_data["NavStationLocks"])
 
     # Credits
     if "CreditsText" in patch_data:
-        status_update(-1, "Writing credits text...")
+        status_update("Writing credits text...", -1)
         write_credits(rom, patch_data["CreditsText"])
 
     # Misc patches
@@ -151,7 +168,7 @@ def patch(
     write_seed_hash(rom, patch_data["SeedHash"])
 
     rom.save(output_path)
-    status_update(-1, f"Output written to {output_path}")
+    status_update(f"Output written to {output_path}", -1)
 
     # Remove once in public beta
     print("------")

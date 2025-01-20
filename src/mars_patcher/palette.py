@@ -1,5 +1,4 @@
 import math
-from typing import List, Set
 
 from mars_patcher.color_spaces import RgbBitSize, RgbColor
 from mars_patcher.rom import Rom
@@ -8,7 +7,7 @@ from mars_patcher.rom import Rom
 class Palette:
     def __init__(self, rows: int, rom: Rom, addr: int):
         assert rows >= 1
-        self.colors: List[RgbColor] = []
+        self.colors: list[RgbColor] = []
         for i in range(rows * 16):
             rgb = rom.read_16(addr + i * 2)
             color = RgbColor.from_rgb(rgb, RgbBitSize.Rgb5)
@@ -32,7 +31,7 @@ class Palette:
         data = self.byte_data()
         rom.write_bytes(addr, data)
 
-    def shift_hue_hsv(self, shift: int, excluded_rows: Set[int]) -> None:
+    def shift_hue_hsv(self, shift: int, excluded_rows: set[int]) -> None:
         """
         Shifts hue by the provided amount, measured in degrees.
         Uses HSV color space.
@@ -60,7 +59,7 @@ class Palette:
                 rgb.blue = min(int(rgb.blue * luma_ratio), 255)
                 self.colors[offset + i] = rgb
 
-    def shift_hue_oklab(self, shift: int, excluded_rows: Set[int]) -> None:
+    def shift_hue_oklab(self, shift: int, excluded_rows: set[int]) -> None:
         """
         Shifts hue by the provided amount, measured in degrees.
         Uses Oklab color space.

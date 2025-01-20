@@ -1,5 +1,3 @@
-from typing import Dict
-
 from mars_patcher.constants.reserved_space import ReservedConstants
 from mars_patcher.locations import ItemSprite, ItemType, LocationSettings
 from mars_patcher.rom import Rom
@@ -110,12 +108,12 @@ class ItemPatcher:
                 read_block_x = rom.read_8(item_addr + 3)
                 read_block_y = rom.read_8(item_addr + 4)
 
-                assert (
-                    read_area == min_loc.area
-                ), f"area was '{read_area}', but was expected to be {min_loc.area}"
-                assert (
-                    read_room == min_loc.room
-                ), f"room was '{read_room}', but was expected to be {min_loc.room}"
+                assert read_area == min_loc.area, (
+                    f"area was '{read_area}', but was expected to be {min_loc.area}"
+                )
+                assert read_room == min_loc.room, (
+                    f"room was '{read_room}', but was expected to be {min_loc.room}"
+                )
                 found_item = (read_block_x == min_loc.block_x) and (read_block_y == min_loc.block_y)
 
             assert item_addr != -1
@@ -143,7 +141,7 @@ def set_required_metroid_count(rom: Rom, count: int) -> None:
     rom.write_8(REQUIRED_METROID_COUNT_ADDR, count)
 
 
-def set_tank_increments(rom: Rom, data: Dict) -> None:
+def set_tank_increments(rom: Rom, data: dict) -> None:
     rom.write_16(TANK_INC_ADDR, data["MissileTank"])
     rom.write_16(TANK_INC_ADDR + 2, data["EnergyTank"])
     rom.write_16(TANK_INC_ADDR + 4, data["PowerBombTank"])
