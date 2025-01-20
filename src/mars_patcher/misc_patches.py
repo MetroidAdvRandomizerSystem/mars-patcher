@@ -80,6 +80,7 @@ def apply_hint_security(rom: Rom, locks: dict) -> None:
     Applies an optional security level requirement to use Navigation Stations
     Defaults to OPEN if not provided in patch data JSON
     """
+
     class LockType(Enum):
         OPEN = 0xFF
         LOCKED = 0x05
@@ -92,5 +93,5 @@ def apply_hint_security(rom: Rom, locks: dict) -> None:
     for location, offset in NavigationText.NAV_ROOM_ENUMS.items():
         rom.write_8(
             ReservedConstants.HINT_SECURITY_LEVELS_ADDR + offset.value,
-            LockType[locks.get(location, "OPEN")].value
+            LockType[locks.get(location, "OPEN")].value,
         )
