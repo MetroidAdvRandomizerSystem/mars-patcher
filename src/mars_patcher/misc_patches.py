@@ -1,9 +1,6 @@
-from enum import Enum
-
 import mars_patcher.constants.game_data as gd
 from mars_patcher.constants.reserved_space import ReservedConstants
 from mars_patcher.data import get_data_path
-from mars_patcher.navigation_text import NavigationText
 from mars_patcher.patching import IpsDecoder
 from mars_patcher.rom import Rom
 
@@ -73,25 +70,3 @@ def apply_pbs_without_bombs(rom: Rom) -> None:
 
 def apply_anti_softlock_edits(rom: Rom) -> None:
     apply_patch_in_data_path(rom, "anti_softlock.ips")
-
-
-def apply_hint_security(rom: Rom, locks: dict) -> None:
-    """
-    Applies an optional security level requirement to use Navigation Stations
-    Defaults to OPEN if not provided in patch data JSON
-    """
-
-    class LockType(Enum):
-        OPEN = 0xFF
-        LOCKED = 0x05
-        GREY = 0x00
-        BLUE = 0x01
-        GREEN = 0x02
-        YELLOW = 0x03
-        RED = 0x04
-
-    for location, offset in NavigationText.NAV_ROOM_ENUMS.items():
-        rom.write_8(
-            ReservedConstants.HINT_SECURITY_LEVELS_ADDR + offset.value,
-            LockType[locks.get(location, "OPEN")].value,
-        )

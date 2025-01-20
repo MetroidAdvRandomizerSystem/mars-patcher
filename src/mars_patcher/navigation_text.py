@@ -3,6 +3,7 @@ from __future__ import annotations
 from enum import Enum
 
 from mars_patcher.constants.game_data import navigation_text_ptrs
+from mars_patcher.constants.reserved_space import ReservedConstants
 from mars_patcher.rom import Rom
 from mars_patcher.text import Language, encode_text
 
@@ -31,6 +32,14 @@ class ShipText(Enum):
     INITIAL_TEXT = 0
     CONFIRM_TEXT = 1
 
+class LockType(Enum):
+    OPEN = 0xFF
+    LOCKED = 0x05
+    GREY = 0x00
+    BLUE = 0x01
+    GREEN = 0x02
+    YELLOW = 0x03
+    RED = 0x04
 
 class NavigationText:
     LANG_ENUMS = {
@@ -115,3 +124,15 @@ class NavigationText:
                     text_addr += 2
                     if text_addr >= HINT_TEXT_END:
                         raise ValueError("Attempted to write too much text to ROM.")
+
+    def apply_hint_security(rom: Rom, locks: dict) -> None:
+        """
+        Applies an optional security level requirement to use Navigation Stations
+        Defaults to OPEN if not provided in patch data JSON
+        """
+
+        for location, offset in NavigationText.NAV_ROOM_ENUMS.items():
+            rom.write_8(
+                ReservedConstants.HINT_SECURITY_LEVELS_ADDR + offset.value,
+                LockType[locks.get(location, "OPEN")].value,
+            )
