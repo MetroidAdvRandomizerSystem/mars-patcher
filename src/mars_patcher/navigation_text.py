@@ -130,6 +130,7 @@ class NavigationText:
                     text_addr += 2
                     if text_addr >= HINT_TEXT_END:
                         raise ValueError("Attempted to write too much text to ROM.")
+
     @classmethod
     def apply_hint_security(cls, rom: Rom, locks: dict[str, NavRoom]) -> None:
         """
