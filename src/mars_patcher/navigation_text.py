@@ -130,8 +130,8 @@ class NavigationText:
                     text_addr += 2
                     if text_addr >= HINT_TEXT_END:
                         raise ValueError("Attempted to write too much text to ROM.")
-
-    def apply_hint_security(rom: Rom, locks: dict) -> None:
+    @classmethod
+    def apply_hint_security(cls, rom: Rom, locks: dict[str, NavRoom]) -> None:
         """
         Applies an optional security level requirement to use Navigation Stations
         Defaults to OPEN if not provided in patch data JSON
