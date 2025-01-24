@@ -30,7 +30,7 @@
                             },
                             "ItemMessage": {
                                 "type": "string",
-                                "description": "Specifies what text should appear on acquiring this item. Two lines are available, with an average of 28 characters per line. Use \n to force a line break",
+                                "description": " Specifies what text should appear on acquiring this item. Two lines are available, with an average of 28 characters per line. Use \n to force a line break",
                                 "maxLength": 56
                             }
                         },
@@ -470,7 +470,7 @@
             "default": false
         },
         "LevelEdits": {
-            "type": "object",
+            "type": "boolean",
             "description": "Specifies room edits that should be done. These will be applied last.",
             "propertyNames": {
                 "description": "Specifies the Area ID.",
