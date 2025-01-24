@@ -467,6 +467,7 @@
                 "$ref": "#/$defs/AreaIDKey"
             },
             "additionalProperties": {
+                "type": "object",
                 "patternProperties": {
                     "[0-9]+": {
                         "description": "Specifies the Room ID.",
