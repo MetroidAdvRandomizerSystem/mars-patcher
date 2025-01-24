@@ -469,6 +469,7 @@
             "additionalProperties": {
                 "type": "object",
                 "patternProperties": {
+                    "type": "object",
                     "[0-9]+": {
                         "description": "Specifies the Room ID.",
                         "properties": {
