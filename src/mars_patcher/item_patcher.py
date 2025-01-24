@@ -2,6 +2,7 @@ from mars_patcher.constants.reserved_space import ReservedConstants
 from mars_patcher.locations import ItemSprite, ItemType, LocationSettings
 from mars_patcher.rom import Rom
 from mars_patcher.room_entry import RoomEntry
+from mars_patcher.text import MessageType, encode_text
 from mars_patcher.tileset import Tileset
 
 MINOR_LOCS_TABLE_ADDR = ReservedConstants.MINOR_LOCS_TABLE_ADDR
@@ -12,6 +13,7 @@ MAJOR_LOC_SIZE = 0x2
 TANK_INC_ADDR = ReservedConstants.TANK_INC_ADDR
 REQUIRED_METROID_COUNT_ADDR = ReservedConstants.REQUIRED_METROID_COUNT_ADDR
 TOTAL_METROID_COUNT_ADDR = ReservedConstants.TOTAL_METROID_COUNT_ADDR
+ENGLISH_MESSAGE_TABLE_LOOKUP_ADDR = ReservedConstants.ENGLISH_MESSAGE_TABLE_LOOKUP_ADDR
 
 TANK_CLIP = (0x62, 0x63, 0x68)
 HIDDEN_TANK_CLIP = (0x64, 0x65, 0x69)
@@ -45,6 +47,8 @@ class ItemPatcher:
     # TODO: Use separate classes for handling tilesets and backgrounds
     def write_items(self) -> None:
         rom = self.rom
+        custom_message_id = 0x38  # The first 0x37 messages are reserved for standard messages
+        message_table_addr = rom.read_ptr(ENGLISH_MESSAGE_TABLE_LOOKUP_ADDR)
         # Handle minor locations
         minor_locs = self.settings.minor_locs
         MINOR_LOCS_ARRAY = rom.read_ptr(MINOR_LOCS_ARRAY_ADDR)
@@ -122,6 +126,12 @@ class ItemPatcher:
                 rom.write_8(item_addr + 5, min_loc.new_item.value)
                 if min_loc.item_sprite != ItemSprite.UNCHANGED:
                     rom.write_8(item_addr + 6, min_loc.item_sprite.value)
+            # Handle custom messages
+            if min_loc.item_message:
+                self.write_custom_message(
+                    custom_message_id, message_table_addr, item_addr, min_loc.item_message, False
+                )
+                custom_message_id += 1
 
         # Handle major locations
         for maj_loc in self.settings.major_locs:
@@ -131,9 +141,33 @@ class ItemPatcher:
                     total_metroids += 1
                 addr = MAJOR_LOCS_ADDR + (maj_loc.major_src.value * MAJOR_LOC_SIZE)
                 rom.write_8(addr, maj_loc.new_item.value)
+                # Handle custom messages
+                if maj_loc.item_message:
+                    self.write_custom_message(
+                        custom_message_id, message_table_addr, addr, maj_loc.item_message, True
+                    )
+                    custom_message_id += 1
 
         # Write total metroid count
         rom.write_8(TOTAL_METROID_COUNT_ADDR, total_metroids)
+
+    def write_custom_message(
+        self,
+        custom_message_offset: int,
+        message_table_addr: int,
+        item_addr: int,
+        message: str,
+        is_major: bool,
+    ) -> None:
+        assert custom_message_offset <= 0xFF, "There can be no more than 200 custom messages"
+        rom = self.rom
+        encoded_text = encode_text(self.rom, MessageType.ITEM, message, 224)
+        message_pointer = rom.reserve_free_space(len(encoded_text) * 2)
+        rom.write_8(item_addr + (1 if is_major else 7), custom_message_offset)
+        rom.write_ptr(message_table_addr + (4 * custom_message_offset), message_pointer)
+        for char in encoded_text:
+            rom.write_16(message_pointer, char)
+            message_pointer += 2
 
 
 # TODO: Move these?

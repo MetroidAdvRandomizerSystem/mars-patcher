@@ -27,6 +27,11 @@
                             },
                             "Item": {
                                 "$ref": "#/$defs/ValidItems"
+                            },
+                            "ItemMessage": {
+                                "type": "string",
+                                "description": "Specifies what text should appear on acquiring this item. Two lines are available, with an average of 28 characters per line. Use \n to force a line break",
+                                "maxLength": 56
                             }
                         },
                         "required": ["Source", "Item"]
@@ -62,6 +67,11 @@
                             },
                             "ItemSprite": {
                                 "$ref": "#/$defs/ValidItemSprites"
+                            },
+                            "ItemMessage": {
+                                "type": "string",
+                                "description": "Specifies what text should appear on acquiring this item. Two lines are available, with an average of 28 characters per line. Use \n to force a line break",
+                                "maxLength": 56
                             }
                         },
                         "required": ["Area", "Room", "BlockX", "BlockY", "Item"]

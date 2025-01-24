@@ -8,6 +8,7 @@ from mars_patcher.constants.items import (
     KEY_BLOCK_Y,
     KEY_HIDDEN,
     KEY_ITEM,
+    KEY_ITEM_MESSAGE,
     KEY_ITEM_SPRITE,
     KEY_MAJOR_LOCS,
     KEY_MINOR_LOCS,
@@ -48,9 +49,11 @@ class MajorLocation(Location):
         major_src: MajorSource,
         orig_item: ItemType,
         new_item: ItemType = ItemType.UNDEFINED,
+        item_message: str = "",
     ):
         super().__init__(area, room, orig_item, new_item)
         self.major_src = major_src
+        self.item_message = item_message
 
 
 class MinorLocation(Location):
@@ -64,12 +67,14 @@ class MinorLocation(Location):
         orig_item: ItemType,
         new_item: ItemType = ItemType.UNDEFINED,
         item_sprite: ItemSprite = ItemSprite.UNCHANGED,
+        item_message: str = "",
     ):
         super().__init__(area, room, orig_item, new_item)
         self.block_x = block_x
         self.block_y = block_y
         self.hidden = hidden
         self.item_sprite = item_sprite
+        self.item_message = item_message
 
 
 class LocationSettings:
@@ -114,6 +119,8 @@ class LocationSettings:
             # Find location with this source
             maj_loc = next(m for m in self.major_locs if m.major_src == source)
             maj_loc.new_item = item
+            if KEY_ITEM_MESSAGE in maj_loc_entry:
+                maj_loc.item_message = maj_loc_entry[KEY_ITEM_MESSAGE]
 
         for min_loc_entry in data[KEY_MINOR_LOCS]:
             # Get area, room, block X, block Y
@@ -140,3 +147,5 @@ class LocationSettings:
             min_loc.new_item = item
             if KEY_ITEM_SPRITE in min_loc_entry:
                 min_loc.item_sprite = ITEM_SPRITE_ENUMS[min_loc_entry[KEY_ITEM_SPRITE]]
+            if KEY_ITEM_MESSAGE in min_loc_entry:
+                min_loc.item_message = min_loc_entry[KEY_ITEM_MESSAGE]

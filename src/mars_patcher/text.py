@@ -3,6 +3,19 @@ from enum import Enum
 from mars_patcher.constants.game_data import character_widths, file_screen_text_ptrs
 from mars_patcher.rom import Rom
 
+NEXT = 0xFD00
+NEWLINE = 0xFE00
+END = 0xFF00
+ESCAPE_EXPRESSIONS = {
+    "NEXT": NEXT,
+    "NEWLINE": NEWLINE,
+    "END": END,
+    "OBJECTIVE": 0xFB00,
+    "/COLOR": 0x8100,
+    "TARGET": 0xE00,
+    "GAME_START": 0xB003,
+}
+
 CHARS = {
     " ": 0x40,
     "!": 0x41,
@@ -85,20 +98,7 @@ CHARS = {
     "x": 0xD8,
     "y": 0xD9,
     "z": 0xDA,
-}
-
-
-NEXT = 0xFD00
-NEWLINE = 0xFE00
-END = 0xFF00
-ESCAPE_EXPRESSIONS = {
-    "NEXT": NEXT,
-    "NEWLINE": NEWLINE,
-    "END": END,
-    "OBJECTIVE": 0xFB00,
-    "/COLOR": 0x8100,
-    "TARGET": 0xE00,
-    "GAME_START": 0xB003,
+    "\n": NEWLINE,
 }
 
 
@@ -110,6 +110,11 @@ class Language(Enum):
     FRENCH = 4
     ITALIAN = 5
     SPANISH = 6
+
+
+class MessageType(Enum):
+    NAVIGATION = 0
+    ITEM = 1
 
 
 def parse_escape_expr(expr: str) -> int:
@@ -126,7 +131,7 @@ def parse_escape_expr(expr: str) -> int:
         raise NotImplementedError(f'Unimplemented bracketed expression "{expr}"')
 
 
-def encode_text(rom: Rom, string: str, max_width: int) -> list[int]:
+def encode_text(rom: Rom, message_type: MessageType, string: str, max_width: int) -> list[int]:
     char_widths = character_widths(rom)
     text = []
     line_width = 0
@@ -167,8 +172,13 @@ def encode_text(rom: Rom, string: str, max_width: int) -> list[int]:
             extra_char = NEWLINE
 
         if line_number > 1:
-            line_number = 0
-            extra_char = NEXT
+            match message_type:
+                case MessageType.NAVIGATION:
+                    line_number = 0
+                    extra_char = NEXT
+                case MessageType.ITEM:
+                    # Item messages can only have 2 lines, trim any other characters
+                    break
 
         if extra_char is not None:
             if prev_break is not None:
@@ -182,6 +192,10 @@ def encode_text(rom: Rom, string: str, max_width: int) -> list[int]:
                 text.append(extra_char)
 
         text.append(char_val)
+
+    if message_type == MessageType.ITEM and NEWLINE not in text:
+        # Item messages MUST have two lines, append NEWLINE if none exists
+        text.append(NEWLINE)
 
     text.append(END)
     return text

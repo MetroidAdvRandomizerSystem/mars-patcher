@@ -18,3 +18,6 @@ class ReservedConstants:
     ENVIRONMENTAL_HARZARD_DAMAGE_ADDR = 0x7FF065  # TODO: Implement this
     MISSILE_LIMIT_ADDR = 0x7FF06A
     MINOR_LOCS_ARRAY_ADDR = 0x7FF06C
+    # This is not the location of the table itself.
+    # The 4 bytes at this location will be the table location
+    ENGLISH_MESSAGE_TABLE_LOOKUP_ADDR = 0x79CDFC
