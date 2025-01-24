@@ -29,9 +29,7 @@
                                 "$ref": "#/$defs/ValidItems"
                             },
                             "ItemMessage": {
-                                "type": "string",
-                                "description": " Specifies what text should appear on acquiring this item. Two lines are available, with an average of 28 characters per line. Use \n to force a line break",
-                                "maxLength": 56
+                                "$ref": "#/$defs/ItemMessage"
                             }
                         },
                         "required": ["Source", "Item"]
@@ -69,9 +67,7 @@
                                 "$ref": "#/$defs/ValidItemSprites"
                             },
                             "ItemMessage": {
-                                "type": "string",
-                                "description": "Specifies what text should appear on acquiring this item. Two lines are available, with an average of 28 characters per line. Use \n to force a line break",
-                                "maxLength": 56
+                                "$ref": "#/$defs/ItemMessage"
                             }
                         },
                         "required": ["Area", "Room", "BlockX", "BlockY", "Item"]
@@ -582,6 +578,11 @@
         "AreaIDKey": {
             "type": "string",
             "enum": ["0", "1", "2", "3", "4", "5", "6"]
+        },
+        "ItemMessage": {
+            "type": "string",
+            "description": "Specifies what text should appear on acquiring this item. Two lines are available, with an average of 28 characters per line. Use \n to force a line break. If not provided, a message based on the Item will be shown.",
+            "maxLength": 56
         },
         "MinimapIDKey": {
             "type": "string",

@@ -161,7 +161,7 @@ class ItemPatcher:
     ) -> None:
         assert custom_message_offset <= 0xFF, "There can be no more than 200 custom messages"
         rom = self.rom
-        encoded_text = encode_text(self.rom, MessageType.ITEM, message, 224)
+        encoded_text = encode_text(rom, MessageType.ITEM, message, 224)
         message_pointer = rom.reserve_free_space(len(encoded_text) * 2)
         rom.write_8(item_addr + (1 if is_major else 7), custom_message_offset)
         rom.write_ptr(message_table_addr + (4 * custom_message_offset), message_pointer)
