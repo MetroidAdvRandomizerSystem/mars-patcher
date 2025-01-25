@@ -508,8 +508,8 @@
             "additionalProperties": {
                 "type": "object",
                 "patternProperties": {
-                    "type": "object",
                     "[0-9]+": {
+                        "type": "object",
                         "description": "Specifies the Room ID.",
                         "properties": {
                             "BG1": {
