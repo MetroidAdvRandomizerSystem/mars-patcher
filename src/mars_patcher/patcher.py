@@ -123,6 +123,7 @@ def patch(
         status_update("Writing navigation text...", -1)
         navigation_text = NavigationText.from_json(patch_data["NavigationText"])
         navigation_text.write(rom)
+        NavigationText.apply_hint_security(rom, patch_data["NavStationLocks"])
 
     # Credits
     if "CreditsText" in patch_data:
