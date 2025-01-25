@@ -114,7 +114,7 @@ def patch(
         conns.set_shortcut_connections(patch_data["SectorShortcuts"])
 
     # Door locks
-    if "DoorLocks" in patch_data:
+    if patch_data.get("DoorLocks", []):
         status_update("Writing door locks...", -1)
         set_door_locks(rom, patch_data["DoorLocks"])
 
