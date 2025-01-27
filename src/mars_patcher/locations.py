@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 
 from mars_patcher.constants.items import (
     ITEM_ENUMS,
@@ -49,7 +50,7 @@ class MajorLocation(Location):
         major_src: MajorSource,
         orig_item: ItemType,
         new_item: ItemType = ItemType.UNDEFINED,
-        item_message: str = "",
+        item_message: Optional[str] = None,
     ):
         super().__init__(area, room, orig_item, new_item)
         self.major_src = major_src
@@ -67,7 +68,7 @@ class MinorLocation(Location):
         orig_item: ItemType,
         new_item: ItemType = ItemType.UNDEFINED,
         item_sprite: ItemSprite = ItemSprite.UNCHANGED,
-        item_message: str = "",
+        item_message: Optional[str] = None,
     ):
         super().__init__(area, room, orig_item, new_item)
         self.block_x = block_x

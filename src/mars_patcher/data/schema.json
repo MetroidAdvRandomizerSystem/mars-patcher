@@ -420,6 +420,45 @@
                 "required": ["LineType"]
             }
         },
+        "NavStationLocks": {
+            "type":"object",
+            "description": "Sets the required Security Levels for accessing Navigation Terminals.",
+            "properties": {
+                "MainDeckWest": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "MainDeckEast": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "OperationsDeck": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "RestrictedLabs": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "AuxiliaryPower": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "Sector1Entrance": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "Sector2Entrance": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "Sector3Entrance": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "Sector4Entrance": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "Sector5Entrance": {
+                    "$ref": "#/$defs/HintLocks"
+                },
+                "Sector6Entrance": {
+                    "$ref": "#/$defs/HintLocks"
+                }
+            }
+        },
         "DisableDemos": {
             "type": "boolean",
             "description": "Disables title screen demos when true.",
@@ -466,15 +505,17 @@
             "default": false
         },
         "LevelEdits": {
-            "type": "boolean",
+            "type": "object",
             "description": "Specifies room edits that should be done. These will be applied last.",
             "propertyNames": {
                 "description": "Specifies the Area ID.",
                 "$ref": "#/$defs/AreaIDKey"
             },
             "additionalProperties": {
+                "type": "object",
                 "patternProperties": {
                     "[0-9]+": {
+                        "type": "object",
                         "description": "Specifies the Room ID.",
                         "properties": {
                             "BG1": {
@@ -794,6 +835,11 @@
                     }
                 }
             }   
+        },
+        "HintLocks": {
+            "type": "string",
+            "enum": ["OPEN", "LOCKED", "GREY", "BLUE", "GREEN", "YELLOW", "RED"],
+            "default": "OPEN"
         }
     }
 }

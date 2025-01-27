@@ -4,6 +4,8 @@ from enum import Enum
 from typing import TYPE_CHECKING
 
 from mars_patcher.constants.game_data import navigation_text_ptrs
+from mars_patcher.constants.reserved_space import ReservedConstants
+from mars_patcher.rom import Rom
 from mars_patcher.text import Language, MessageType, encode_text
 
 if TYPE_CHECKING:
@@ -35,6 +37,16 @@ class ShipText(Enum):
     CONFIRM_TEXT = 1
 
 
+class NavStationLockType(Enum):
+    OPEN = 0xFF
+    LOCKED = 0x05
+    GREY = 0x00
+    BLUE = 0x01
+    GREEN = 0x02
+    YELLOW = 0x03
+    RED = 0x04
+
+
 class NavigationText:
     LANG_ENUMS = {
         "JapaneseKanji": Language.JAPANESE_KANJI,
@@ -51,10 +63,10 @@ class NavigationText:
         "MainDeckEast": NavRoom.MAIN_DECK_EAST,
         "OperationsDeck": NavRoom.OPERATIONS_DECK,
         "Sector1Entrance": NavRoom.SECTOR1_ENTRANCE,
-        "Sector2Entrance": NavRoom.SECTOR5_ENTRANCE,
-        "Sector3Entrance": NavRoom.SECTOR2_ENTRANCE,
+        "Sector2Entrance": NavRoom.SECTOR2_ENTRANCE,
+        "Sector3Entrance": NavRoom.SECTOR3_ENTRANCE,
         "Sector4Entrance": NavRoom.SECTOR4_ENTRANCE,
-        "Sector5Entrance": NavRoom.SECTOR3_ENTRANCE,
+        "Sector5Entrance": NavRoom.SECTOR5_ENTRANCE,
         "Sector6Entrance": NavRoom.SECTOR6_ENTRANCE,
         "AuxiliaryPower": NavRoom.AUXILIARY_POWER,
         "RestrictedLabs": NavRoom.RESTRICTED_LABS,
@@ -118,3 +130,16 @@ class NavigationText:
                     text_addr += 2
                     if text_addr >= HINT_TEXT_END:
                         raise ValueError("Attempted to write too much text to ROM.")
+
+    @classmethod
+    def apply_hint_security(cls, rom: Rom, locks: dict[str, str]) -> None:
+        """
+        Applies an optional security level requirement to use Navigation Stations
+        Defaults to OPEN if not provided in patch data JSON
+        """
+
+        for location, offset in NavigationText.NAV_ROOM_ENUMS.items():
+            rom.write_8(
+                ReservedConstants.HINT_SECURITY_LEVELS_ADDR + offset.value,
+                NavStationLockType[locks.get(location, "OPEN")].value,
+            )
