@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import json
-from typing import Optional
 
 from mars_patcher.constants.items import (
     ITEM_ENUMS,
@@ -9,7 +10,7 @@ from mars_patcher.constants.items import (
     KEY_BLOCK_Y,
     KEY_HIDDEN,
     KEY_ITEM,
-    KEY_ITEM_MESSAGE,
+    KEY_ITEM_MESSAGES,
     KEY_ITEM_SPRITE,
     KEY_MAJOR_LOCS,
     KEY_MINOR_LOCS,
@@ -22,6 +23,7 @@ from mars_patcher.constants.items import (
     MajorSource,
 )
 from mars_patcher.data import get_data_path
+from mars_patcher.text import Language
 
 
 class Location:
@@ -50,11 +52,11 @@ class MajorLocation(Location):
         major_src: MajorSource,
         orig_item: ItemType,
         new_item: ItemType = ItemType.UNDEFINED,
-        item_message: Optional[str] = None,
+        item_messages: ItemMessages | None = None,
     ):
         super().__init__(area, room, orig_item, new_item)
         self.major_src = major_src
-        self.item_message = item_message
+        self.item_messages = item_messages
 
 
 class MinorLocation(Location):
@@ -68,14 +70,37 @@ class MinorLocation(Location):
         orig_item: ItemType,
         new_item: ItemType = ItemType.UNDEFINED,
         item_sprite: ItemSprite = ItemSprite.UNCHANGED,
-        item_message: Optional[str] = None,
+        item_messages: ItemMessages | None = None,
     ):
         super().__init__(area, room, orig_item, new_item)
         self.block_x = block_x
         self.block_y = block_y
         self.hidden = hidden
         self.item_sprite = item_sprite
-        self.item_message = item_message
+        self.item_messages = item_messages
+
+
+class ItemMessages:
+    LANG_ENUMS = {
+        "JapaneseKanji": Language.JAPANESE_KANJI,
+        "JapaneseHiragana": Language.JAPANESE_HIRAGANA,
+        "English": Language.ENGLISH,
+        "German": Language.GERMAN,
+        "French": Language.FRENCH,
+        "Italian": Language.ITALIAN,
+        "Spanish": Language.SPANISH,
+    }
+
+    def __init__(self, item_messages: dict[Language, str]):
+        self.item_messages = item_messages
+
+    @classmethod
+    def from_json(cls, data: dict) -> ItemMessages:
+        item_messages: dict[Language, str] = {}
+        for lang, message in data.items():
+            lang = cls.LANG_ENUMS[lang]
+            item_messages[lang] = message
+        return cls(item_messages)
 
 
 class LocationSettings:
@@ -84,7 +109,7 @@ class LocationSettings:
         self.minor_locs = minor_locs
 
     @classmethod
-    def initialize(cls) -> "LocationSettings":
+    def initialize(cls) -> LocationSettings:
         with open(get_data_path("locations.json")) as f:
             data = json.load(f)
 
@@ -120,8 +145,8 @@ class LocationSettings:
             # Find location with this source
             maj_loc = next(m for m in self.major_locs if m.major_src == source)
             maj_loc.new_item = item
-            if KEY_ITEM_MESSAGE in maj_loc_entry:
-                maj_loc.item_message = maj_loc_entry[KEY_ITEM_MESSAGE]
+            if KEY_ITEM_MESSAGES in maj_loc_entry:
+                maj_loc.item_messages = ItemMessages.from_json(maj_loc_entry[KEY_ITEM_MESSAGES])
 
         for min_loc_entry in data[KEY_MINOR_LOCS]:
             # Get area, room, block X, block Y
@@ -148,5 +173,5 @@ class LocationSettings:
             min_loc.new_item = item
             if KEY_ITEM_SPRITE in min_loc_entry:
                 min_loc.item_sprite = ITEM_SPRITE_ENUMS[min_loc_entry[KEY_ITEM_SPRITE]]
-            if KEY_ITEM_MESSAGE in min_loc_entry:
-                min_loc.item_message = min_loc_entry[KEY_ITEM_MESSAGE]
+            if KEY_ITEM_MESSAGES in min_loc_entry:
+                min_loc.item_messages = ItemMessages.from_json(min_loc_entry[KEY_ITEM_MESSAGES])

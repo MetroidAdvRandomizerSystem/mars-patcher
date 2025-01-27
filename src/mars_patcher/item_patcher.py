@@ -1,5 +1,5 @@
 from mars_patcher.constants.reserved_space import ReservedConstants
-from mars_patcher.locations import ItemSprite, ItemType, LocationSettings
+from mars_patcher.locations import ItemMessages, ItemSprite, ItemType, LocationSettings
 from mars_patcher.rom import Rom
 from mars_patcher.room_entry import RoomEntry
 from mars_patcher.text import Language, MessageType, encode_text
@@ -49,8 +49,9 @@ class ItemPatcher:
     def write_items(self) -> None:
         rom = self.rom
         custom_message_id = FIRST_CUSTOM_MESSAGE_ID
-        # English is currently the only supported language
-        message_table_addr = rom.read_ptr(MESSAGE_TABLE_LOOKUP_ADDR + Language.ENGLISH.value * 4)
+        message_table_addrs: dict[Language, int] = {}
+        for lang in Language:
+            message_table_addrs[lang] = rom.read_ptr(MESSAGE_TABLE_LOOKUP_ADDR + lang.value * 4)
         # Handle minor locations
         minor_locs = self.settings.minor_locs
         MINOR_LOCS_ARRAY = rom.read_ptr(MINOR_LOCS_ARRAY_ADDR)
@@ -129,9 +130,9 @@ class ItemPatcher:
                 if min_loc.item_sprite != ItemSprite.UNCHANGED:
                     rom.write_8(item_addr + 6, min_loc.item_sprite.value)
             # Handle custom messages
-            if min_loc.item_message is not None:
+            if min_loc.item_messages is not None:
                 self.write_custom_message(
-                    custom_message_id, message_table_addr, item_addr, min_loc.item_message, False
+                    custom_message_id, message_table_addrs, item_addr, min_loc.item_messages, False
                 )
                 custom_message_id += 1
 
@@ -144,9 +145,9 @@ class ItemPatcher:
                 addr = MAJOR_LOCS_ADDR + (maj_loc.major_src.value * MAJOR_LOC_SIZE)
                 rom.write_8(addr, maj_loc.new_item.value)
                 # Handle custom messages
-                if maj_loc.item_message is not None:
+                if maj_loc.item_messages is not None:
                     self.write_custom_message(
-                        custom_message_id, message_table_addr, addr, maj_loc.item_message, True
+                        custom_message_id, message_table_addrs, addr, maj_loc.item_messages, True
                     )
                     custom_message_id += 1
 
@@ -156,22 +157,23 @@ class ItemPatcher:
     def write_custom_message(
         self,
         custom_message_id: int,
-        message_table_addr: int,
+        message_table_addrs: dict[Language, int],
         item_addr: int,
-        message: str,
+        messages: ItemMessages,
         is_major: bool,
     ) -> None:
-        assert custom_message_id < 0x2F, (
+        assert custom_message_id < 0xFF, (
             f"There can be no more than {0xFF - FIRST_CUSTOM_MESSAGE_ID} custom messages."
         )
         rom = self.rom
-        encoded_text = encode_text(rom, MessageType.ITEM, message, 224)
-        message_pointer = rom.reserve_free_space(len(encoded_text) * 2)
-        rom.write_8(item_addr + (1 if is_major else 7), custom_message_id)
-        rom.write_ptr(message_table_addr + (4 * custom_message_id), message_pointer)
-        for char in encoded_text:
-            rom.write_16(message_pointer, char)
-            message_pointer += 2
+        for lang in messages.item_messages:
+            encoded_text = encode_text(rom, MessageType.ITEM, messages.item_messages[lang], 224)
+            message_pointer = rom.reserve_free_space(len(encoded_text) * 2)
+            rom.write_8(item_addr + (1 if is_major else 7), custom_message_id)
+            rom.write_ptr(message_table_addrs[lang] + (4 * custom_message_id), message_pointer)
+            for char in encoded_text:
+                rom.write_16(message_pointer, char)
+                message_pointer += 2
 
 
 # TODO: Move these?
