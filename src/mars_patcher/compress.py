@@ -45,15 +45,15 @@ def decomp_rle(input: bytes, idx: int) -> tuple[bytearray, int]:
                     amount -= 1
 
     # Each pass must be equal length
-    half = len(passes) >> 1     # Halfs, rounding down.
+    half = len(passes) >> 1  # Halfs, rounding down.
     if len(passes) != half * 2:
         raise ValueError()
 
     # Combine passes to get output
     output = bytearray(len(passes))
     for i in range(half):
-        output[i*2] = passes[i]
-        output[i*2 + 1] = passes[half + i]
+        output[i * 2] = passes[i]
+        output[i * 2 + 1] = passes[half + i]
 
     # Return bytes and compressed size
     comp_size = idx - src_start
