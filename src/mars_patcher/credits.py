@@ -1,3 +1,4 @@
+from mars_patcher.auto_generated_types import MarsschemaCreditstextItem
 from mars_patcher.constants.credits_lines import (
     FUSION_STAFF_LINES,
     LINE_TYPE_HEIGHTS,
@@ -35,7 +36,7 @@ class CreditsLine:
         self.centered = centered
 
     @classmethod
-    def from_json(cls, data: dict) -> "CreditsLine":
+    def from_json(cls, data: MarsschemaCreditstextItem) -> "CreditsLine":
         line_type = cls.LINE_TYPE_ENUMS[data["LineType"]]
         blank_lines = data.get("BlankLines", 0)
         text = data.get("Text")
@@ -43,7 +44,7 @@ class CreditsLine:
         return CreditsLine(line_type, blank_lines, text, centered)
 
 
-def write_credits(rom: Rom, data: list[dict]) -> None:
+def write_credits(rom: Rom, data: list[MarsschemaCreditstextItem]) -> None:
     writer = CreditsWriter(rom)
     # Write custom credits
     lines = [CreditsLine.from_json(d) for d in data]

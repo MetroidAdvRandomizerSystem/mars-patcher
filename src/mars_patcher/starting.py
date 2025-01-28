@@ -1,3 +1,4 @@
+from mars_patcher.auto_generated_types import MarsschemaStartingitems, MarsschemaStartinglocation
 from mars_patcher.constants.game_data import area_doors_ptrs, spriteset_ptrs, starting_equipment
 from mars_patcher.constants.items import BEAM_FLAGS, MISSILE_BOMB_FLAGS, SUIT_MISC_FLAGS
 from mars_patcher.constants.reserved_space import ReservedConstants
@@ -8,7 +9,7 @@ from mars_patcher.room_entry import RoomEntry
 STARTING_LOC_ADDR = ReservedConstants.STARTING_LOCATION_ADDR
 
 
-def set_starting_location(rom: Rom, data: dict) -> None:
+def set_starting_location(rom: Rom, data: MarsschemaStartinglocation) -> None:
     area = data["Area"]
     room = data["Room"]
     # Don't do anything for area 0 room 0
@@ -80,7 +81,7 @@ def find_save_pad_position(rom: Rom, area: int, room: int) -> tuple[int, int] | 
     return None
 
 
-def set_starting_items(rom: Rom, data: dict) -> None:
+def set_starting_items(rom: Rom, data: MarsschemaStartingitems) -> None:
     def get_ability_flags(ability_flags: dict[str, int]) -> int:
         status = 0
         for ability, flag in ability_flags.items():

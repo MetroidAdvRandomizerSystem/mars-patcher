@@ -22,7 +22,7 @@ class RgbColor:
             self.red = R
             self.green = G
             self.blue = B
-        elif bit_size != RgbBitSize.Rgb8:
+        else:
             raise ValueError(bit_size)
         self.red = R
         self.green = G

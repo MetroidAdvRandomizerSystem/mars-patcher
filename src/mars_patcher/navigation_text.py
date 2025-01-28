@@ -9,6 +9,7 @@ from mars_patcher.rom import Rom
 from mars_patcher.text import Language, encode_text
 
 if TYPE_CHECKING:
+    from mars_patcher.auto_generated_types import Hintlocks, MarsschemaNavstationlocksKey
     from mars_patcher.rom import Rom
 
 # Keep these in sync with base patch
@@ -58,7 +59,7 @@ class NavigationText:
         "Spanish": Language.SPANISH,
     }
 
-    NAV_ROOM_ENUMS = {
+    NAV_ROOM_ENUMS: dict[MarsschemaNavstationlocksKey, NavRoom] = {
         "MainDeckWest": NavRoom.MAIN_DECK_WEST,
         "MainDeckEast": NavRoom.MAIN_DECK_EAST,
         "OperationsDeck": NavRoom.OPERATIONS_DECK,
@@ -132,14 +133,16 @@ class NavigationText:
                         raise ValueError("Attempted to write too much text to ROM.")
 
     @classmethod
-    def apply_hint_security(cls, rom: Rom, locks: dict[str, str]) -> None:
+    def apply_hint_security(
+        cls, rom: Rom, locks: dict[MarsschemaNavstationlocksKey, Hintlocks]
+    ) -> None:
         """
         Applies an optional security level requirement to use Navigation Stations
         Defaults to OPEN if not provided in patch data JSON
         """
-
+        default_lock_name = "OPEN"
         for location, offset in NavigationText.NAV_ROOM_ENUMS.items():
             rom.write_8(
                 ReservedConstants.HINT_SECURITY_LEVELS_ADDR + offset.value,
-                NavStationLockType[locks.get(location, "OPEN")].value,
+                NavStationLockType[locks.get(location, default_lock_name)].value,
             )

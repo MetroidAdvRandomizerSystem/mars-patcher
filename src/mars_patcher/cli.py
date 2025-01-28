@@ -1,6 +1,9 @@
 import argparse
+import copy
 import json
+import typing
 
+from mars_patcher.auto_generated_types import MarsSchema
 from mars_patcher.patcher import patch, validate_patch_data
 
 
@@ -17,4 +20,9 @@ def main() -> None:
 
     validate_patch_data(patch_data)
 
-    patch(args.rom_path, args.out_path, patch_data, lambda message, progress: print(message))
+    patch(
+        args.rom_path,
+        args.out_path,
+        typing.cast(MarsSchema, copy.copy(patch_data)),
+        lambda message, progress: print(message),
+    )

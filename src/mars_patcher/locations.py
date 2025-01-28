@@ -1,5 +1,6 @@
 import json
 
+from mars_patcher.auto_generated_types import MarsschemaLocations
 from mars_patcher.constants.items import (
     ITEM_ENUMS,
     ITEM_SPRITE_ENUMS,
@@ -106,7 +107,7 @@ class LocationSettings:
 
         return LocationSettings(major_locs, minor_locs)
 
-    def set_assignments(self, data: dict) -> None:
+    def set_assignments(self, data: MarsschemaLocations) -> None:
         for maj_loc_entry in data[KEY_MAJOR_LOCS]:
             # Get source and item
             source = SOURCE_ENUMS[maj_loc_entry[KEY_SOURCE]]

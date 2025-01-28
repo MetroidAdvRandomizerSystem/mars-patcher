@@ -3,6 +3,7 @@ from typing import Callable
 
 from jsonschema import validate
 
+from mars_patcher.auto_generated_types import MarsSchema
 from mars_patcher.connections import Connections
 from mars_patcher.credits import write_credits
 from mars_patcher.data import get_data_path
@@ -44,7 +45,7 @@ def validate_patch_data(patch_data: dict) -> None:
 def patch(
     input_path: str,
     output_path: str,
-    patch_data: dict,
+    patch_data: MarsSchema,
     status_update: Callable[[str, float], None],
 ) -> None:
     """
@@ -114,21 +115,24 @@ def patch(
         conns.set_shortcut_connections(patch_data["SectorShortcuts"])
 
     # Door locks
-    if patch_data.get("DoorLocks", []):
+    if door_locks := patch_data.get("DoorLocks", []):
         status_update("Writing door locks...", -1)
-        set_door_locks(rom, patch_data["DoorLocks"])
+        set_door_locks(rom, door_locks)
 
     # Hints
-    if "NavigationText" in patch_data:
+    if nav_text := patch_data.get("NavigationText", {}):
         status_update("Writing navigation text...", -1)
-        navigation_text = NavigationText.from_json(patch_data["NavigationText"])
+        navigation_text = NavigationText.from_json(nav_text)
         navigation_text.write(rom)
-        NavigationText.apply_hint_security(rom, patch_data["NavStationLocks"])
+
+    if nav_locks := patch_data.get("NavStationLocks", {}):
+        status_update("Writing navigation locks...", -1)
+        NavigationText.apply_hint_security(rom, nav_locks)
 
     # Credits
-    if "CreditsText" in patch_data:
+    if credits_text := patch_data.get("CreditsText", []):
         status_update("Writing credits text...", -1)
-        write_credits(rom, patch_data["CreditsText"])
+        write_credits(rom, credits_text)
 
     # Misc patches
 

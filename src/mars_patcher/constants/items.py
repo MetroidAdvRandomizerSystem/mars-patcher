@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any
+from typing import Any, Final
 
 
 class MajorSource(Enum):
@@ -99,17 +99,17 @@ class ItemSprite(Enum):
     INFANT_METROID = 30
 
 
-KEY_MAJOR_LOCS = "MajorLocations"
-KEY_MINOR_LOCS = "MinorLocations"
-KEY_AREA = "Area"
-KEY_ROOM = "Room"
-KEY_SOURCE = "Source"
-KEY_BLOCK_X = "BlockX"
-KEY_BLOCK_Y = "BlockY"
-KEY_HIDDEN = "Hidden"
-KEY_ORIGINAL = "Original"
-KEY_ITEM = "Item"
-KEY_ITEM_SPRITE = "ItemSprite"
+KEY_MAJOR_LOCS: Final = "MajorLocations"
+KEY_MINOR_LOCS: Final = "MinorLocations"
+KEY_AREA: Final = "Area"
+KEY_ROOM: Final = "Room"
+KEY_SOURCE: Final = "Source"
+KEY_BLOCK_X: Final = "BlockX"
+KEY_BLOCK_Y: Final = "BlockY"
+KEY_HIDDEN: Final = "Hidden"
+KEY_ORIGINAL: Final = "Original"
+KEY_ITEM: Final = "Item"
+KEY_ITEM_SPRITE: Final = "ItemSprite"
 
 
 SOURCE_ENUMS = {

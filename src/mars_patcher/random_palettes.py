@@ -2,6 +2,11 @@ import random
 from enum import Enum
 
 import mars_patcher.constants.game_data as gd
+from mars_patcher.auto_generated_types import (
+    MarsschemaPalettes,
+    MarsschemaPalettesColorspace,
+    MarsschemaPalettesRandomize,
+)
 from mars_patcher.constants.palettes import (
     ENEMY_GROUPS,
     EXCLUDED_ENEMIES,
@@ -19,11 +24,6 @@ class PaletteType(Enum):
     BEAMS = 4
 
 
-class ColorSpace(Enum):
-    HSV = 1
-    OKLAB = 2
-
-
 class PaletteSettings:
     PAL_TYPE_ENUMS = {
         "Tilesets": PaletteType.TILESETS,
@@ -32,22 +32,20 @@ class PaletteSettings:
         "Beams": PaletteType.BEAMS,
     }
 
-    COLOR_SPACE_ENUMS = {"HSV": ColorSpace.HSV, "Oklab": ColorSpace.OKLAB}
-
     def __init__(
         self,
         seed: int,
-        pal_types: dict[PaletteType, tuple[int, int]],
-        color_space: ColorSpace,
+        pal_types: dict[PaletteType, tuple[int, int]],  # TODO: change this tuple(int, int)
+        color_space: MarsschemaPalettesColorspace,
         symmetric: bool,
     ):
         self.seed = seed
         self.pal_types = pal_types
-        self.color_space = color_space
+        self.color_space: MarsschemaPalettesColorspace = color_space
         self.symmetric = symmetric
 
     @classmethod
-    def from_json(cls, data: dict) -> "PaletteSettings":
+    def from_json(cls, data: MarsschemaPalettes) -> "PaletteSettings":
         seed = data.get("Seed", random.randint(0, 2**31 - 1))
         random.seed(seed)
         pal_types = {}
@@ -55,15 +53,12 @@ class PaletteSettings:
             pal_type = cls.PAL_TYPE_ENUMS[type_name]
             hue_range = cls.get_hue_range(hue_data)
             pal_types[pal_type] = hue_range
-        if "ColorSpace" in data:
-            color_space = cls.COLOR_SPACE_ENUMS[data["ColorSpace"]]
-        else:
-            color_space = ColorSpace.OKLAB
+        color_space = data.get("ColorSpace", "Oklab")
         symmetric = data.get("Symmetric", True)
         return cls(seed, pal_types, color_space, symmetric)
 
     @classmethod
-    def get_hue_range(cls, data: dict) -> tuple[int, int]:
+    def get_hue_range(cls, data: MarsschemaPalettesRandomize) -> tuple[int, int]:
         hue_min = data.get("HueMin")
         hue_max = data.get("HueMax")
         if hue_min is None or hue_max is None:
@@ -85,10 +80,12 @@ class PaletteRandomizer:
     def __init__(self, rom: Rom, settings: PaletteSettings):
         self.rom = rom
         self.settings = settings
-        if settings.color_space == ColorSpace.HSV:
+        if settings.color_space == "HSV":
             self.shift_func = self.shift_palette_hsv
-        elif settings.color_space == ColorSpace.OKLAB:
+        elif settings.color_space == "Oklab":
             self.shift_func = self.shift_palette_oklab
+        else:
+            raise ValueError(f"Invalid color space '{settings.color_space}' for color space!")
 
     @staticmethod
     def shift_palette_hsv(pal: Palette, shift: int, excluded_rows: set[int] = set()) -> None:
