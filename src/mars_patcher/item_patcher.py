@@ -166,10 +166,20 @@ class ItemPatcher:
             f"There can be no more than {0xFF - FIRST_CUSTOM_MESSAGE_ID} custom messages."
         )
         rom = self.rom
-        for lang in messages.item_messages:
-            encoded_text = encode_text(rom, MessageType.ITEM, messages.item_messages[lang], 224)
+        rom.write_8(item_addr + (1 if is_major else 7), custom_message_id)
+        for lang in Language:
+            # English is required to be set - use English as the fallback value
+            encoded_text = encode_text(
+                rom,
+                MessageType.ITEM,
+                (
+                    messages.item_messages[lang]
+                    if lang in messages.item_messages
+                    else messages.item_messages[Language.ENGLISH]
+                ),
+                224,
+            )
             message_pointer = rom.reserve_free_space(len(encoded_text) * 2)
-            rom.write_8(item_addr + (1 if is_major else 7), custom_message_id)
             rom.write_ptr(message_table_addrs[lang] + (4 * custom_message_id), message_pointer)
             for char in encoded_text:
                 rom.write_16(message_pointer, char)

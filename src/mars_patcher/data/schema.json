@@ -625,6 +625,7 @@
             "propertyNames": {
                 "$ref": "#/$defs/ValidLanguages"
             },
+            "required": ["English"],
             "additionalProperties": {
                 "type": "string",
                 "description": "Specifies what text should appear on acquiring this item. Two lines are available, with an average of 28 characters per line. Use \n to force a line break. If not provided, a message based on the Item will be shown.",
