@@ -65,3 +65,4 @@ files = [
 follow_imports = "silent"
 disallow_untyped_defs = true
 warn_return_any = true
+warn_unreachable = true
