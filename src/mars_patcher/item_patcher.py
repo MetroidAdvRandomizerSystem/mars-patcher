@@ -166,6 +166,8 @@ class ItemPatcher:
             f"There can be no more than {0xFF - FIRST_CUSTOM_MESSAGE_ID} custom messages."
         )
         rom = self.rom
+        # Minor locations have a different structure than Major locations,
+        # so the custom message id is at a different offset.
         rom.write_8(item_addr + (1 if is_major else 7), custom_message_id)
         for lang in Language:
             # English is required to be set - use English as the fallback value
