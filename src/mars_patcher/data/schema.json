@@ -628,8 +628,8 @@
             "required": ["English"],
             "additionalProperties": {
                 "type": "string",
-                "description": "Specifies what text should appear on acquiring this item. Two lines are available, with an average of 28 characters per line. Use \n to force a line break. If not provided, a message based on the Item will be shown. If a language is not provided, it will use the provided English message.",
-                "maxLength": 56
+                "description": "Specifies what text should appear on acquiring this item. Two lines are available, with an absolute maximum of 56 characters per line, if all characters used are small. If the text is too long, it will be truncated.  Use \n to force a line break. If not provided, a message based on the Item will be shown. If a language is not provided, it will use the provided English message.",
+                "maxLength": 112
             }
         },
         "MinimapIDKey": {
