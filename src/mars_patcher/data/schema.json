@@ -29,7 +29,10 @@
                                 "$ref": "#/$defs/ValidItems"
                             }
                         },
-                        "required": ["Source", "Item"]
+                        "required": [
+                            "Source",
+                            "Item"
+                        ]
                     }
                 },
                 "MinorLocations": {
@@ -64,11 +67,20 @@
                                 "$ref": "#/$defs/ValidItemSprites"
                             }
                         },
-                        "required": ["Area", "Room", "BlockX", "BlockY", "Item"]
+                        "required": [
+                            "Area",
+                            "Room",
+                            "BlockX",
+                            "BlockY",
+                            "Item"
+                        ]
                     }
                 }
             },
-            "required": ["MinorLocations", "MajorLocations"]
+            "required": [
+                "MinorLocations",
+                "MajorLocations"
+            ]
         },
         "RequiredMetroidCount": {
             "type": "integer",
@@ -137,9 +149,17 @@
                     "uniqueItems": true,
                     "items": {
                         "type": "integer",
-                        "enum": [0, 1, 2, 3, 4]
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4
+                        ]
                     },
-                    "default": [0]
+                    "default": [
+                        0
+                    ]
                 },
                 "DownloadedMaps": {
                     "type": "array",
@@ -179,7 +199,11 @@
                     "default": 2
                 }
             },
-            "required": ["MissileTank", "EnergyTank", "PowerBombTank"],
+            "required": [
+                "MissileTank",
+                "EnergyTank",
+                "PowerBombTank"
+            ],
             "default": null
         },
         "ElevatorConnections": {
@@ -208,7 +232,11 @@
                     },
                     "minProperties": 10
                 }
-            }
+            },
+            "required": [
+                "ElevatorTops",
+                "ElevatorBottoms"
+            ]
         },
         "SectorShortcuts": {
             "type": "object",
@@ -222,7 +250,11 @@
                     "$ref": "#/$defs/ShortcutSectorList",
                     "description": "Destination areas on the right side of sectors"
                 }
-            }
+            },
+            "required": [
+                "LeftAreas",
+                "RightAreas"
+            ]
         },
         "DoorLocks": {
             "type": "array",
@@ -252,7 +284,11 @@
                         ]
                     }
                 },
-                "required": ["Area", "Door", "LockType"]
+                "required": [
+                    "Area",
+                    "Door",
+                    "LockType"
+                ]
             }
         },
         "Palettes": {
@@ -269,7 +305,12 @@
                     "description": "What kind of palettes should be randomized.",
                     "propertyNames": {
                         "type": "string",
-                        "enum": ["Tilesets", "Enemies", "Samus", "Beams"]
+                        "enum": [
+                            "Tilesets",
+                            "Enemies",
+                            "Samus",
+                            "Beams"
+                        ]
                     },
                     "additionalProperties": {
                         "type": "object",
@@ -292,7 +333,10 @@
                 "ColorSpace": {
                     "type": "string",
                     "description": "The color space to use for rotating palette hues.",
-                    "enum": ["HSV", "Oklab"],
+                    "enum": [
+                        "HSV",
+                        "Oklab"
+                    ],
                     "default": "Oklab"
                 },
                 "Symmetric": {
@@ -302,7 +346,9 @@
                 }
             },
             "additionalProperties": false,
-            "required": ["Randomize"],
+            "required": [
+                "Randomize"
+            ],
             "default": null
         },
         "NavigationText": {
@@ -393,7 +439,13 @@
                     "LineType": {
                         "type": "string",
                         "description": "The color and line height of the text (or blank).",
-                        "enum": ["Blank", "Blue", "Red", "White1", "White2"]
+                        "enum": [
+                            "Blank",
+                            "Blue",
+                            "Red",
+                            "White1",
+                            "White2"
+                        ]
                     },
                     "Text": {
                         "type": "string",
@@ -411,46 +463,33 @@
                         "default": true
                     }
                 },
-                "required": ["LineType"]
+                "required": [
+                    "LineType"
+                ]
             }
         },
         "NavStationLocks": {
-            "type":"object",
+            "type": "object",
             "description": "Sets the required Security Levels for accessing Navigation Terminals.",
-            "properties": {
-                "MainDeckWest": {
-                    "$ref": "#/$defs/HintLocks"
-                },
-                "MainDeckEast": {
-                    "$ref": "#/$defs/HintLocks"
-                },
-                "OperationsDeck": {
-                    "$ref": "#/$defs/HintLocks"
-                },
-                "RestrictedLabs": {
-                    "$ref": "#/$defs/HintLocks"
-                },
-                "AuxiliaryPower": {
-                    "$ref": "#/$defs/HintLocks"
-                },
-                "Sector1Entrance": {
-                    "$ref": "#/$defs/HintLocks"
-                },
-                "Sector2Entrance": {
-                    "$ref": "#/$defs/HintLocks"
-                },
-                "Sector3Entrance": {
-                    "$ref": "#/$defs/HintLocks"
-                },
-                "Sector4Entrance": {
-                    "$ref": "#/$defs/HintLocks"
-                },
-                "Sector5Entrance": {
-                    "$ref": "#/$defs/HintLocks"
-                },
-                "Sector6Entrance": {
-                    "$ref": "#/$defs/HintLocks"
-                }
+            "propertyNames": {
+                "type": "string",
+                "enum": [
+                    "MainDeckWest",
+                    "MainDeckEast",
+                    "OperationsDeck",
+                    "RestrictedLabs",
+                    "AuxiliaryPower",
+                    "Sector1Entrance",
+                    "Sector2Entrance",
+                    "Sector3Entrance",
+                    "Sector4Entrance",
+                    "Sector5Entrance",
+                    "Sector6Entrance"
+                ]
+            },
+            "additionalProperties": {
+                "$ref": "#/$defs/HintLocks",
+                "additionalProperties": false
             }
         },
         "DisableDemos": {
@@ -578,7 +617,11 @@
             "default": false
         }
     },
-    "required": ["SeedHash", "Locations", "RequiredMetroidCount"],
+    "required": [
+        "SeedHash",
+        "Locations",
+        "RequiredMetroidCount"
+    ],
     "$defs": {
         "Seed": {
             "type": "integer",
@@ -612,11 +655,31 @@
         },
         "AreaIDKey": {
             "type": "string",
-            "enum": ["0", "1", "2", "3", "4", "5", "6"]
+            "enum": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6"
+            ]
         },
         "MinimapIDKey": {
             "type": "string",
-            "enum": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+            "enum": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10"
+            ]
         },
         "SectorID": {
             "type": "integer",
@@ -823,11 +886,19 @@
                         "description": "The value that should be used to edit the room. For backgrounds, this is calculated via `((Row-1) * ColumnsInTileset) + (Column-1)`."
                     }
                 }
-            }   
+            }
         },
         "HintLocks": {
             "type": "string",
-            "enum": ["OPEN", "LOCKED", "GREY", "BLUE", "GREEN", "YELLOW", "RED"],
+            "enum": [
+                "OPEN",
+                "LOCKED",
+                "GREY",
+                "BLUE",
+                "GREEN",
+                "YELLOW",
+                "RED"
+            ],
             "default": "OPEN"
         }
     }
