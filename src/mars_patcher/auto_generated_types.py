@@ -250,7 +250,7 @@ class MarsschemaLocations(typ.TypedDict):
     """Specifies how the minor item locations should be changed. A minor item location is a location where an item is obtained by touching a tank block."""
 
 
-class MarsschemaStartinglocation(typ.TypedDict, total=False):
+class MarsschemaStartinglocation(typ.TypedDict):
     """The location the player should spawn at the start of the game."""
 
     Area: Areaid

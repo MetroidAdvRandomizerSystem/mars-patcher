@@ -227,6 +227,8 @@ class PaletteRandomizer:
             gfx_ptr = gd.sprite_graphics_ptrs(rom)
             gfx_addr = rom.read_ptr(gfx_ptr + sprite_gfx_id * 4)
             rows = (rom.read_32(gfx_addr) >> 8) // 0x800
+        else:
+            raise ValueError("Unknown game!")
         pal = Palette(rows, rom, pal_addr)
         self.shift_func(pal, shift)
         pal.write(rom, pal_addr)

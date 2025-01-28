@@ -108,7 +108,13 @@
                     "$ref": "#/$defs/TypeU8",
                     "description": "The Y-coordinate in the room where the player should spawn."
                 }
-            }
+            },
+            "required": [
+                "Area",
+                "Room",
+                "BlockX",
+                "BlockY"
+            ]
         },
         "StartingItems": {
             "type": "object",
