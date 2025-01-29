@@ -1,6 +1,6 @@
 class ReservedConstants:
     """
-    These are constants that are in the patches 'Reserced Space';
+    These are constants that are in the patches 'Reserved Space';
     things that are intended to be modified by this patcher.
     """
 
@@ -18,3 +18,6 @@ class ReservedConstants:
     ENVIRONMENTAL_HARZARD_DAMAGE_ADDR = 0x7FF065  # TODO: Implement this
     MISSILE_LIMIT_ADDR = 0x7FF06A
     MINOR_LOCS_ARRAY_ADDR = 0x7FF06C
+    # Pointers, offset by language value, that store the message table location
+    MESSAGE_TABLE_LOOKUP_ADDR = 0x79CDF4
+    FIRST_CUSTOM_MESSAGE_ID = 0x38  # The first 0x37 messages are reserved for standard messages
