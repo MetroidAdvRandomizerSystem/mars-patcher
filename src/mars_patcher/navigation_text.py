@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from mars_patcher.constants.game_data import navigation_text_ptrs
 from mars_patcher.constants.reserved_space import ReservedConstants
 from mars_patcher.rom import Rom
-from mars_patcher.text import Language, encode_text
+from mars_patcher.text import Language, MessageType, encode_text
 
 if TYPE_CHECKING:
     from mars_patcher.rom import Rom
@@ -114,7 +114,7 @@ class NavigationText:
                 rom.write_ptr(base_text_address + info_place.value * 4, text_addr)
                 rom.write_ptr(base_text_address + info_place.value * 4 + 4, text_addr)
 
-                for char in encode_text(rom, text, 224):
+                for char in encode_text(rom, MessageType.NAVIGATION, text, 224):
                     rom.write_16(text_addr, char)
                     text_addr += 2
                     if text_addr >= HINT_TEXT_END:
@@ -125,7 +125,7 @@ class NavigationText:
                 rom.write_ptr(base_text_address + nav_room.value * 8, text_addr)
                 rom.write_ptr(base_text_address + nav_room.value * 8 + 4, text_addr)
 
-                for char in encode_text(rom, text, 224):
+                for char in encode_text(rom, MessageType.NAVIGATION, text, 224):
                     rom.write_16(text_addr, char)
                     text_addr += 2
                     if text_addr >= HINT_TEXT_END:

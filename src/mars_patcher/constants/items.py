@@ -110,6 +110,7 @@ KEY_HIDDEN = "Hidden"
 KEY_ORIGINAL = "Original"
 KEY_ITEM = "Item"
 KEY_ITEM_SPRITE = "ItemSprite"
+KEY_ITEM_MESSAGES = "ItemMessages"
 
 
 SOURCE_ENUMS = {
