@@ -24,6 +24,7 @@ Areaidkey = typ.Literal[
     '6'
 ]
 
+Itemmessages: typ.TypeAlias = dict[Validlanguages, typ.Annotated[str, 'len() <= 112']]
 Minimapidkey = typ.Literal[
     '0',
     '1',
@@ -219,6 +220,7 @@ class MarsschemaLocationsMajorlocationsItem(typ.TypedDict):
     Item: Validitems
     """Valid items for shuffling."""
 
+    ItemMessages: typ.NotRequired[Itemmessages]
 
 class MarsschemaLocationsMinorlocationsItem(typ.TypedDict):
     Area: Areaid
@@ -239,6 +241,7 @@ class MarsschemaLocationsMinorlocationsItem(typ.TypedDict):
     ItemSprite: typ.NotRequired[Validitemsprites]
     """Valid graphics for minor location items."""
 
+    ItemMessages: typ.NotRequired[Itemmessages]
 
 class MarsschemaLocations(typ.TypedDict):
     """Specifies how the item locations in the game should be changed."""
