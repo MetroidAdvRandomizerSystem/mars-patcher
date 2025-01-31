@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import json
+from typing import TYPE_CHECKING
 
-from mars_patcher.auto_generated_types import MarsschemaLocations
 from mars_patcher.constants.items import (
     ITEM_ENUMS,
     ITEM_SPRITE_ENUMS,
@@ -25,6 +25,9 @@ from mars_patcher.constants.items import (
 )
 from mars_patcher.data import get_data_path
 from mars_patcher.text import Language
+
+if TYPE_CHECKING:
+    from mars_patcher.auto_generated_types import MarsschemaLocations
 
 
 class Location:

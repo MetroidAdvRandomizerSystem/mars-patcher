@@ -24,7 +24,6 @@ Areaidkey = typ.Literal[
     '6'
 ]
 
-Itemmessages: typ.TypeAlias = dict[Validlanguages, typ.Annotated[str, 'len() <= 112']]
 Minimapidkey = typ.Literal[
     '0',
     '1',
@@ -189,6 +188,7 @@ Validlanguages = typ.Literal[
     'Spanish'
 ]
 
+Itemmessages: typ.TypeAlias = dict[Validlanguages, typ.Annotated[str, 'len() <= 112']]
 class BlocklayerItem(typ.TypedDict, total=False):
     X: Typeu8
     """The X position in the room that should get edited."""

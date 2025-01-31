@@ -110,6 +110,7 @@ KEY_HIDDEN: Final = "Hidden"
 KEY_ORIGINAL: Final = "Original"
 KEY_ITEM: Final = "Item"
 KEY_ITEM_SPRITE: Final = "ItemSprite"
+KEY_ITEM_MESSAGES: Final = "ItemMessages"
 
 
 SOURCE_ENUMS = {
