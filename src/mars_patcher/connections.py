@@ -1,6 +1,12 @@
 from collections.abc import Sequence
 
 import mars_patcher.constants.game_data as gd
+from mars_patcher.auto_generated_types import (
+    MarsschemaElevatorconnections,
+    MarsschemaSectorshortcuts,
+    Validelevatorbottoms,
+    Validelevatortops,
+)
 from mars_patcher.constants.main_hub_numbers import (
     MAIN_HUB_CENTER_ROOM,
     MAIN_HUB_CENTER_SMALL_NUM_COORDS_1,
@@ -68,7 +74,7 @@ class Connections:
         self.area_conns_addr = gd.area_connections(rom)
         self.area_conns_count = gd.area_connections_count(rom)
 
-    def set_elevator_connections(self, data: dict) -> None:
+    def set_elevator_connections(self, data: MarsschemaElevatorconnections) -> None:
         # Repoint area connections data
         size = self.area_conns_count * 3
         # Reserve space for 8 more area connections
@@ -80,18 +86,18 @@ class Connections:
         self.area_conns_addr = ac_addr
 
         # Connect tops to bottoms
-        pairs = data["ElevatorTops"]
-        self.connect_elevators(ELEVATOR_TOPS, ELEVATOR_BOTTOMS, pairs)
+        pairs_top = data["ElevatorTops"]
+        self.connect_elevators(ELEVATOR_TOPS, ELEVATOR_BOTTOMS, pairs_top)
         # Connect bottoms to tops
-        pairs = data["ElevatorBottoms"]
-        self.connect_elevators(ELEVATOR_BOTTOMS, ELEVATOR_TOPS, pairs)
+        pairs_bottom = data["ElevatorBottoms"]
+        self.connect_elevators(ELEVATOR_BOTTOMS, ELEVATOR_TOPS, pairs_bottom)
         if self.rom.game == Game.MF:
             # Update area number tiles in main hub rooms
             self.fix_main_hub_tiles()
             # Remove area numbers from Main Deck minimap
             self.remove_main_deck_minimap_area_nums()
 
-    def set_shortcut_connections(self, data: dict) -> None:
+    def set_shortcut_connections(self, data: MarsschemaSectorshortcuts) -> None:
         for i, dst_area in enumerate(data["LeftAreas"]):
             self.connect_shortcuts(i + 1, dst_area, True)
         for i, dst_area in enumerate(data["RightAreas"]):
@@ -127,7 +133,13 @@ class Connections:
             bg1.set_block_value(x, y, block)
             bg1.set_block_value(x, y + 1, block + 0x10)
 
-    def connect_elevators(self, src_dict: dict, dst_dict: dict, pairs: dict[str, str]) -> None:
+    def connect_elevators(
+        self,
+        src_dict: dict,
+        dst_dict: dict,
+        pairs: dict[Validelevatortops, Validelevatorbottoms]
+        | dict[Validelevatorbottoms, Validelevatortops],
+    ) -> None:
         for src_name, dst_name in pairs.items():
             src_area, src_door, in_list = src_dict[src_name]
             dst_area, dst_door, _ = dst_dict[dst_name]

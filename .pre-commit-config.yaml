@@ -9,3 +9,10 @@ repos:
       - id: ruff
         args: [ --fix, --exit-non-zero-on-fix  ]
       - id: ruff-format
+
+-   repo: https://github.com/henriquegemignani/jsonschema-to-typeddict
+    rev: v1.3
+    hooks:
+    -   id: jsonschema-to-typeddict
+        files: src/mars_patcher/data/schema.json
+        args: [ --output-path, src/mars_patcher/auto_generated_types.py, --root-name, MarsSchema ]

@@ -1,5 +1,6 @@
 from enum import Enum
 
+from mars_patcher.auto_generated_types import MarsschemaDoorlocksItem
 from mars_patcher.constants.game_data import (
     area_doors_ptrs,
     hatch_lock_event_count,
@@ -65,7 +66,7 @@ EXCLUDED_DOORS = {
 # TODO:
 # - Optimize by only loading rooms that contain doors to modify
 # - Split into more than one function for readability
-def set_door_locks(rom: Rom, data: list[dict]) -> None:
+def set_door_locks(rom: Rom, data: list[MarsschemaDoorlocksItem]) -> None:
     door_locks = parse_door_lock_data(data)
     # Go through all doors in game in order
     doors_ptrs = area_doors_ptrs(rom)
@@ -177,7 +178,7 @@ def remove_door_colors_on_minimap(rom: Rom) -> None:
                         minimap.set_tile_value(x, y, tile, pal, h_flip, v_flip)
 
 
-def parse_door_lock_data(data: list[dict]) -> dict[tuple[int, int], HatchLock]:
+def parse_door_lock_data(data: list[MarsschemaDoorlocksItem]) -> dict[tuple[int, int], HatchLock]:
     """Returns a dictionary of `(AreaID, RoomID): HatchLock` from the input data."""
     door_locks: dict[tuple[int, int], HatchLock] = {}
     for entry in data:

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from typing import TYPE_CHECKING
 
 from mars_patcher.constants.items import (
     ITEM_ENUMS,
@@ -24,6 +25,9 @@ from mars_patcher.constants.items import (
 )
 from mars_patcher.data import get_data_path
 from mars_patcher.text import Language
+
+if TYPE_CHECKING:
+    from mars_patcher.auto_generated_types import MarsschemaLocations
 
 
 class Location:
@@ -137,7 +141,7 @@ class LocationSettings:
 
         return LocationSettings(major_locs, minor_locs)
 
-    def set_assignments(self, data: dict) -> None:
+    def set_assignments(self, data: MarsschemaLocations) -> None:
         for maj_loc_entry in data[KEY_MAJOR_LOCS]:
             # Get source and item
             source = SOURCE_ENUMS[maj_loc_entry[KEY_SOURCE]]
