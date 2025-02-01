@@ -627,7 +627,31 @@
             "type": "boolean",
             "description": "When enabled, hides doors on the minimap. This is automatically enabled when the 'DoorLocks' field is provided.",
             "default": false
-        }
+        },
+        "RoomNames": {
+                    "type": "array",
+                    "description": "Specifies a name to be displayed when the A Button is pressed on the pause menu.",
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Area": {
+                                "$ref": "#/$defs/AreaID",
+                                "description": "The area ID where this item is located."
+                            },
+                            "Room": {
+                                "$ref": "#/$defs/TypeU8",
+                                "description": "The room ID where this item is located."
+                            },
+                            "Name": {
+                                "type": "string",
+                                "description": "Specifies what text should appear for this room. Two lines are available, with an absolute maximum of 56 characters per line, if all characters used are small. If the text is too long, it will be truncated.  Use \n to force a line break. If not provided, will display Unknown Room.",
+                                "maxLength": 112
+                            }
+                        },
+                        "required": ["Area", "Room", "Name"]
+                    }
+                }
     },
     "required": [
         "SeedHash",

@@ -21,3 +21,4 @@ class ReservedConstants:
     # Pointers, offset by language value, that store the message table location
     MESSAGE_TABLE_LOOKUP_ADDR = 0x79CDF4
     FIRST_CUSTOM_MESSAGE_ID = 0x38  # The first 0x37 messages are reserved for standard messages
+    ROOM_NAMES_TABLE_ADDR = 0x7FF070
