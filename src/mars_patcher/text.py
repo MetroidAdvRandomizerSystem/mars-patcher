@@ -113,8 +113,12 @@ class Language(Enum):
 
 
 class MessageType(Enum):
+    """Message types for encoding."""
+
     CONTINUOUS = 0
+    """Used for text where the A button can advance text"""
     SINGLEPANEL = 1
+    """Used for text that can only span one panel"""
 
 
 def parse_escape_expr(expr: str) -> int:

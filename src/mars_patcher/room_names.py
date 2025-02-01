@@ -12,10 +12,10 @@ ROOM_NAMES_TABLE_ADDR = ReservedConstants.ROOM_NAMES_TABLE_ADDR
 # - Area Room names are indexed by room id. This means some entries
 #   are never used, but this allows for easy lookup
 def write_room_names(rom: Rom, data: list[MarsschemaRoomnamesItem]) -> None:
-    for room_name_dict in data:
-        area_id = room_name_dict["Area"]
-        room_id = room_name_dict["Room"]
-        name = room_name_dict["Name"]
+    for room_name_entry in data:
+        area_id = room_name_entry["Area"]
+        room_id = room_name_entry["Room"]
+        room_name = room_name_entry["Name"]
 
         # Find room name table by indexing at ROOM_NAMES_TABLE_ADDR
         area_addr = ROOM_NAMES_TABLE_ADDR + (area_id * 4)
@@ -27,7 +27,7 @@ def write_room_names(rom: Rom, data: list[MarsschemaRoomnamesItem]) -> None:
         encoded_text = encode_text(
             rom,
             MessageType.SINGLEPANEL,
-            name,
+            room_name,
             224,
         )
         message_pointer = rom.reserve_free_space(len(encoded_text) * 2)
