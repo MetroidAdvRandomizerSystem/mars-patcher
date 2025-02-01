@@ -527,10 +527,10 @@ class MarsschemaMinimapeditsItem(typ.TypedDict, total=False):
 
 class MarsschemaRoomnamesItem(typ.TypedDict):
     Area: Areaid
-    """The area ID where this item is located."""
+    """The area ID where this room is located."""
 
     Room: Typeu8 = 3
-    """The room ID where this item is located."""
+    """The room ID."""
 
     Name: typ.Annotated[str, 'len() <= 112']
     """Specifies what text should appear for this room. Two lines are available, with an absolute maximum of 56 characters per line, if all characters used are small. If the text is too long, it will be truncated.  Use 

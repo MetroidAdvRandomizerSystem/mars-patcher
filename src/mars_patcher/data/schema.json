@@ -637,11 +637,11 @@
                         "properties": {
                             "Area": {
                                 "$ref": "#/$defs/AreaID",
-                                "description": "The area ID where this item is located."
+                                "description": "The area ID where this room is located."
                             },
                             "Room": {
                                 "$ref": "#/$defs/TypeU8",
-                                "description": "The room ID where this item is located."
+                                "description": "The room ID."
                             },
                             "Name": {
                                 "type": "string",
