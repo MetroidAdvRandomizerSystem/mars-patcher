@@ -174,7 +174,7 @@ class ItemPatcher:
             # English is required to be set - use English as the fallback value
             encoded_text = encode_text(
                 rom,
-                MessageType.ITEM,
+                MessageType.SINGLEPANEL,
                 (
                     messages.item_messages[lang]
                     if lang in messages.item_messages

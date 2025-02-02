@@ -26,6 +26,7 @@ from mars_patcher.misc_patches import (
 from mars_patcher.navigation_text import NavigationText
 from mars_patcher.random_palettes import PaletteRandomizer, PaletteSettings
 from mars_patcher.rom import Rom
+from mars_patcher.room_names import write_room_names
 from mars_patcher.starting import set_starting_items, set_starting_location
 from mars_patcher.text import write_seed_hash
 
@@ -128,6 +129,11 @@ def patch(
     if nav_locks := patch_data.get("NavStationLocks", {}):
         status_update("Writing navigation locks...", -1)
         NavigationText.apply_hint_security(rom, nav_locks)
+
+    # Room Names
+    if room_names := patch_data.get("RoomNames", []):
+        status_update("Writing room names...", -1)
+        write_room_names(rom, room_names)
 
     # Credits
     if credits_text := patch_data.get("CreditsText", []):

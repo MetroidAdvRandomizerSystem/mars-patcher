@@ -525,6 +525,18 @@ class MarsschemaMinimapeditsItem(typ.TypedDict, total=False):
 
 
 
+class MarsschemaRoomnamesItem(typ.TypedDict):
+    Area: Areaid
+    """The area ID where this room is located."""
+
+    Room: Typeu8 = 3
+    """The room ID."""
+
+    Name: typ.Annotated[str, 'len() <= 112']
+    """Specifies what text should appear for this room. Two lines are available, with an absolute maximum of 56 characters per line, if all characters used are small. Text will auto-wrap if the next word doesn't fit on the line. If the text is too long, it will be truncated.  Use 
+ to force a line break. If not provided, will display 'Unknown Room'."""
+
+
 class Marsschema(typ.TypedDict, total=False):
     """
     Metroid Fusion patching schema
@@ -604,6 +616,9 @@ class Marsschema(typ.TypedDict, total=False):
 
     HideDoorsOnMinimap: bool = False
     """When enabled, hides doors on the minimap. This is automatically enabled when the 'DoorLocks' field is provided."""
+
+    RoomNames: typ.Annotated[list[MarsschemaRoomnamesItem], 'Unique items']
+    """Specifies a name to be displayed when the A Button is pressed on the pause menu."""
 
 
 MarsSchema: typ.TypeAlias = Marsschema

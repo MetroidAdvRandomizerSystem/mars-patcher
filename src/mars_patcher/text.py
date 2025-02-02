@@ -113,8 +113,12 @@ class Language(Enum):
 
 
 class MessageType(Enum):
-    NAVIGATION = 0
-    ITEM = 1
+    """Message types for encoding."""
+
+    CONTINUOUS = 0
+    """Used for text where the A button can advance text"""
+    SINGLEPANEL = 1
+    """Used for text that can only span one panel"""
 
 
 def parse_escape_expr(expr: str) -> int:
@@ -173,11 +177,11 @@ def encode_text(rom: Rom, message_type: MessageType, string: str, max_width: int
 
         if line_number > 1:
             match message_type:
-                case MessageType.NAVIGATION:
+                case MessageType.CONTINUOUS:
                     line_number = 0
                     extra_char = NEXT
-                case MessageType.ITEM:
-                    # Item messages can only have 2 lines, trim any other characters
+                case MessageType.SINGLEPANEL:
+                    # Single panel messages can only have 2 lines, trim any other characters
                     break
 
         if extra_char is not None:
@@ -193,8 +197,8 @@ def encode_text(rom: Rom, message_type: MessageType, string: str, max_width: int
 
         text.append(char_val)
 
-    if message_type == MessageType.ITEM and NEWLINE not in text:
-        # Item messages MUST have two lines, append NEWLINE if none exists
+    if message_type == MessageType.SINGLEPANEL and NEWLINE not in text:
+        # Single panel messages MUST have two lines, append NEWLINE if none exists
         text.append(NEWLINE)
 
     text.append(END)
