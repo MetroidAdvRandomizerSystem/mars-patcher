@@ -1,105 +1,27 @@
+import json
 from enum import Enum
+from functools import cache
 
 from mars_patcher.constants.game_data import character_widths, file_screen_text_ptrs
-from mars_patcher.rom import Rom
+from mars_patcher.data import get_data_path
+from mars_patcher.rom import Region, Rom
 
 NEXT = 0xFD00
 NEWLINE = 0xFE00
 END = 0xFF00
-ESCAPE_EXPRESSIONS = {
-    "NEXT": NEXT,
-    "NEWLINE": NEWLINE,
-    "END": END,
-    "OBJECTIVE": 0xFB00,
-    "/COLOR": 0x8100,
-    "TARGET": 0xE00,
-    "GAME_START": 0xB003,
+VALUE_MARKUP_TAG = {
+    "SPACE": (0x8000, 8),
+    "COLOR": (0x8100, 8),
+    "SPEED": (0x8200, 8),
+    "INDENT": (0x8300, 8),
+    "PLAY_SOUND": (0x9000, 12),
+    "STOP_SOUND": (0xA000, 12),
+    "WAIT": (0xE100, 8),
 }
 
-CHARS = {
-    " ": 0x40,
-    "!": 0x41,
-    '"': 0x42,
-    "#": 0x43,
-    "$": 0x44,
-    "%": 0x45,
-    "&": 0x46,
-    "'": 0x47,
-    "(": 0x48,
-    ")": 0x49,
-    "*": 0x4A,
-    "+": 0x4B,
-    ",": 0x4C,
-    "-": 0x4D,
-    ".": 0x4E,
-    "/": 0x4F,
-    "0": 0x50,
-    "1": 0x51,
-    "2": 0x52,
-    "3": 0x53,
-    "4": 0x54,
-    "5": 0x55,
-    "6": 0x56,
-    "7": 0x57,
-    "8": 0x58,
-    "9": 0x59,
-    ":": 0x5A,
-    ";": 0x5B,
-    "?": 0x5F,
-    "A": 0x81,
-    "B": 0x82,
-    "C": 0x83,
-    "D": 0x84,
-    "E": 0x85,
-    "F": 0x86,
-    "G": 0x87,
-    "H": 0x88,
-    "I": 0x89,
-    "J": 0x8A,
-    "K": 0x8B,
-    "L": 0x8C,
-    "M": 0x8D,
-    "N": 0x8E,
-    "O": 0x8F,
-    "P": 0x90,
-    "Q": 0x91,
-    "R": 0x92,
-    "S": 0x93,
-    "T": 0x94,
-    "U": 0x95,
-    "V": 0x96,
-    "W": 0x97,
-    "X": 0x98,
-    "Y": 0x99,
-    "Z": 0x9A,
-    "a": 0xC1,
-    "b": 0xC2,
-    "c": 0xC3,
-    "d": 0xC4,
-    "e": 0xC5,
-    "f": 0xC6,
-    "g": 0xC7,
-    "h": 0xC8,
-    "i": 0xC9,
-    "j": 0xCA,
-    "k": 0xCB,
-    "l": 0xCC,
-    "m": 0xCD,
-    "n": 0xCE,
-    "o": 0xCF,
-    "p": 0xD0,
-    "q": 0xD1,
-    "r": 0xD2,
-    "s": 0xD3,
-    "t": 0xD4,
-    "u": 0xD5,
-    "v": 0xD6,
-    "w": 0xD7,
-    "x": 0xD8,
-    "y": 0xD9,
-    "z": 0xDA,
-    "\n": NEWLINE,
-}
+KANJI_START = 0x4A0
+KANJI_WIDTH = 10
+MAX_LINE_WIDTH = 224
 
 
 class Language(Enum):
@@ -115,63 +37,107 @@ class Language(Enum):
 class MessageType(Enum):
     """Message types for encoding."""
 
-    CONTINUOUS = 0
-    """Used for text where the A button can advance text"""
-    SINGLEPANEL = 1
-    """Used for text that can only span one panel"""
+    ONE_LINE = 0
+    """Used for text that can only span one line (ex: location banner)."""
+    TWO_LINE = 1
+    """Used for text that can only span two lines (ex: item/event message,
+    pause screen objective)."""
+    CONTINUOUS = 2
+    """Used for text where the A button can advance text."""
 
 
-def parse_escape_expr(expr: str) -> int:
-    if "=" in expr:
-        label, value = expr.split("=", 1)
-        if label == "COLOR":
-            return 0x8100 | int(value, 16)
-        else:
-            raise NotImplementedError(f'Unimplemented bracketed expression "{expr}"')
+@cache
+def get_char_map(region: Region) -> dict[str, int]:
+    path = get_data_path("char_map_mf.json")
+    with open(path, encoding="utf-8") as f:
+        sections = json.load(f)
+    char_map: dict[str, int] = {}
+    for section in sections:
+        if region.name in section["regions"]:
+            char_map.update(section["chars"])
+    char_map["\n"] = NEWLINE
+    return char_map
 
-    if expr in ESCAPE_EXPRESSIONS:
-        return ESCAPE_EXPRESSIONS[expr]
-    else:
-        raise NotImplementedError(f'Unimplemented bracketed expression "{expr}"')
+
+def parse_value_markup_tag(tag: str) -> int | None:
+    """Used to try parsing a markup tag with an assignable value.
+    Returns the resulting character value, or None if not a markup tag."""
+    items = tag.split("=", 1)
+    if len(items) != 2:
+        return None
+    label, value_str = items
+    if label in VALUE_MARKUP_TAG:
+        char_val, bits = VALUE_MARKUP_TAG[label]
+        value = int(value_str, 16)
+        if value < 0 or value >= (1 << bits):
+            raise ValueError(f"Value {value} is not valid for {label}")
+        return char_val | value
+    raise ValueError(f"Invalid value markup tag '{tag}'")
 
 
-def encode_text(rom: Rom, message_type: MessageType, string: str, max_width: int) -> list[int]:
+def encode_text(
+    rom: Rom, message_type: MessageType, string: str, max_width: int = MAX_LINE_WIDTH
+) -> list[int]:
+    char_map = get_char_map(rom.region)
     char_widths = character_widths(rom)
-    text = []
+    text: list[int] = []
     line_width = 0
     line_number = 0
 
-    prev_break = None
+    prev_break: int | None = None
     width_since_break = 0
-    escape_expr: list[str] | None = None
+    escaped = False
+    markup_tag: list[str] | None = None
 
     for char in string:
-        if escape_expr is None and char == "[":
-            escape_expr = []
-        elif escape_expr is not None and char == "]":
-            text.append(parse_escape_expr("".join(escape_expr)))
-            escape_expr = None
-            continue
-        elif escape_expr is not None:
-            escape_expr.append(char)
+        if not escaped:
+            # Check for escaped character
+            if char == "\\":
+                if markup_tag is not None:
+                    raise ValueError(f'Escaped character in markup tag:\n"{string}"')
+                escaped = True
+                continue
+            if markup_tag is None:
+                # Check for start of markup tag
+                if char == "[":
+                    markup_tag = []
+                    continue
+            else:
+                # Check for end of markup tag
+                if char == "]":
+                    tag_str = "".join(markup_tag)
+                    # Check if markup tag with assignable value
+                    char_val = parse_value_markup_tag(tag_str)
+                    if char_val is None:
+                        # Check if normal markup tag
+                        char_val = char_map.get(f"[{tag_str}]")
+                        if char_val is None:
+                            raise ValueError(f"Invalid markup tag '{tag_str}'")
+                    text.append(char_val)
+                    markup_tag = None
+                else:
+                    markup_tag.append(char)
+                continue
+        else:
+            escaped = False
 
-        if escape_expr is not None:
-            continue
-
-        char_val = CHARS[char]
-        char_width = rom.read_8(char_widths + char_val) if char_val < 0x4A0 else 10
+        char_val = char_map[char]
+        char_width = rom.read_8(char_widths + char_val) if char_val < KANJI_START else KANJI_WIDTH
         line_width += char_width
         width_since_break += char_width
 
-        if char_val == CHARS[" "]:
+        if char_val == char_map[" "]:
             prev_break = len(text)
             width_since_break = 0
 
         extra_char = None
 
         if line_width > max_width:
+            if message_type == MessageType.ONE_LINE:
+                raise ValueError(f'String does not fit on one line:\n"{string}"')
+            if width_since_break > max_width:
+                raise ValueError(f'Word does not fit on one line:\n"{string}"')
             line_width = width_since_break
-            width_since_break = 0
             line_number += 1
             extra_char = NEWLINE
 
@@ -180,8 +146,8 @@ def encode_text(rom: Rom, message_type: MessageType, string: str, max_width: int
                 case MessageType.CONTINUOUS:
                     line_number = 0
                     extra_char = NEXT
-                case MessageType.SINGLEPANEL:
-                    # Single panel messages can only have 2 lines, trim any other characters
+                case MessageType.TWO_LINE:
+                    # Limited to 2 lines, trim any other characters
                     break
 
         if extra_char is not None:
@@ -197,8 +163,14 @@ def encode_text(rom: Rom, message_type: MessageType, string: str, max_width: int
 
         text.append(char_val)
 
-    if message_type == MessageType.SINGLEPANEL and NEWLINE not in text:
-        # Single panel messages MUST have two lines, append NEWLINE if none exists
+    if markup_tag is not None:
+        raise ValueError(f'Unclosed markup tag:\n"{string}"')
+
+    if message_type == MessageType.ONE_LINE and (NEXT in text or NEWLINE in text):
+        raise ValueError(f'String cannot have newlines:\n"{string}"')
+
+    if message_type == MessageType.TWO_LINE and NEWLINE not in text:
+        # Two line messages MUST have two lines, append NEWLINE if none exists
         text.append(NEWLINE)
 
     text.append(END)
@@ -206,6 +178,7 @@ def encode_text(rom: Rom, message_type: MessageType, string: str, max_width: int
 
 
 def write_seed_hash(rom: Rom, seed_hash: str) -> None:
+    char_map = get_char_map(rom.region)
     lang_ptrs = file_screen_text_ptrs(rom)
     for lang in Language:
         # Get address of first text entry
@@ -221,4 +194,4 @@ def write_seed_hash(rom: Rom, seed_hash: str) -> None:
         # Overwrite with seed hash
         string = (" " * pad_left) + seed_hash + (" " * pad_right)
         for i, c in enumerate(string):
-            rom.write_16(addr + i * 2, CHARS[c])
+            rom.write_16(addr + i * 2, char_map[c])

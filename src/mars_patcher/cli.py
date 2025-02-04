@@ -15,7 +15,7 @@ def main() -> None:
     args = parser.parse_args()
 
     # Load patch data file and validate
-    with open(args.patch_data_path) as f:
+    with open(args.patch_data_path, encoding="utf-8") as f:
         patch_data = json.load(f)
 
     validate_patch_data(patch_data)

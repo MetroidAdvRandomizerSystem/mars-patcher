@@ -174,19 +174,16 @@ class ItemPatcher:
             # English is required to be set - use English as the fallback value
             encoded_text = encode_text(
                 rom,
-                MessageType.SINGLEPANEL,
+                MessageType.TWO_LINE,
                 (
                     messages.item_messages[lang]
                     if lang in messages.item_messages
                     else messages.item_messages[Language.ENGLISH]
                 ),
-                224,
             )
-            message_pointer = rom.reserve_free_space(len(encoded_text) * 2)
-            rom.write_ptr(message_table_addrs[lang] + (4 * custom_message_id), message_pointer)
-            for char in encoded_text:
-                rom.write_16(message_pointer, char)
-                message_pointer += 2
+            message_addr = rom.reserve_free_space(len(encoded_text) * 2)
+            rom.write_ptr(message_table_addrs[lang] + (4 * custom_message_id), message_addr)
+            rom.write_16_list(message_addr, encoded_text)
 
 
 # TODO: Move these?
