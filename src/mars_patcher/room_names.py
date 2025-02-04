@@ -29,14 +29,7 @@ def write_room_names(rom: Rom, data: list[MarsschemaRoomnamesItem]) -> None:
         # Find specific room by indexing by the room_id
         room_name_addr = area_room_name_addr + (room_id * 4)
 
-        encoded_text = encode_text(
-            rom,
-            MessageType.SINGLEPANEL,
-            room_name,
-            224,
-        )
-        message_pointer = rom.reserve_free_space(len(encoded_text) * 2)
-        rom.write_ptr(room_name_addr, message_pointer)
-        for char in encoded_text:
-            rom.write_16(message_pointer, char)
-            message_pointer += 2
+        encoded_text = encode_text(rom, MessageType.TWO_LINE, room_name)
+        message_addr = rom.reserve_free_space(len(encoded_text) * 2)
+        rom.write_ptr(room_name_addr, message_addr)
+        rom.write_16_list(message_addr, encoded_text)

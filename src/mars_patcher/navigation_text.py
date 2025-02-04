@@ -115,22 +115,20 @@ class NavigationText:
                 rom.write_ptr(base_text_address + info_place.value * 4, text_addr)
                 rom.write_ptr(base_text_address + info_place.value * 4 + 4, text_addr)
 
-                for char in encode_text(rom, MessageType.CONTINUOUS, text, 224):
-                    rom.write_16(text_addr, char)
-                    text_addr += 2
-                    if text_addr >= HINT_TEXT_END:
-                        raise ValueError("Attempted to write too much text to ROM.")
+                encoded_text = encode_text(rom, MessageType.CONTINUOUS, text)
+                text_addr = rom.write_16_list(text_addr, encoded_text)
+                if text_addr >= HINT_TEXT_END:
+                    raise ValueError("Attempted to write too much text to ROM.")
 
             # Navigation Text
             for nav_room, text in lang_texts["NavigationTerminals"].items():
                 rom.write_ptr(base_text_address + nav_room.value * 8, text_addr)
                 rom.write_ptr(base_text_address + nav_room.value * 8 + 4, text_addr)
 
-                for char in encode_text(rom, MessageType.CONTINUOUS, text, 224):
-                    rom.write_16(text_addr, char)
-                    text_addr += 2
-                    if text_addr >= HINT_TEXT_END:
-                        raise ValueError("Attempted to write too much text to ROM.")
+                encoded_text = encode_text(rom, MessageType.CONTINUOUS, text)
+                text_addr = rom.write_16_list(text_addr, encoded_text)
+                if text_addr >= HINT_TEXT_END:
+                    raise ValueError("Attempted to write too much text to ROM.")
 
     @classmethod
     def apply_hint_security(

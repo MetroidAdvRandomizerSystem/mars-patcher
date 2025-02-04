@@ -210,6 +210,14 @@ class Rom:
         val_end = val_addr + size
         self.data[data_addr:data_end] = vals[val_addr:val_end]
 
+    def write_16_list(self, addr: int, vals: list[int]) -> int:
+        """Writes a list of numbers as 16-bit integers. Does not check if the
+        values are within 16-bit range. Returns the ending address."""
+        for val in vals:
+            self.write_16(addr, val)
+            addr += 2
+        return addr
+
     def copy_bytes(self, src_addr: int, dst_addr: int, size: int) -> None:
         """Copies a specified amount of bytes from the source address to the destination address."""
         self.write_bytes(dst_addr, self.data, src_addr, size)
