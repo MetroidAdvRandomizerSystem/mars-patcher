@@ -183,7 +183,7 @@ class ItemPatcher:
             )
             message_addr = rom.reserve_free_space(len(encoded_text) * 2)
             rom.write_ptr(message_table_addrs[lang] + (4 * custom_message_id), message_addr)
-            rom.write_16_list(message_addr, encode_text)
+            rom.write_16_list(message_addr, encoded_text)
 
 
 # TODO: Move these?

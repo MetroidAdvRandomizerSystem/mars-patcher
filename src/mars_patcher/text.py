@@ -147,7 +147,7 @@ def encode_text(
                     line_number = 0
                     extra_char = NEXT
                 case MessageType.TWO_LINE:
-                    # Single panel messages can only have 2 lines, trim any other characters
+                    # Limited to 2 lines, trim any other characters
                     break
 
         if extra_char is not None:
