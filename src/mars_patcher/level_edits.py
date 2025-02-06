@@ -18,7 +18,7 @@ def apply_level_edits(rom: Rom, edit_dict: dict) -> None:
                 elif layer == "Clipdata":
                     load = r.load_clip
                 else:
-                    ValueError("Unsupported Block Layer")
+                    raise ValueError("Unsupported Block Layer")
 
                 # Load layer, do every edit that's provided and write back.
                 with load() as layer:
