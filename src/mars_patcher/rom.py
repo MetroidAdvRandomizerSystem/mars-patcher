@@ -2,6 +2,8 @@ from enum import Enum
 from os import PathLike
 from typing import Union
 
+from mars_patcher.constants.reserved_space import ReservedConstants
+
 BytesLike = Union[bytes, bytearray]
 
 SIZE_8MB = 0x800000
@@ -106,7 +108,7 @@ class Rom:
             raise ValueError("Only compatible with the North American (U) version")
         # Set free space address
         if self.is_mf():
-            self.free_space_addr = 0x7E0000
+            self.free_space_addr = ReservedConstants.PATCHER_FREE_SPACE_ADDR
         elif self.is_zm():
             raise NotImplementedError()
 

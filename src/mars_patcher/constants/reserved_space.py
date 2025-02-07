@@ -6,6 +6,12 @@ class ReservedConstants:
 
     # These need to be kept in sync with the base patch
     # found somewhere around https://github.com/MetroidAdvRandomizerSystem/MARS-Fusion/blob/main/src/main.s#L45
+
+    # Pointers, offset by language value, that store the message table location
+    MESSAGE_TABLE_LOOKUP_ADDR = 0x79CDF4
+    FIRST_CUSTOM_MESSAGE_ID = 0x38  # The first 0x37 messages are reserved for standard messages
+
+    PATCHER_FREE_SPACE_ADDR = 0x7E0000
     MINOR_LOCS_TABLE_ADDR = 0x7FF000
     MAJOR_LOCS_ADDR = 0x7FF01C
     TANK_INC_ADDR = 0x7FF046
@@ -18,7 +24,4 @@ class ReservedConstants:
     ENVIRONMENTAL_HARZARD_DAMAGE_ADDR = 0x7FF065  # TODO: Implement this
     MISSILE_LIMIT_ADDR = 0x7FF06A
     MINOR_LOCS_ARRAY_ADDR = 0x7FF06C
-    # Pointers, offset by language value, that store the message table location
-    MESSAGE_TABLE_LOOKUP_ADDR = 0x79CDF4
-    FIRST_CUSTOM_MESSAGE_ID = 0x38  # The first 0x37 messages are reserved for standard messages
     ROOM_NAMES_TABLE_ADDR = 0x7FF070
