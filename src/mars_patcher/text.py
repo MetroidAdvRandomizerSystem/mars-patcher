@@ -6,6 +6,7 @@ from mars_patcher.constants.game_data import character_widths, file_screen_text_
 from mars_patcher.data import get_data_path
 from mars_patcher.rom import Region, Rom
 
+SPACE = 0x40
 NEXT = 0xFD00
 NEWLINE = 0xFE00
 END = 0xFF00
@@ -18,6 +19,7 @@ VALUE_MARKUP_TAG = {
     "STOP_SOUND": (0xA000, 12),
     "WAIT": (0xE100, 8),
 }
+BREAKING_CHARS = {SPACE, NEXT, NEWLINE}
 
 KANJI_START = 0x4A0
 KANJI_WIDTH = 10
@@ -126,9 +128,12 @@ def encode_text(
         line_width += char_width
         width_since_break += char_width
 
-        if char_val == char_map[" "]:
+        if char_val in BREAKING_CHARS:
             prev_break = len(text)
             width_since_break = 0
+            if char_val == NEXT or char_val == NEWLINE:
+                line_width = 0
+                line_number += 1
 
         extra_char = None
 
