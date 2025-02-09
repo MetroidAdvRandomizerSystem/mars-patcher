@@ -35,16 +35,21 @@ def randomize_enemies(rom: Rom) -> None:
     for i in range(spriteset_count(rom)):
         spriteset_addr = rom.read_ptr(ss_ptrs + i * 4)
         used_gfx_rows: dict[int, int] = {}
-        for j in range(0xF):
-            addr = spriteset_addr + j * 2
-            en_id = rom.read_8(addr)
-            if en_id == 0:
-                break
+        spriteset = get_spriteset(rom, spriteset_addr)
+        for j, (en_id, gfx_row) in enumerate(spriteset):
+            # Skip enemies that aren't randomized
             if en_id not in enemy_types:
                 continue
 
-            # Check if sprite shares graphics with another
-            gfx_row = rom.read_8(addr + 1)
+            # Check if sprite shares graphics with one that's never randomized
+            if any(
+                en_id != other_id and gfx_row == other_row and other_id not in enemy_types
+                for other_id, other_row in spriteset
+            ):
+                continue
+
+            # Check if sprite shares graphics with one that's already randomized
+            addr = spriteset_addr + (j * 2)
             if gfx_row in used_gfx_rows:
                 new_id = used_gfx_rows[gfx_row]
                 rom.write_8(addr, new_id)
@@ -52,12 +57,27 @@ def randomize_enemies(rom: Rom) -> None:
 
             # Choose randomly and assign
             en_type = enemy_types[en_id]
+            row_count = gfx_rows[en_id]
             candidates = replacements[en_type]
             random.shuffle(candidates)
             for new_id in candidates:
                 new_row_count = gfx_rows[new_id]
-                row_count = gfx_rows[en_id]
+                # New enemy must use same or fewer graphics rows
                 if new_row_count <= row_count:
                     rom.write_8(addr, new_id)
                     used_gfx_rows[gfx_row] = new_id
                     break
+
+
+def get_spriteset(rom: Rom, addr: int) -> list[tuple[int, int]]:
+    """Returns a list of (sprite ID, graphics row) tuples in the spriteset
+    at the provided address."""
+    spriteset: list[tuple[int, int]] = []
+    for _ in range(0xF):
+        en_id = rom.read_8(addr)
+        if en_id == 0:
+            break
+        gfx_row = rom.read_8(addr + 1)
+        spriteset.append((en_id, gfx_row))
+        addr += 2
+    return spriteset

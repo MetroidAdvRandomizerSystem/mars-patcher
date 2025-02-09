@@ -14,6 +14,7 @@ ENEMY_TYPES = {
     0x12: ("Hornoad", EnemyType.GROUND),
     0x13: ("Halzyn", EnemyType.FLYING),
     0x14: ("Zebesian (wall)", EnemyType.WALL),
+    0x15: ("Hornoad spawner", EnemyType.GROUND),
     0x18: ("Moto", EnemyType.GROUND),
     0x1B: ("Yameba", EnemyType.FLYING),
     0x31: ("Zeela", EnemyType.CRAWLING),
