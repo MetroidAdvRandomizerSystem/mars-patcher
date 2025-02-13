@@ -29,7 +29,7 @@ from mars_patcher.data import get_data_path
 from mars_patcher.text import Language
 
 if TYPE_CHECKING:
-    from mars_patcher.auto_generated_types import MarsschemaLocations
+    from mars_patcher.auto_generated_types import Itemmessages, MarsschemaLocations
 
 
 class Location:
@@ -102,10 +102,10 @@ class ItemMessages:
         self.centered = centered
 
     @classmethod
-    def from_json(cls, data: dict) -> ItemMessages:
+    def from_json(cls, data: Itemmessages) -> ItemMessages:
         item_messages: dict[Language, str] = {}
-        for lang, message in data[KEY_LANGUAGES].items():
-            lang = cls.LANG_ENUMS[lang]
+        for lang_name, message in data[KEY_LANGUAGES].items():
+            lang = cls.LANG_ENUMS[lang_name]
             item_messages[lang] = message
         centered = data.get(KEY_CENTERED, True)
         return cls(item_messages, centered)

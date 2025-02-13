@@ -191,7 +191,7 @@ Validlanguages = typ.Literal[
 Messagelanguages: typ.TypeAlias = dict[Validlanguages, str]
 class Itemmessages(typ.TypedDict, total=False):
     Languages: Messagelanguages
-    Centered: bool = False
+    Centered: bool = True
 
 class BlocklayerItem(typ.TypedDict, total=False):
     X: Typeu8
