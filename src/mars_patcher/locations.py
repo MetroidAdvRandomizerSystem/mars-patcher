@@ -9,10 +9,12 @@ from mars_patcher.constants.items import (
     KEY_AREA,
     KEY_BLOCK_X,
     KEY_BLOCK_Y,
+    KEY_CENTERED,
     KEY_HIDDEN,
     KEY_ITEM,
     KEY_ITEM_MESSAGES,
     KEY_ITEM_SPRITE,
+    KEY_LANGUAGES,
     KEY_MAJOR_LOCS,
     KEY_MINOR_LOCS,
     KEY_ORIGINAL,
@@ -27,7 +29,7 @@ from mars_patcher.data import get_data_path
 from mars_patcher.text import Language
 
 if TYPE_CHECKING:
-    from mars_patcher.auto_generated_types import MarsschemaLocations
+    from mars_patcher.auto_generated_types import Itemmessages, MarsschemaLocations
 
 
 class Location:
@@ -95,16 +97,18 @@ class ItemMessages:
         "Spanish": Language.SPANISH,
     }
 
-    def __init__(self, item_messages: dict[Language, str]):
+    def __init__(self, item_messages: dict[Language, str], centered: bool):
         self.item_messages = item_messages
+        self.centered = centered
 
     @classmethod
-    def from_json(cls, data: dict) -> ItemMessages:
+    def from_json(cls, data: Itemmessages) -> ItemMessages:
         item_messages: dict[Language, str] = {}
-        for lang, message in data.items():
-            lang = cls.LANG_ENUMS[lang]
+        for lang_name, message in data[KEY_LANGUAGES].items():
+            lang = cls.LANG_ENUMS[lang_name]
             item_messages[lang] = message
-        return cls(item_messages)
+        centered = data.get(KEY_CENTERED, True)
+        return cls(item_messages, centered)
 
 
 class LocationSettings:

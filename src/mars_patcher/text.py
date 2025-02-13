@@ -6,12 +6,13 @@ from mars_patcher.constants.game_data import character_widths, file_screen_text_
 from mars_patcher.data import get_data_path
 from mars_patcher.rom import Region, Rom
 
-SPACE = 0x40
+SPACE_CHAR = 0x40
+SPACE_TAG = 0x8000
 NEXT = 0xFD00
 NEWLINE = 0xFE00
 END = 0xFF00
 VALUE_MARKUP_TAG = {
-    "SPACE": (0x8000, 8),
+    "SPACE": (SPACE_TAG, 8),
     "COLOR": (0x8100, 8),
     "SPEED": (0x8200, 8),
     "INDENT": (0x8300, 8),
@@ -19,7 +20,8 @@ VALUE_MARKUP_TAG = {
     "STOP_SOUND": (0xA000, 12),
     "WAIT": (0xE100, 8),
 }
-BREAKING_CHARS = {SPACE, NEXT, NEWLINE}
+BREAKING_CHARS = {SPACE_CHAR, NEXT, NEWLINE}
+NEWLINE_CHARS = {NEXT, NEWLINE}
 
 KANJI_START = 0x4A0
 KANJI_WIDTH = 10
@@ -77,11 +79,43 @@ def parse_value_markup_tag(tag: str) -> int | None:
     raise ValueError(f"Invalid value markup tag '{tag}'")
 
 
+def get_char_width(rom: Rom, char_widths_addr: int, char_val: int) -> int:
+    if char_val >= 0x8000:
+        return 0
+    if char_val < KANJI_START:
+        return rom.read_8(char_widths_addr + char_val)
+    return KANJI_WIDTH
+
+
+def center_text(rom: Rom, char_vals: list[int], max_width: int) -> None:
+    char_widths_addr = character_widths(rom)
+    line_start = 0
+    line_width = 0
+    index = 0
+    while index < len(char_vals):
+        char_val = char_vals[index]
+        index += 1
+        if char_val in NEWLINE_CHARS or index == len(char_vals):
+            if line_width > 0:
+                assert line_width <= max_width
+                space_val = SPACE_TAG + (max_width - line_width) // 2
+                char_vals.insert(line_start, space_val)
+                index += 1
+                line_width = 0
+            line_start = index
+        else:
+            line_width += get_char_width(rom, char_widths_addr, char_val)
+
+
 def encode_text(
-    rom: Rom, message_type: MessageType, string: str, max_width: int = MAX_LINE_WIDTH
+    rom: Rom,
+    message_type: MessageType,
+    string: str,
+    max_width: int = MAX_LINE_WIDTH,
+    centered: bool = False,
 ) -> list[int]:
     char_map = get_char_map(rom.region)
-    char_widths = character_widths(rom)
+    char_widths_addr = character_widths(rom)
     text: list[int] = []
     line_width = 0
     line_number = 0
@@ -124,14 +158,14 @@ def encode_text(
             escaped = False
 
         char_val = char_map[char]
-        char_width = rom.read_8(char_widths + char_val) if char_val < KANJI_START else KANJI_WIDTH
+        char_width = get_char_width(rom, char_widths_addr, char_val)
         line_width += char_width
         width_since_break += char_width
 
         if char_val in BREAKING_CHARS:
             prev_break = len(text)
             width_since_break = 0
-            if char_val == NEXT or char_val == NEWLINE:
+            if char_val in NEWLINE_CHARS:
                 line_width = 0
                 line_number += 1
 
@@ -173,6 +207,9 @@ def encode_text(
 
     if message_type == MessageType.ONE_LINE and (NEXT in text or NEWLINE in text):
         raise ValueError(f'String cannot have newlines:\n"{string}"')
+
+    if centered:
+        center_text(rom, text, max_width)
 
     if message_type == MessageType.TWO_LINE and NEWLINE not in text:
         # Two line messages MUST have two lines, append NEWLINE if none exists
