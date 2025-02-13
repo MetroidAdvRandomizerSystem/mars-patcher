@@ -234,9 +234,8 @@ class Rom:
             self.free_space_addr += 4 - remain
         addr = self.free_space_addr
         self.free_space_addr += size
-        assert self.free_space_addr <= ReservedConstants.PATCHER_FREE_SPACE_END, (
-            "Ran out of reserved free space"
-        )
+        if self.free_space_addr > ReservedConstants.PATCHER_FREE_SPACE_END:
+            raise Exception("Ran out of reserved free space")
         return addr
 
     def save(self, path: Union[str, PathLike[str]]) -> None:
