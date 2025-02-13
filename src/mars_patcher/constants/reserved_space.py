@@ -12,6 +12,7 @@ class ReservedConstants:
     FIRST_CUSTOM_MESSAGE_ID = 0x38  # The first 0x37 messages are reserved for standard messages
 
     PATCHER_FREE_SPACE_ADDR = 0x7E0000
+    PATCHER_FREE_SPACE_END = PATCHER_FREE_SPACE_ADDR + 0x10000
     MINOR_LOCS_TABLE_ADDR = 0x7FF000
     MAJOR_LOCS_ADDR = 0x7FF01C
     TANK_INC_ADDR = 0x7FF046
