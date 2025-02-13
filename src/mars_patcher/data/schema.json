@@ -629,29 +629,29 @@
             "default": false
         },
         "RoomNames": {
-                    "type": "array",
-                    "description": "Specifies a name to be displayed when the A Button is pressed on the pause menu.",
-                    "uniqueItems": true,
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "Area": {
-                                "$ref": "#/$defs/AreaID",
-                                "description": "The area ID where this room is located."
-                            },
-                            "Room": {
-                                "$ref": "#/$defs/TypeU8",
-                                "description": "The room ID."
-                            },
-                            "Name": {
-                                "type": "string",
-                                "description": "Specifies what text should appear for this room. Two lines are available, with an absolute maximum of 56 characters per line, if all characters used are small. Text will auto-wrap if the next word doesn't fit on the line. If the text is too long, it will be truncated.  Use \n to force a line break. If not provided, will display 'Unknown Room'.",
-                                "maxLength": 112
-                            }
-                        },
-                        "required": ["Area", "Room", "Name"]
+            "type": "array",
+            "description": "Specifies a name to be displayed when the A Button is pressed on the pause menu.",
+            "uniqueItems": true,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "Area": {
+                        "$ref": "#/$defs/AreaID",
+                        "description": "The area ID where this room is located."
+                    },
+                    "Room": {
+                        "$ref": "#/$defs/TypeU8",
+                        "description": "The room ID."
+                    },
+                    "Name": {
+                        "type": "string",
+                        "description": "Specifies what text should appear for this room. Two lines are available, with an absolute maximum of 56 characters per line, if all characters used are small. Text will auto-wrap if the next word doesn't fit on the line. If the text is too long, it will be truncated.  Use \n to force a line break. If not provided, will display 'Unknown Room'.",
+                        "maxLength": 112
                     }
-                }
+                },
+                "required": ["Area", "Room", "Name"]
+            }
+        }
     },
     "required": [
         "SeedHash",
@@ -903,7 +903,7 @@
                 "Spanish"
             ]
         },
-        "ItemMessages": {
+        "MessageLanguages": {
             "type": "object",
             "propertyNames": {
                 "$ref": "#/$defs/ValidLanguages"
@@ -911,8 +911,19 @@
             "required": ["English"],
             "additionalProperties": {
                 "type": "string",
-                "description": "Specifies what text should appear on acquiring this item. Two lines are available, with an absolute maximum of 56 characters per line, if all characters used are small. Text will auto-wrap if the next word doesn't fit on the line. If the text is too long, it will be truncated.  Use \n to force a line break. If not provided, a message based on the Item will be shown. If a language is not provided, it will use the provided English message.",
-                "maxLength": 112
+                "description": "Specifies what text should appear for a 2 line message. Text will auto-wrap if the next word doesn't fit on the line. If the text is too long, it will be truncated. Use \n to force a line break. If not provided, a message based on the Item will be shown. If a language is not provided, it will use the provided English message."
+            }
+        },
+        "ItemMessages": {
+            "type": "object",
+            "properties": {
+                "Languages": {
+                    "$ref": "#/$defs/MessageLanguages"
+                },
+                "Centered": {
+                    "type": "boolean",
+                    "default": false
+                }
             }
         },
         "BlockLayer": {

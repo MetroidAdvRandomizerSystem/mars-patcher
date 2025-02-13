@@ -188,7 +188,11 @@ Validlanguages = typ.Literal[
     'Spanish'
 ]
 
-Itemmessages: typ.TypeAlias = dict[Validlanguages, typ.Annotated[str, 'len() <= 112']]
+Messagelanguages: typ.TypeAlias = dict[Validlanguages, str]
+class Itemmessages(typ.TypedDict, total=False):
+    Languages: Messagelanguages
+    Centered: bool = False
+
 class BlocklayerItem(typ.TypedDict, total=False):
     X: Typeu8
     """The X position in the room that should get edited."""

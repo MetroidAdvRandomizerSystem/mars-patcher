@@ -112,7 +112,6 @@ class ItemPatcher:
                 item_addr = MINOR_LOCS_ARRAY + ((room_entry_index + item_index) * MINOR_LOC_SIZE)
                 read_area = rom.read_8(item_addr)
                 read_room = rom.read_8(item_addr + 1)
-                _read_room_index = rom.read_8(item_addr + 2)
                 read_block_x = rom.read_8(item_addr + 3)
                 read_block_y = rom.read_8(item_addr + 4)
 
@@ -180,6 +179,7 @@ class ItemPatcher:
                     if lang in messages.item_messages
                     else messages.item_messages[Language.ENGLISH]
                 ),
+                centered=messages.centered,
             )
             message_addr = rom.reserve_free_space(len(encoded_text) * 2)
             rom.write_ptr(message_table_addrs[lang] + (4 * custom_message_id), message_addr)

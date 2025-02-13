@@ -9,10 +9,12 @@ from mars_patcher.constants.items import (
     KEY_AREA,
     KEY_BLOCK_X,
     KEY_BLOCK_Y,
+    KEY_CENTERED,
     KEY_HIDDEN,
     KEY_ITEM,
     KEY_ITEM_MESSAGES,
     KEY_ITEM_SPRITE,
+    KEY_LANGUAGES,
     KEY_MAJOR_LOCS,
     KEY_MINOR_LOCS,
     KEY_ORIGINAL,
@@ -95,16 +97,18 @@ class ItemMessages:
         "Spanish": Language.SPANISH,
     }
 
-    def __init__(self, item_messages: dict[Language, str]):
+    def __init__(self, item_messages: dict[Language, str], centered: bool):
         self.item_messages = item_messages
+        self.centered = centered
 
     @classmethod
     def from_json(cls, data: dict) -> ItemMessages:
         item_messages: dict[Language, str] = {}
-        for lang, message in data.items():
+        for lang, message in data[KEY_LANGUAGES].items():
             lang = cls.LANG_ENUMS[lang]
             item_messages[lang] = message
-        return cls(item_messages)
+        centered = data.get(KEY_CENTERED, True)
+        return cls(item_messages, centered)
 
 
 class LocationSettings:
