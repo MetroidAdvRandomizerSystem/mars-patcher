@@ -10,8 +10,11 @@ def decomp_rle(input: bytes, idx: int) -> tuple[bytearray, int]:
     """
     src_start = idx
     passes = bytearray()
+    half: int | None = None
     # For each pass
-    for _ in range(2):
+    for p in range(2):
+        if p == 1:
+            half = len(passes)
         num_bytes = input[idx]
         idx += 1
         while True:
@@ -45,9 +48,10 @@ def decomp_rle(input: bytes, idx: int) -> tuple[bytearray, int]:
                     amount -= 1
 
     # Each pass must be equal length
-    half = len(passes) >> 1  # Halfs, rounding down.
+    if half is None:
+        raise ValueError("half was not assigned")
     if len(passes) != half * 2:
-        raise ValueError()
+        raise ValueError("Passes are not equal length")
 
     # Combine passes to get output
     output = bytearray(len(passes))
@@ -144,7 +148,7 @@ def comp_rle(input: bytes) -> bytearray:
             if shortest is None or len(temp) < len(shortest):
                 shortest = temp
         if shortest is None:
-            raise ValueError()
+            raise ValueError("shortest was not assigned")
         output += shortest
     return output
 
@@ -236,7 +240,7 @@ def comp_lz77(input: bytes) -> bytearray:
             if idx >= length:
                 return output
 
-    raise Exception("LZ77 compression error")
+    raise RuntimeError("LZ77 compression error")
 
 
 def _find_longest_matches(input: bytes) -> dict[int, tuple[int, int]]:
