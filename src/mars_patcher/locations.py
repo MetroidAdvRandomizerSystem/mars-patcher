@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from mars_patcher.constants.items import (
@@ -86,7 +87,11 @@ class MinorLocation(Location):
         self.item_messages = item_messages
 
 
+@dataclass(frozen=True)
 class ItemMessages:
+    item_messages: dict[Language, str]
+    centered: bool
+
     LANG_ENUMS = {
         "JapaneseKanji": Language.JAPANESE_KANJI,
         "JapaneseHiragana": Language.JAPANESE_HIRAGANA,
@@ -97,10 +102,6 @@ class ItemMessages:
         "Spanish": Language.SPANISH,
     }
 
-    def __init__(self, item_messages: dict[Language, str], centered: bool):
-        self.item_messages = item_messages
-        self.centered = centered
-
     @classmethod
     def from_json(cls, data: Itemmessages) -> ItemMessages:
         item_messages: dict[Language, str] = {}
@@ -109,9 +110,6 @@ class ItemMessages:
             item_messages[lang] = message
         centered = data.get(KEY_CENTERED, True)
         return cls(item_messages, centered)
-
-    def as_str(self) -> str:
-        return str((self.item_messages, self.centered))
 
 
 class LocationSettings:
