@@ -138,3 +138,9 @@ ENEMY_GROUPS = {
         "UnknownItemBlocks": [0xAA, 0xAB, 0xAC],
     },
 }
+
+NETTORI_EXTRA_PALS = [
+    (0x36A480, 1),  # Medium health palette
+    (0x36A4A0, 1),  # Low health palette
+    (0x36A4C0, 3),  # Animated palette
+]
