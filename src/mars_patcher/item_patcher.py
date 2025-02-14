@@ -135,7 +135,6 @@ class ItemPatcher:
                 # If we already encountered the message before, just write the message id.
                 item_message_as_str = min_loc.item_messages.as_str()
                 if item_message_as_str in item_messages_to_custom_id:
-                    print(item_message_as_str)
                     rom.write_8(item_addr + 7, item_messages_to_custom_id[item_message_as_str])
                 else:
                     self.write_custom_message(
@@ -161,7 +160,6 @@ class ItemPatcher:
                     # If we already encountered the message before, just write the message id.
                     item_message_as_str = maj_loc.item_messages.as_str()
                     if item_message_as_str in item_messages_to_custom_id:
-                        print(item_message_as_str)
                         rom.write_8(addr + 1, item_messages_to_custom_id[item_message_as_str])
                     else:
                         self.write_custom_message(
