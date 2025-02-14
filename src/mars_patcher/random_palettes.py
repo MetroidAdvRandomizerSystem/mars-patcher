@@ -13,7 +13,7 @@ from mars_patcher.constants.palettes import (
     MF_TILESET_ALT_PAL_ROWS,
     TILESET_ANIM_PALS,
 )
-from mars_patcher.palette import Palette
+from mars_patcher.palette import ColorChange, Palette, PaletteVariation, VariationType
 from mars_patcher.rom import Game, Rom
 
 
@@ -38,11 +38,13 @@ class PaletteSettings:
         pal_types: dict[PaletteType, tuple[int, int]],  # TODO: change this tuple(int, int)
         color_space: MarsschemaPalettesColorspace,
         symmetric: bool,
+        extra_variation: bool,
     ):
         self.seed = seed
         self.pal_types = pal_types
         self.color_space: MarsschemaPalettesColorspace = color_space
         self.symmetric = symmetric
+        self.extra_variation = extra_variation
 
     @classmethod
     def from_json(cls, data: MarsschemaPalettes) -> "PaletteSettings":
@@ -55,7 +57,8 @@ class PaletteSettings:
             pal_types[pal_type] = hue_range
         color_space = data.get("ColorSpace", "Oklab")
         symmetric = data.get("Symmetric", True)
-        return cls(seed, pal_types, color_space, symmetric)
+        # Extra variation is always enabled. This could be passed via JSON instead.
+        return cls(seed, pal_types, color_space, symmetric, True)
 
     @classmethod
     def get_hue_range(cls, data: MarsschemaPalettesRandomize) -> tuple[int, int]:
@@ -81,26 +84,39 @@ class PaletteRandomizer:
         self.rom = rom
         self.settings = settings
         if settings.color_space == "HSV":
-            self.shift_func = self.shift_palette_hsv
+            self.change_func = self.change_palette_hsv
         elif settings.color_space == "Oklab":
-            self.shift_func = self.shift_palette_oklab
+            self.change_func = self.change_palette_oklab
         else:
             raise ValueError(f"Invalid color space '{settings.color_space}' for color space!")
 
     @staticmethod
-    def shift_palette_hsv(pal: Palette, shift: int, excluded_rows: set[int] = set()) -> None:
-        pal.shift_hue_hsv(shift, excluded_rows)
+    def change_palette_hsv(
+        pal: Palette, change: ColorChange, excluded_rows: set[int] = set()
+    ) -> None:
+        pal.change_colors_hsv(change, excluded_rows)
 
     @staticmethod
-    def shift_palette_oklab(pal: Palette, shift: int, excluded_rows: set[int] = set()) -> None:
-        pal.shift_hue_oklab(shift, excluded_rows)
+    def change_palette_oklab(
+        pal: Palette, change: ColorChange, excluded_rows: set[int] = set()
+    ) -> None:
+        pal.change_colors_oklab(change, excluded_rows)
 
-    def get_hue_shift(self, hue_range: tuple[int, int]) -> int:
-        """Returns a hue shift in a random direction between hue_min and hue_max."""
-        shift = random.randint(hue_range[0], hue_range[1])
-        if self.settings.symmetric and random.random() < 0.5:
-            shift = 360 - shift
-        return shift
+    def generate_palette_change(self, hue_range: tuple[int, int]) -> ColorChange:
+        """Generates a random color change. hue_range determines how far each color's hue will be
+        initially rotated. Individual colors can be additionally rotated up to half of the hue
+        range. Lightness/value is also varied for each color between 0.8 and 1.2"""
+        hue_shift = random.randint(hue_range[0], hue_range[1])
+        if self.settings.symmetric and random.choice([True, False]):
+            hue_shift = 360 - hue_shift
+        if self.settings.extra_variation:
+            hue_var_range = (hue_range[1] - hue_range[0]) / 2
+            hue_var = PaletteVariation.generate(hue_var_range, VariationType.ADD)
+            lightness_var = PaletteVariation.generate(0.2, VariationType.MULTIPLY)
+        else:
+            hue_var = None
+            lightness_var = None
+        return ColorChange(hue_shift, hue_var, lightness_var)
 
     def randomize(self) -> None:
         random.seed(self.settings.seed)
@@ -119,24 +135,24 @@ class PaletteRandomizer:
         if self.rom.is_zm():
             self.fix_zm_palettes()
 
-    def shift_palettes(self, pals: list[tuple[int, int]], shift: int) -> None:
+    def change_palettes(self, pals: list[tuple[int, int]], change: ColorChange) -> None:
         for addr, rows in pals:
             if addr in self.randomized_pals:
                 continue
             pal = Palette(rows, self.rom, addr)
-            self.shift_func(pal, shift)
+            self.change_func(pal, change)
             pal.write(self.rom, addr)
             self.randomized_pals.add(addr)
 
     def randomize_samus(self, hue_range: tuple[int, int]) -> None:
-        shift = self.get_hue_shift(hue_range)
-        self.shift_palettes(gd.samus_palettes(self.rom), shift)
-        self.shift_palettes(gd.helmet_cursor_palettes(self.rom), shift)
-        self.shift_palettes(gd.sax_palettes(self.rom), shift)
+        change = self.generate_palette_change(hue_range)
+        self.change_palettes(gd.samus_palettes(self.rom), change)
+        self.change_palettes(gd.helmet_cursor_palettes(self.rom), change)
+        self.change_palettes(gd.sax_palettes(self.rom), change)
 
     def randomize_beams(self, hue_range: tuple[int, int]) -> None:
-        shift = self.get_hue_shift(hue_range)
-        self.shift_palettes(gd.beam_palettes(self.rom), shift)
+        change = self.generate_palette_change(hue_range)
+        self.change_palettes(gd.beam_palettes(self.rom), change)
 
     def randomize_tilesets(self, hue_range: tuple[int, int]) -> None:
         rom = self.rom
@@ -160,22 +176,22 @@ class PaletteRandomizer:
                     excluded_rows = {row}
             # Load palette and shift hue
             pal = Palette(13, rom, pal_addr)
-            shift = self.get_hue_shift(hue_range)
-            self.shift_func(pal, shift, excluded_rows)
+            change = self.generate_palette_change(hue_range)
+            self.change_func(pal, change, excluded_rows)
             pal.write(rom, pal_addr)
             self.randomized_pals.add(pal_addr)
             # Check animated palette
             anim_pal_id = TILESET_ANIM_PALS.get(pal_addr)
             if anim_pal_id is not None:
-                self.randomize_anim_palette(anim_pal_id, shift)
+                self.randomize_anim_palette(anim_pal_id, change)
                 anim_pal_to_randomize.remove(anim_pal_id)
 
         # Go through remaining animated palettes
         for anim_pal_id in anim_pal_to_randomize:
-            shift = self.get_hue_shift(hue_range)
-            self.randomize_anim_palette(anim_pal_id, shift)
+            change = self.generate_palette_change(hue_range)
+            self.randomize_anim_palette(anim_pal_id, change)
 
-    def randomize_anim_palette(self, anim_pal_id: int, shift: int) -> None:
+    def randomize_anim_palette(self, anim_pal_id: int, change: ColorChange) -> None:
         rom = self.rom
         addr = gd.anim_palette_entries(rom) + anim_pal_id * 8
         pal_addr = rom.read_ptr(addr + 4)
@@ -183,7 +199,7 @@ class PaletteRandomizer:
             return
         rows = rom.read_8(addr + 2)
         pal = Palette(rows, rom, pal_addr)
-        self.shift_func(pal, shift)
+        self.change_func(pal, change)
         pal.write(rom, pal_addr)
         self.randomized_pals.add(pal_addr)
 
@@ -197,18 +213,19 @@ class PaletteRandomizer:
         # Go through sprites in groups
         groups = ENEMY_GROUPS[rom.game]
         for _, sprite_ids in groups.items():
-            shift = self.get_hue_shift(hue_range)
+            change = self.generate_palette_change(hue_range)
             for sprite_id in sprite_ids:
                 assert sprite_id in to_randomize, f"{sprite_id:X} should be excluded"
-                self.randomize_enemy(sprite_id, shift)
+                self.randomize_enemy(sprite_id, change)
                 to_randomize.remove(sprite_id)
 
         # Go through remaining sprites
         for sprite_id in to_randomize:
-            shift = self.get_hue_shift(hue_range)
-            self.randomize_enemy(sprite_id, shift)
+            change = self.generate_palette_change(hue_range)
+            self.randomize_enemy(sprite_id, change)
 
-    def randomize_enemy(self, sprite_id: int, shift: int) -> None:
+    def randomize_enemy(self, sprite_id: int, change: ColorChange) -> None:
+        # Get palette address and row count
         rom = self.rom
         sprite_gfx_id = sprite_id - 0x10
         pal_ptr = gd.sprite_palette_ptrs(rom)
@@ -229,8 +246,9 @@ class PaletteRandomizer:
             rows = (rom.read_32(gfx_addr) >> 8) // 0x800
         else:
             raise ValueError("Unknown game!")
+        # Load palette, change colors, and write to ROM
         pal = Palette(rows, rom, pal_addr)
-        self.shift_func(pal, shift)
+        self.change_func(pal, change)
         pal.write(rom, pal_addr)
         self.randomized_pals.add(pal_addr)
 
