@@ -110,6 +110,9 @@ class ItemMessages:
         centered = data.get(KEY_CENTERED, True)
         return cls(item_messages, centered)
 
+    def as_str(self) -> str:
+        return str((self.item_messages, self.centered))
+
 
 class LocationSettings:
     def __init__(self, major_locs: list[MajorLocation], minor_locs: list[MinorLocation]):

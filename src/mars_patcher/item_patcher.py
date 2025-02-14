@@ -59,6 +59,7 @@ class ItemPatcher:
         prev_area_room = (-1, -1)
         room_tank_count = 0
         total_metroids = 0
+        item_messages_to_custom_id: dict[str, int] = {}
         for min_loc in minor_locs:
             if min_loc.new_item == ItemType.INFANT_METROID:
                 total_metroids += 1
@@ -131,10 +132,21 @@ class ItemPatcher:
                     rom.write_8(item_addr + 6, min_loc.item_sprite.value)
             # Handle custom messages
             if min_loc.item_messages is not None:
-                self.write_custom_message(
-                    custom_message_id, message_table_addrs, item_addr, min_loc.item_messages, False
-                )
-                custom_message_id += 1
+                # If we already encountered the message before, just write the message id.
+                item_message_as_tuple = min_loc.item_messages.as_str()
+                if item_message_as_tuple in item_messages_to_custom_id:
+                    print(item_message_as_tuple)
+                    rom.write_8(item_addr + 7, item_messages_to_custom_id[item_message_as_tuple])
+                else:
+                    self.write_custom_message(
+                        custom_message_id,
+                        message_table_addrs,
+                        item_addr,
+                        min_loc.item_messages,
+                        False,
+                    )
+                    item_messages_to_custom_id[item_message_as_tuple] = custom_message_id
+                    custom_message_id += 1
 
         # Handle major locations
         for maj_loc in self.settings.major_locs:
@@ -146,10 +158,21 @@ class ItemPatcher:
                 rom.write_8(addr, maj_loc.new_item.value)
                 # Handle custom messages
                 if maj_loc.item_messages is not None:
-                    self.write_custom_message(
-                        custom_message_id, message_table_addrs, addr, maj_loc.item_messages, True
-                    )
-                    custom_message_id += 1
+                    # If we already encountered the message before, just write the message id.
+                    item_message_as_tuple = maj_loc.item_messages.as_str()
+                    if item_message_as_tuple in item_messages_to_custom_id:
+                        print(item_message_as_tuple)
+                        rom.write_8(addr + 1, item_messages_to_custom_id[item_message_as_tuple])
+                    else:
+                        self.write_custom_message(
+                            custom_message_id,
+                            message_table_addrs,
+                            addr,
+                            maj_loc.item_messages,
+                            True,
+                        )
+                        item_messages_to_custom_id[item_message_as_tuple] = custom_message_id
+                        custom_message_id += 1
 
         # Write total metroid count
         rom.write_8(TOTAL_METROID_COUNT_ADDR, total_metroids)
