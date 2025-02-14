@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 
 from frozendict import frozendict
 
@@ -94,7 +94,7 @@ class ItemMessages:
     item_messages: frozendict[Language, str]
     centered: bool
 
-    LANG_ENUMS = {
+    LANG_ENUMS: ClassVar[dict[str, Language]] = {
         "JapaneseKanji": Language.JAPANESE_KANJI,
         "JapaneseHiragana": Language.JAPANESE_HIRAGANA,
         "English": Language.ENGLISH,
