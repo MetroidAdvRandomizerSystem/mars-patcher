@@ -134,7 +134,11 @@ def set_door_locks(rom: Rom, data: list[MarsschemaDoorlocksItem]) -> None:
             orig_room_hatch_slots[area_room] = (capped_slot, capless_slot)
             # Get new hatch slot number
             capped_slot, capless_slot = new_room_hatch_slots[area_room]
-            if (lock is None and orig_has_cap) or (lock is not None and lock != HatchLock.OPEN):
+            if lock == HatchLock.LOCKED:
+                new_hatch_slot = orig_hatch_slot
+                # Mark door as deleted
+                rom.write_8(door_addr + 1, 0xFF)
+            elif (lock is None and orig_has_cap) or (lock is not None and lock != HatchLock.OPEN):
                 # Has cap
                 new_hatch_slot = capped_slot
                 capped_slot += 1
