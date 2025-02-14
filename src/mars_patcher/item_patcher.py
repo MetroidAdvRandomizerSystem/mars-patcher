@@ -133,10 +133,10 @@ class ItemPatcher:
             # Handle custom messages
             if min_loc.item_messages is not None:
                 # If we already encountered the message before, just write the message id.
-                item_message_as_tuple = min_loc.item_messages.as_str()
-                if item_message_as_tuple in item_messages_to_custom_id:
-                    print(item_message_as_tuple)
-                    rom.write_8(item_addr + 7, item_messages_to_custom_id[item_message_as_tuple])
+                item_message_as_str = min_loc.item_messages.as_str()
+                if item_message_as_str in item_messages_to_custom_id:
+                    print(item_message_as_str)
+                    rom.write_8(item_addr + 7, item_messages_to_custom_id[item_message_as_str])
                 else:
                     self.write_custom_message(
                         custom_message_id,
@@ -145,7 +145,7 @@ class ItemPatcher:
                         min_loc.item_messages,
                         False,
                     )
-                    item_messages_to_custom_id[item_message_as_tuple] = custom_message_id
+                    item_messages_to_custom_id[item_message_as_str] = custom_message_id
                     custom_message_id += 1
 
         # Handle major locations
@@ -159,10 +159,10 @@ class ItemPatcher:
                 # Handle custom messages
                 if maj_loc.item_messages is not None:
                     # If we already encountered the message before, just write the message id.
-                    item_message_as_tuple = maj_loc.item_messages.as_str()
-                    if item_message_as_tuple in item_messages_to_custom_id:
-                        print(item_message_as_tuple)
-                        rom.write_8(addr + 1, item_messages_to_custom_id[item_message_as_tuple])
+                    item_message_as_str = maj_loc.item_messages.as_str()
+                    if item_message_as_str in item_messages_to_custom_id:
+                        print(item_message_as_str)
+                        rom.write_8(addr + 1, item_messages_to_custom_id[item_message_as_str])
                     else:
                         self.write_custom_message(
                             custom_message_id,
@@ -171,7 +171,7 @@ class ItemPatcher:
                             maj_loc.item_messages,
                             True,
                         )
-                        item_messages_to_custom_id[item_message_as_tuple] = custom_message_id
+                        item_messages_to_custom_id[item_message_as_str] = custom_message_id
                         custom_message_id += 1
 
         # Write total metroid count
