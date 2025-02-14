@@ -4,6 +4,8 @@ import json
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from frozendict import frozendict
+
 from mars_patcher.constants.items import (
     ITEM_ENUMS,
     ITEM_SPRITE_ENUMS,
@@ -89,7 +91,7 @@ class MinorLocation(Location):
 
 @dataclass(frozen=True)
 class ItemMessages:
-    item_messages: dict[Language, str]
+    item_messages: frozendict[Language, str]
     centered: bool
 
     LANG_ENUMS = {
@@ -109,7 +111,7 @@ class ItemMessages:
             lang = cls.LANG_ENUMS[lang_name]
             item_messages[lang] = message
         centered = data.get(KEY_CENTERED, True)
-        return cls(item_messages, centered)
+        return cls(frozendict(item_messages), centered)
 
 
 class LocationSettings:

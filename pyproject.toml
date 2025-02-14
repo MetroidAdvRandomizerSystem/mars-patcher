@@ -21,6 +21,7 @@ classifiers = [
 ]
 dependencies = [
     "jsonschema",
+    "frozendict",
 ]
 
 [project.optional-dependencies]
