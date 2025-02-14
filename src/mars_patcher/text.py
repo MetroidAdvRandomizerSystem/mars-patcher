@@ -95,6 +95,7 @@ def center_text(rom: Rom, char_vals: list[int], max_width: int) -> None:
     while index < len(char_vals):
         char_val = char_vals[index]
         index += 1
+        line_width += get_char_width(rom, char_widths_addr, char_val)
         if char_val in NEWLINE_CHARS or index == len(char_vals):
             if line_width > 0:
                 assert line_width <= max_width
@@ -103,8 +104,6 @@ def center_text(rom: Rom, char_vals: list[int], max_width: int) -> None:
                 index += 1
                 line_width = 0
             line_start = index
-        else:
-            line_width += get_char_width(rom, char_widths_addr, char_val)
 
 
 def encode_text(
