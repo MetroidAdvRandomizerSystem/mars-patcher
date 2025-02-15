@@ -253,7 +253,7 @@ class PaletteRandomizer:
         pal.write(rom, pal_addr)
         self.randomized_pals.add(pal_addr)
         if rom.is_mf() and sprite_id == 0x26:
-            self.fix_nettori(shift)
+            self.fix_nettori(change)
 
     def get_sprite_addr(self, sprite_id: int) -> int:
         addr = gd.sprite_palette_ptrs(self.rom) + (sprite_id - 0x10) * 4
@@ -263,11 +263,11 @@ class PaletteRandomizer:
         addr = gd.tileset_entries(self.rom) + sprite_id * 0x14 + 4
         return self.rom.read_ptr(addr)
 
-    def fix_nettori(self, shift: int) -> None:
+    def fix_nettori(self, change: ColorChange) -> None:
         """Nettori has extra palettes stored separately, so they require the same color change."""
         for addr, rows in NETTORI_EXTRA_PALS:
             pal = Palette(rows, self.rom, addr)
-            self.shift_func(pal, shift)
+            self.change_func(pal, change)
             pal.write(self.rom, addr)
 
     def fix_zm_palettes(self) -> None:
