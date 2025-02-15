@@ -51,7 +51,10 @@ class PaletteVariation:
 
 class ColorChange:
     def __init__(
-        self, hue_shift: float, hue_var: PaletteVariation, lightness_var: PaletteVariation
+        self,
+        hue_shift: float,
+        hue_var: PaletteVariation | None,
+        lightness_var: PaletteVariation | None,
     ):
         self.hue_shift = hue_shift
         self.hue_var = hue_var
