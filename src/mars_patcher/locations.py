@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, ClassVar
+
+from frozendict import frozendict
 
 from mars_patcher.constants.items import (
     ITEM_ENUMS,
@@ -86,8 +89,12 @@ class MinorLocation(Location):
         self.item_messages = item_messages
 
 
+@dataclass(frozen=True)
 class ItemMessages:
-    LANG_ENUMS = {
+    item_messages: frozendict[Language, str]
+    centered: bool
+
+    LANG_ENUMS: ClassVar[dict[str, Language]] = {
         "JapaneseKanji": Language.JAPANESE_KANJI,
         "JapaneseHiragana": Language.JAPANESE_HIRAGANA,
         "English": Language.ENGLISH,
@@ -97,10 +104,6 @@ class ItemMessages:
         "Spanish": Language.SPANISH,
     }
 
-    def __init__(self, item_messages: dict[Language, str], centered: bool):
-        self.item_messages = item_messages
-        self.centered = centered
-
     @classmethod
     def from_json(cls, data: Itemmessages) -> ItemMessages:
         item_messages: dict[Language, str] = {}
@@ -108,7 +111,7 @@ class ItemMessages:
             lang = cls.LANG_ENUMS[lang_name]
             item_messages[lang] = message
         centered = data.get(KEY_CENTERED, True)
-        return cls(item_messages, centered)
+        return cls(frozendict(item_messages), centered)
 
 
 class LocationSettings:
