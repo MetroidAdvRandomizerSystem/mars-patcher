@@ -15,6 +15,7 @@ from mars_patcher.minimap import apply_minimap_edits
 from mars_patcher.misc_patches import (
     apply_anti_softlock_edits,
     apply_pbs_without_bombs,
+    apply_reveal_hidden_tiles,
     apply_unexplored_map,
     change_missile_limit,
     disable_demos,
@@ -165,6 +166,9 @@ def patch(
 
     if patch_data.get("UnexploredMap"):
         apply_unexplored_map(rom)
+
+    if patch_data.get("RevealHiddenTiles"):
+        apply_reveal_hidden_tiles(rom)
 
     if patch_data.get("DoorLocks") or "HideDoorsOnMinimap" in patch_data:
         remove_door_colors_on_minimap(rom)
