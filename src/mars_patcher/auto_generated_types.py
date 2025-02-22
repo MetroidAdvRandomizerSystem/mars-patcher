@@ -624,5 +624,8 @@ class Marsschema(typ.TypedDict, total=False):
     RoomNames: typ.Annotated[list[MarsschemaRoomnamesItem], 'Unique items']
     """Specifies a name to be displayed when the A Button is pressed on the pause menu."""
 
+    RevealHiddenTiles: bool = False
+    """When enabled, reveals normally hidden blocks that are breakable by upgrades. Hidden pickup tanks are not revealed regardless of this setting."""
+
 
 MarsSchema: typ.TypeAlias = Marsschema

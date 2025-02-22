@@ -70,3 +70,7 @@ def apply_pbs_without_bombs(rom: Rom) -> None:
 
 def apply_anti_softlock_edits(rom: Rom) -> None:
     apply_patch_in_data_path(rom, "anti_softlock.ips")
+
+
+def apply_reveal_hidden_tiles(rom: Rom) -> None:
+    rom.write_8(ReservedConstants.REVEAL_HIDDEN_TILES_ADDR, 1)

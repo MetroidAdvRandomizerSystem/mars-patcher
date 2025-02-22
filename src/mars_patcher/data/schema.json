@@ -651,6 +651,11 @@
                 },
                 "required": ["Area", "Room", "Name"]
             }
+        },
+        "RevealHiddenTiles": {
+            "type": "boolean",
+            "description": "When enabled, reveals normally hidden blocks that are breakable by upgrades. Hidden pickup tanks are not revealed regardless of this setting.",
+            "default": false
         }
     },
     "required": [
