@@ -28,8 +28,13 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Install Python packages
-        run: python -m pip install --upgrade pip build
+      - name: Install core Python packages
+        run: python -m pip install --upgrade pip build 
+      
+      - name: Install source python packages
+        run: python -m pip install -e ".[tooling]"
+
+      
 
       - name: Fetch the corresponding assembly patches
         run: python pull-assembly-patches.py
