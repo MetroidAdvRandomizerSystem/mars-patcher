@@ -70,7 +70,7 @@ def patch(
     # Apply base asm patch first
     apply_base_patch(rom)
 
-    # Softlock edits need to be done early to prevent later patches messing things up.
+    # Softlock edits need to be done early to prevent later edits messing things up.
     if patch_data.get("AntiSoftlockRoomEdits"):
         apply_anti_softlock_edits(rom)
 
