@@ -14,6 +14,7 @@ from mars_patcher.locations import LocationSettings
 from mars_patcher.minimap import apply_minimap_edits
 from mars_patcher.misc_patches import (
     apply_anti_softlock_edits,
+    apply_base_patch,
     apply_pbs_without_bombs,
     apply_reveal_hidden_tiles,
     apply_unexplored_map,
@@ -66,6 +67,10 @@ def patch(
     # Load input rom
     rom = Rom(input_path)
 
+    # Apply base asm patch first
+    apply_base_patch(rom)
+
+    # Softlock edits need to be done early to prevent later patches messing things up.
     if patch_data.get("AntiSoftlockRoomEdits"):
         apply_anti_softlock_edits(rom)
 

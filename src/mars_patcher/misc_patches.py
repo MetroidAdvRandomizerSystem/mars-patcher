@@ -1,20 +1,35 @@
 import mars_patcher.constants.game_data as gd
 from mars_patcher.constants.reserved_space import ReservedConstants
 from mars_patcher.data import get_data_path
-from mars_patcher.patching import IpsDecoder
+from mars_patcher.patching import BpsDecoder, IpsDecoder
 from mars_patcher.rom import Rom
 
 
-def get_patch_path(rom: Rom, filename: str) -> str:
+def _get_patch_path(rom: Rom, subfolder: str, filename: str) -> str:
     dir = f"{rom.game.name}_{rom.region.name}".lower()
-    return get_data_path("patches", dir, filename)
+    return get_data_path("patches", dir, subfolder, filename)
 
 
-def apply_patch_in_data_path(rom: Rom, patch_name: str) -> None:
-    path = get_patch_path(rom, patch_name)
+def _internal_apply_ips_patch(rom: Rom, patch_name: str, subfolder: str) -> None:
+    path = _get_patch_path(rom, subfolder, patch_name)
     with open(path, "rb") as f:
         patch = f.read()
     IpsDecoder().apply_patch(patch, rom.data)
+
+
+def apply_patch_in_data_path(rom: Rom, patch_name: str) -> None:
+    _internal_apply_ips_patch(rom, patch_name, "")
+
+
+def apply_patch_in_asm_path(rom: Rom, patch_name: str) -> None:
+    _internal_apply_ips_patch(rom, patch_name, "asm")
+
+
+def apply_base_patch(rom: Rom) -> None:
+    path = _get_patch_path(rom, "asm", "m4rs.bps")
+    with open(path, "rb") as f:
+        patch = f.read()
+    rom.data = BpsDecoder().apply_patch(patch, rom.data)
 
 
 def disable_demos(rom: Rom) -> None:
@@ -61,15 +76,15 @@ def change_missile_limit(rom: Rom, limit: int) -> None:
 
 
 def apply_unexplored_map(rom: Rom) -> None:
-    apply_patch_in_data_path(rom, "unhidden_map.ips")
+    apply_patch_in_asm_path(rom, "unhidden_map.ips")
 
 
 def apply_pbs_without_bombs(rom: Rom) -> None:
-    apply_patch_in_data_path(rom, "bombless_pbs.ips")
+    apply_patch_in_asm_path(rom, "bombless_pbs.ips")
 
 
 def apply_anti_softlock_edits(rom: Rom) -> None:
-    apply_patch_in_data_path(rom, "anti_softlock.ips")
+    apply_patch_in_asm_path(rom, "anti_softlock.ips")
 
 
 def apply_reveal_hidden_tiles(rom: Rom) -> None:
