@@ -9,3 +9,6 @@ dist/
 /*.bps
 /*.json
 *.exe
+
+# automatically created version
+src/mars_patcher/version.py
