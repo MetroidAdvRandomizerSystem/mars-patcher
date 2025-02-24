@@ -138,6 +138,9 @@ jobs:
 
   pypi:
     runs-on: 'ubuntu-latest'
+    environment:
+      name: pypi
+      url: https://pypi.org/p/mars_patcher
     needs:
       - test
 
@@ -151,8 +154,7 @@ jobs:
           name: python-package-distributions
           path: dist/
       
-      # Publish to PyPI on tag push. Commented out until out of early alpha.
-      # When this gets commented out, an access key needs to be added to the repo.
-      # - name: Publish 📦 to PyPI
-      #   if: ${{ startsWith(github.ref, 'refs/tags/') }}
-      #   uses: pypa/gh-action-pypi-publish@release/v1
+      # Publish to PyPI on tag push.
+      - name: Publish 📦 to PyPI
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        uses: pypa/gh-action-pypi-publish@release/v1
